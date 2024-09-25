@@ -2,13 +2,13 @@ return {
   "hrsh7th/nvim-cmp",
   event = { "InsertEnter" },
   dependencies = {
-    "hrsh7th/cmp-buffer", -- source for text in buffer
-    "hrsh7th/cmp-path", -- source for file system paths
-    "L3MON4D3/LuaSnip", -- snippet engine
-    "saadparwaiz1/cmp_luasnip", -- for autocompletion with snippets
+    "hrsh7th/cmp-buffer",           -- source for text in buffer
+    "hrsh7th/cmp-path",             -- source for file system paths
+    "L3MON4D3/LuaSnip",             -- snippet engine
+    "saadparwaiz1/cmp_luasnip",     -- for autocompletion with snippets
     "rafamadriz/friendly-snippets", -- useful snippets
-    "onsails/lspkind.nvim", -- vs-code like pictograms
-    "hrsh7th/cmp-nvim-lsp", -- LSP source for autocompletion
+    "onsails/lspkind.nvim",         -- vs-code like pictograms
+    "hrsh7th/cmp-nvim-lsp",         -- LSP source for autocompletion
   },
   config = function()
     local cmp = require("cmp")
@@ -22,7 +22,7 @@ return {
       completion = {
         completeopt = "menu,menuone,preview,select", -- enable automatic selection
       },
-      snippet = { -- configure how nvim-cmp interacts with snippet engine
+      snippet = {                                    -- configure how nvim-cmp interacts with snippet engine
         expand = function(args)
           luasnip.lsp_expand(args.body)
         end,
@@ -33,7 +33,7 @@ return {
         ["<C-d>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-        ["<C-e>"] = cmp.mapping.abort(), -- close completion window
+        ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
         ["<CR>"] = cmp.mapping.confirm({
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
@@ -63,8 +63,8 @@ return {
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
         { name = "luasnip" }, -- snippets
-        { name = "buffer" }, -- text within current buffer
-        { name = "path" }, -- file system paths
+        { name = "buffer" },  -- text within current buffer
+        { name = "path" },    -- file system paths
         { name = "jupynium" },
       }),
 

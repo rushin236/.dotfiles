@@ -27,13 +27,13 @@ return {
       local mason_lspconfig = require("mason-lspconfig")
       mason_lspconfig.setup({
         ensure_installed = {
-          "lua_ls", -- Lua
+          "lua_ls",  -- Lua
           "pyright", -- Python
-          "cssls", -- CSS
-          "html", -- HTML
-          "ts_ls", -- JavaScript and TypeScript
+          "cssls",   -- CSS
+          "html",    -- HTML
+          "ts_ls",   -- JavaScript and TypeScript
           "ruff_lsp",
-          "bashls", -- bash-language-server
+          "bashls",  -- bash-language-server
         },
         automatic_installation = true,
       })
@@ -48,13 +48,13 @@ return {
       mason_tool_installer.setup({
         ensure_installed = {
           "prettier", -- formatter for multiple languages
-          "stylua", -- Lua formatter
-          "isort", -- Python import sorter
-          "black", -- Python formatter
+          -- "stylua",   -- Lua formatter
+          "isort",    -- Python import sorter
+          "black",    -- Python formatter
           "eslint_d", -- JavaScript linter
-          "ruff", -- Python linter
+          "ruff",     -- Python linter
           -- "pylint", -- Python linter (commented out)
-          "shfmt", -- bash formatting
+          "shfmt",    -- bash formatting
         },
       })
     end,
