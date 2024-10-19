@@ -86,7 +86,7 @@ mouse = "Middle"
 [selection]
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 
-[shell]
+[terminal.shell]
 program = "/usr/bin/tmux"
 
 [window]
@@ -102,3 +102,5 @@ lines = 80
 [window.padding]
 x = 4
 y = 4
+
+[terminal]
