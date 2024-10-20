@@ -2,10 +2,10 @@ return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    "hrsh7th/nvim-cmp",                                     -- Completion plugin
-    "hrsh7th/cmp-nvim-lsp",                                 -- LSP completion source for nvim-cmp
+    "hrsh7th/nvim-cmp", -- Completion plugin
+    "hrsh7th/cmp-nvim-lsp", -- LSP completion source for nvim-cmp
     { "antosha417/nvim-lsp-file-operations", config = true }, -- LSP-based file operations
-    { "folke/neodev.nvim",                   opts = {} },   -- Neovim API support for Lua
+    { "folke/neodev.nvim", opts = {} }, -- Neovim API support for Lua
   },
   config = function()
     -- Import required plugins
