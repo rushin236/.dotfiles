@@ -87,7 +87,7 @@ mouse = "Middle"
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 
 [terminal.shell]
-program = "/usr/bin/tmux"
+program = "/usr/local/bin/tmux"
 
 [window]
 decorations = "full"
