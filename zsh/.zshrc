@@ -30,6 +30,8 @@ unset __conda_setup
 # Cargo
 . "$HOME/.cargo/env"
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
@@ -96,5 +98,3 @@ alias ls='ls --color'
 # Shell integrations
 eval "$(fzf --zsh)"
 # eval "$(zoxide init --cmd cd zsh)"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
