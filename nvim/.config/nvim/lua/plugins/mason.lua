@@ -32,7 +32,7 @@ return {
           "cssls", -- CSS
           "html", -- HTML
           "ts_ls", -- JavaScript and TypeScript
-          "ruff_lsp",
+          "ruff", -- Ruff
           "bashls", -- bash-language-server
         },
         automatic_installation = true,
