@@ -34,6 +34,7 @@ return {
           "ts_ls", -- JavaScript and TypeScript
           "ruff", -- Ruff
           "bashls", -- bash-language-server
+          "clangd", -- c programming
         },
         automatic_installation = true,
       })
