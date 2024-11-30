@@ -20,9 +20,9 @@ return {
         liquid = { "prettier" },
         python = { "black", "isort" },
         lua = { "stylua" },
-        sh = { "shfmt" },
-        zsh = { "shfmt" },
-        bash = { "shfmt" },
+        sh = { "beautysh" },
+        zsh = { "beautysh" },
+        bash = { "beautysh" },
       },
 
       format_on_save = {

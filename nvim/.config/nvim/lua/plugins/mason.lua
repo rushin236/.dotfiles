@@ -55,7 +55,7 @@ return {
           "eslint_d", -- JavaScript linter
           "ruff", -- Python linter
           -- "pylint", -- Python linter (commented out)
-          "shfmt", -- bash formatting
+          "beautysh", -- bash formatting
           "shellcheck",
         },
       })
