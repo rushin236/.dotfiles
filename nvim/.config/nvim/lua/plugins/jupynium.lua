@@ -1,5 +1,6 @@
 return {
   "kiyoon/jupynium.nvim",
+  ft = { "python", "ipynb" },
   build = "pip install --user ." or "pip3 install --user .",
   dependecies = {
     "rcarriga/nvim-notify", -- optional
