@@ -57,6 +57,7 @@ return {
           -- "pylint", -- Python linter (commented out)
           "beautysh", -- bash formatting
           "shellcheck",
+          "clang-format", -- c formatter
         },
       })
     end,

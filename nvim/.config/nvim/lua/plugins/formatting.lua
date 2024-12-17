@@ -23,6 +23,7 @@ return {
         sh = { "beautysh" },
         zsh = { "beautysh" },
         bash = { "beautysh" },
+        c = { "clang-format" },
       },
 
       format_on_save = {
