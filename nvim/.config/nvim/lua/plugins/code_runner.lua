@@ -3,6 +3,7 @@ return {
   cmd = { "RunCode", "RunFile", "RunProject" },
   config = function()
     require("code_runner").setup({
+      focus = true,
       filetype = {
         javascript = "node",
         java = {
@@ -39,6 +40,7 @@ return {
           "$dir/$fileNameWithoutExt",
         },
       },
+      project_path = vim.fn.expand("~/.config/nvim/project_manager.json"),
     })
   end,
 }
