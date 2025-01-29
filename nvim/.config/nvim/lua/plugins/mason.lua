@@ -42,10 +42,11 @@ return {
       mason_tool_installer.setup({
         ensure_installed = {
           "prettier", -- formatter for multiple languages
+          "prettierd", -- formatter for multiple languages
           "stylua", -- Lua formatter
           "isort", -- Python import sorter
           "black", -- Python formatter
-          "eslint_d", -- JavaScript linter
+          "trivy", -- JavaScript linter
           "ruff", -- Python linter
           -- "pylint", -- Python linter (commented out)
           "beautysh", -- bash formatting
@@ -130,5 +131,5 @@ return {
         end,
       })
     end,
-  }
+  },
 }

@@ -1,21 +1,15 @@
 return {
   "CRAG666/code_runner.nvim",
-  cmd = { "RunCode", "RunFile", "RunProject" },
   config = function()
     require("code_runner").setup({
-      focus = true,
       filetype = {
-        javascript = "node",
-        java = {
-          "cd $dir &&",
-          "javac $fileName &&",
-          "java $fileNameWithoutExt",
-        },
+        python = "python -u '$dir/$fileName'",
+        sh = "bash",
         c = function(...)
-          c_base = {
+          local c_base = {
             "cd $dir &&",
             "gcc $fileName -o",
-            "$fileNameWithoutExt",
+            "$dir/$fileNameWithoutExt",
           }
           local c_exec = {
             "&& $dir/$fileNameWithoutExt",
@@ -25,22 +19,7 @@ return {
             require("code_runner.commands").run_from_fn(vim.list_extend(c_base, c_exec))
           end)
         end,
-        cpp = {
-          "cd $dir &&",
-          "g++ $fileName",
-          "-o $fileNameWithoutExt &&",
-          "$dir/$fileNameWithoutExt",
-        },
-        python = "python -u",
-        sh = "bash",
-        ruby = "ruby",
-        rust = {
-          "cd $dir &&",
-          "rustc $fileName &&",
-          "$dir/$fileNameWithoutExt",
-        },
       },
-      project_path = vim.fn.expand("~/.config/nvim/project_manager.json"),
     })
   end,
 }
