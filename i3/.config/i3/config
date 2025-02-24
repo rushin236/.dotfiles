@@ -221,21 +221,21 @@ client.background        $base
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-  status_command i3status
-  colors {
-    background         $base
-    statusline         $text
-    focused_statusline $text
-    focused_separator  $base
-
-    # target           border bg        text
-    focused_workspace  $base  $mauve    $crust
-    active_workspace   $base  $surface2 $text
-    inactive_workspace $base  $base     $text
-    urgent_workspace   $base  $red      $crust
-  }
-}
+# bar {
+#   status_command i3status
+#   colors {
+#     background         $base
+#     statusline         $text
+#     focused_statusline $text
+#     focused_separator  $base
+#
+#     # target           border bg        text
+#     focused_workspace  $base  $mauve    $crust
+#     active_workspace   $base  $surface2 $text
+#     inactive_workspace $base  $base     $text
+#     urgent_workspace   $base  $red      $crust
+#   }
+# }
 
 bindsym $mod+shift+x exec i3lock
 
@@ -245,6 +245,7 @@ exec_always --no-startup-id picom
 exec com.github.wwmm.easyeffects
 exec com.github.wwmm.easyeffects -w
 exec coolercontrol
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # exec_always xrandr --output HDMI-0 --mode 1920x1080 --rate 100 --pos 1920x0 --rotate normal \
 # --output DP-0 --primary --mode 1920x1080 --rate 144 --pos 0x0 --rotate normal --output \
