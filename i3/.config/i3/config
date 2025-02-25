@@ -212,12 +212,16 @@ set $mantle #16161e
 set $crust #13131a
 
 # target                 title     bg    text   indicator  border
-client.focused           $lavender $base $text  $rosewater $lavender
-client.focused_inactive  $overlay0 $base $text  $rosewater $overlay0
-client.unfocused         $overlay0 $base $text  $rosewater $overlay0
+client.focused           $lavender $base $text  $blue      $lavender
+client.focused_inactive  $overlay0 $base $text  $blue      $overlay0
+client.unfocused         $overlay0 $base $text  $blue      $overlay0
 client.urgent            $peach    $base $peach $overlay0  $peach
 client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
 client.background        $base
+
+# GAPS
+# gaps inner 5px
+# gaps outer 5px
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
