@@ -8,7 +8,7 @@ return {
     -- configure lualine with modified theme
     lualine.setup({
       options = {
-        theme = "dracula",
+        theme = "nightfly",
         component_separators = { left = "", right = "" }, -- semi-circle separators
         section_separators = { left = "", right = "" }, -- semi-circle separators
       },
