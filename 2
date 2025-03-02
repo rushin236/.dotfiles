@@ -241,6 +241,7 @@ client.background        $base
 #   }
 # }
 
+bindsym $mod+shift+x exec i3lock
 
 # Startup applications
 exec_always feh --bg-scale /home/rushin/rushikesh/pc/wallpapers/wallpaper.jpg
@@ -248,18 +249,8 @@ exec_always --no-startup-id picom
 exec com.github.wwmm.easyeffects
 exec com.github.wwmm.easyeffects -w
 exec coolercontrol
-
-# Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh
-
-# Lock screen settings
-bindsym $mod+x exec ~/.config/i3/scripts/i3lock.sh
-
-# Auto-lock after 15 minutes
-exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/scripts/i3lock.sh" -detectsleep
-
-# Enable DPMS timeouts (optional)
-# exec --no-startup-id xset dpms 0 0 660
+exec_always --no-startup-id xautolock -time 1 -locker "~/.config/i3/scripts/i3lock.sh" -detectsleep
 
 # exec_always xrandr --output HDMI-0 --mode 1920x1080 --rate 100 --pos 1920x0 --rotate normal \
 # --output DP-0 --primary --mode 1920x1080 --rate 144 --pos 0x0 --rotate normal --output \
