@@ -245,9 +245,9 @@ client.background        $base
 # Startup applications
 exec_always feh --bg-scale /home/rushin/rushikesh/pc/wallpapers/wallpaper.jpg
 exec_always --no-startup-id picom
-exec_always com.github.wwmm.easyeffects
-exec_always com.github.wwmm.easyeffects -w
-exec_always coolercontrol
+exec com.github.wwmm.easyeffects
+exec com.github.wwmm.easyeffects -w
+exec coolercontrol
 
 # Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh
