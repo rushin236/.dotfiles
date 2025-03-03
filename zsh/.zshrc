@@ -40,8 +40,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # alias
-alias ls="exa --icons"
-alias ll="exa -a --icons"
+alias ls="exa -a --icons"
+alias ll="exa -al --icons"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then

@@ -55,8 +55,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec rofi -show combi
+# start rofi (a program launcher)
+bindsym $mod+d exec rofi -show combi -theme ~/.config/rofi/config.rasi
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -245,21 +245,24 @@ client.background        $base
 # Startup applications
 exec_always feh --bg-scale /home/rushin/rushikesh/pc/wallpapers/wallpaper.jpg
 exec_always --no-startup-id picom
-exec com.github.wwmm.easyeffects
-exec com.github.wwmm.easyeffects -w
-exec coolercontrol
+exec_always com.github.wwmm.easyeffects
+exec_always com.github.wwmm.easyeffects -w
+exec_always coolercontrol
 
 # Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # Lock screen settings
-bindsym $mod+x exec ~/.config/i3/scripts/i3lock.sh
+bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
 
 # Auto-lock after 15 minutes
-exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/scripts/i3lock.sh" -detectsleep
+exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock.sh" -detectsleep
 
 # Enable DPMS timeouts (optional)
 # exec --no-startup-id xset dpms 0 0 660
+
+# Power Menu
+bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
 
 # exec_always xrandr --output HDMI-0 --mode 1920x1080 --rate 100 --pos 1920x0 --rotate normal \
 # --output DP-0 --primary --mode 1920x1080 --rate 144 --pos 0x0 --rotate normal --output \
