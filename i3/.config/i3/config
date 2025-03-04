@@ -264,6 +264,9 @@ exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock
 # Power Menu
 bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
 
+# Monitor control
+bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
+
 # exec_always xrandr --output HDMI-0 --mode 1920x1080 --rate 100 --pos 1920x0 --rotate normal \
 # --output DP-0 --primary --mode 1920x1080 --rate 144 --pos 0x0 --rotate normal --output \
 # DP-1 --off --output HDMI-1 --off --output DP-2 --off --output DP-3 --off
