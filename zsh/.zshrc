@@ -2,7 +2,7 @@
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 export LANG=en_US.UTF-8
@@ -17,13 +17,13 @@ export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$HOME/miniconda3/bin/conda" 'shell.zsh' 'hook' 2>/dev/null)"
 if [ $? -eq 0 ]; then
-  eval "$__conda_setup"
+    eval "$__conda_setup"
 else
-  if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-    . "$HOME/miniconda3/etc/profile.d/conda.sh"
-  else
-    export PATH="$HOME/miniconda3/bin:$PATH"
-  fi
+    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$HOME/miniconda3/bin:$PATH"
+    fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
@@ -74,7 +74,6 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
-zinit light jeffreytse/zsh-vi-mode
 
 # Add in snippets
 zinit snippet OMZP::git
@@ -100,7 +99,7 @@ zinit cdreplay -q
 # ZSH Keybindings
 #######################################################
 
-bindkey -v
+bindkey -e
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 # bindkey '^[w' kill-region

@@ -68,10 +68,10 @@ case "$choice" in
 
         case $direction in
             Right)
-                xrandr --output $selected_monitor --mode $max_res --rate $max_rate --left-of $other_monitor
+                xrandr --output $selected_monitor --mode $max_res --rate $max_rate --right-of $other_monitor
                 ;;
             Left)
-                xrandr --output $selected_monitor --mode $max_res --rate $max_rate --right-of $other_monitor
+                xrandr --output $selected_monitor --mode $max_res --rate $max_rate --left-of $other_monitor
                 ;;
             Up)
                 xrandr --output $selected_monitor --mode $max_res --rate $max_rate --above $other_monitor
