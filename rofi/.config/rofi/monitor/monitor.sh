@@ -85,17 +85,25 @@ case "$choice" in
         primary_ws=$(i3-msg -t get_workspaces | jq -r ".[] | select(.output==\"$other_monitor\").name")
 
         # Count workspaces on primary monitor
-        ws_count=$(echo "$primary_ws" | wc -l)
+        ws_count=$(echo "$primary_ws" | grep -c '.')
 
         # If there are two or more workspaces on the primary monitor, move one to the extended monitor
-        if [ "$ws_count" -ge 1 ]; then
+        if [ "$ws_count" -ge 2 ]; then
             # Get the first workspace from the list
             ws_to_move=$(echo "$primary_ws" | sed -n 2p)
 
             # Move it to the new monitor
             i3-msg workspace "$ws_to_move"
             i3-msg move workspace to output "$selected_monitor"
+        else
+            # Get the maximum workspace number
+            max_ws=$(i3-msg -t get_workspaces | jq '.[].num' | sort -n | tail -n 1)
+
+            # Create and move new workspace to the selected monitor
+            i3-msg workspace "$max_ws"
+            i3-msg move workspace to output "$selected_monitor"
         fi
+
 
         # Restart i3 to apply changes
         i3-msg restart
