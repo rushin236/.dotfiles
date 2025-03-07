@@ -90,7 +90,8 @@ case "$choice" in
         # If there are two or more workspaces on the primary monitor, move one to the extended monitor
         if [ "$ws_count" -ge 2 ]; then
             # Get the first workspace from the list
-            ws_to_move=$(echo "$primary_ws" | sed -n 2p)
+            ws_to_move=$(echo "$primary_ws" | sort | tail -n 1) # moves the last ws
+            # ws_to_move=$(echo "$primary_ws" | sort | sed -n 2p) # moves the second ws
 
             # Move it to the new monitor
             i3-msg workspace "$ws_to_move"
