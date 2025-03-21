@@ -37,8 +37,8 @@ exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
@@ -241,14 +241,12 @@ client.background        $base
 #   }
 # }
 
-
 # Startup applications
 exec_always feh --bg-scale /home/rushin/rushikesh/pc/wallpapers/wallpaper.jpg
 exec_always --no-startup-id picom
 exec_always --no-startup-id dispwin -d 1 ~/rushikesh/pc/icc_profiles/aoc/24G3U_V1.icc
 exec_always --no-startup-id dispwin -d 2 ~/rushikesh/pc/icc_profiles/acer/EK220Q_H3.icc
-exec --no-startup-id com.github.wwmm.easyeffects
-exec --no-startup-id com.github.wwmm.easyeffects -w
+exec_always --no-startup-id easyeffects --gapplication-service
 exec --no-startup-id coolercontrol
 
 # Polybar config
@@ -257,11 +255,8 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh
 # Lock screen settings
 bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
 
-# Auto-lock after 15 minutes
+# Auto-lock after 10 minutes
 exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock.sh" -detectsleep
-
-# Enable DPMS timeouts (optional)
-# exec --no-startup-id xset dpms 0 0 660
 
 # Power Menu
 bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh

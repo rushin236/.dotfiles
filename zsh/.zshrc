@@ -57,7 +57,8 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # Add in Powerlevel10k
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
@@ -74,11 +75,12 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
+zinit ice depth=1
+zinit light jeffreytse/zsh-vi-mode
 
 # Add in snippets
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
-# zinit snippet OMZP::tmuxinator
 zinit snippet OMZP::command-not-found
 
 # Disable the cursor style feature
@@ -86,6 +88,7 @@ zinit snippet OMZP::command-not-found
 ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
 ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
 ZVM_OPPEND_MODE_CURSOR=$ZVM_CURSOR_BLINKING_UNDERLINE
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
 # Load completions
 autoload -Uz compinit && compinit
@@ -99,7 +102,7 @@ zinit cdreplay -q
 # ZSH Keybindings
 #######################################################
 
-bindkey -e
+bindkey -v
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 # bindkey '^[w' kill-region
