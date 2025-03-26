@@ -56,7 +56,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start rofi (a program launcher)
-bindsym $mod+d exec rofi -show combi -theme ~/.config/rofi/config.rasi
+bindsym $mod+d exec rofi -show drun -theme ~/.config/rofi/config.rasi
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -242,7 +242,7 @@ client.background        $base
 # }
 
 # Startup applications
-exec_always feh --bg-scale /home/rushin/rushikesh/pc/wallpapers/wallpaper.jpg
+exec_always feh --bg-scale "$(find ~/rushikesh/pc/wallpapers | shuf -n 1)"
 exec_always --no-startup-id picom
 exec_always --no-startup-id dispwin -d 1 ~/rushikesh/pc/icc_profiles/aoc/24G3U_V1.icc
 exec_always --no-startup-id dispwin -d 2 ~/rushikesh/pc/icc_profiles/acer/EK220Q_H3.icc

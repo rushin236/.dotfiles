@@ -39,10 +39,6 @@ export NVM_DIR="$HOME/.nvm"
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# alias
-alias ls="exa -a --icons"
-alias ll="exa -al --icons"
-
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
@@ -132,9 +128,9 @@ setopt hist_find_no_dups
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' menu select
+zstyle ':completion:*' menu no
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color $realpath'
 
 #######################################################
 # ZSH Basic Options
@@ -165,5 +161,3 @@ alias grep='grep --color=auto'    # Highlight search matches
 alias fgrep='fgrep --color=auto'  # Highlight fixed string matches
 alias egrep='egrep --color=auto'  # Highlight extended regex matches
 
-# fzf integration
-eval "$(fzf --zsh)"
