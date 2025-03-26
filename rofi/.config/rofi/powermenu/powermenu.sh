@@ -1,6 +1,6 @@
 #!/bin/bash
 options="Lock\nLogout\nReboot\nShutdown"
-selected=$(echo -e "$options" | rofi -dmenu -p "Power Menu" -theme ~/.config/rofi/config.rasi)
+selected=$(echo -e "$options" | rofi -dmenu -i -p "Power Menu" -theme ~/.config/rofi/config.rasi)
 case $selected in
     "Lock") ~/.config/i3/lock/i3lock.sh ;;
     "Logout") i3-msg exit ;;

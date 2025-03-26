@@ -30,7 +30,7 @@ done
 options+="Mirror\n"
 
 # Show menu with rofi
-choice=$(echo -e "$options" | rofi -dmenu -p "Monitor Control" -theme ~/.config/rofi/config.rasi)
+choice=$(echo -e "$options" | rofi -dmenu -i -p "Monitor Control" -theme ~/.config/rofi/config.rasi)
 
 # Execute based on choice
 case "$choice" in
