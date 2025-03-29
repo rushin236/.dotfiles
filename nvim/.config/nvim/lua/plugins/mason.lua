@@ -21,15 +21,16 @@ return {
     config = function()
       local mason_lspconfig = require("mason-lspconfig")
       mason_lspconfig.setup({
+        automatic_installation = true,
         ensure_installed = {
-          "lua_ls", -- Lua
+          "lua_ls",  -- Lua
           "pyright", -- Python
-          "cssls", -- CSS
-          "html", -- HTML
-          "ts_ls", -- JavaScript and TypeScript
-          "ruff", -- Ruff
-          "bashls", -- bash-language-server
-          "clangd", -- c programming
+          "cssls",   -- CSS
+          "html",    -- HTML
+          "ts_ls",   -- JavaScript and TypeScript
+          "ruff",    -- Ruff
+          "bashls",  -- bash-language-server
+          "clangd",  -- c programming
         },
       })
     end,
@@ -41,15 +42,15 @@ return {
       local mason_tool_installer = require("mason-tool-installer")
       mason_tool_installer.setup({
         ensure_installed = {
-          "prettier", -- formatter for multiple languages
+          "prettier",  -- formatter for multiple languages
           "prettierd", -- formatter for multiple languages
-          "stylua", -- Lua formatter
-          "isort", -- Python import sorter
-          "black", -- Python formatter
-          "trivy", -- JavaScript linter
-          "ruff", -- Python linter
+          "stylua",    -- Lua formatter
+          "isort",     -- Python import sorter
+          "black",     -- Python formatter
+          "trivy",     -- JavaScript linter
+          "ruff",      -- Python linter
           -- "pylint", -- Python linter (commented out)
-          "beautysh", -- bash formatting
+          "beautysh",  -- bash formatting
           "shellcheck",
         },
       })
@@ -59,17 +60,16 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "hrsh7th/nvim-cmp", -- Completion plugin
-      "hrsh7th/cmp-nvim-lsp", -- LSP completion source for nvim-cmp
+      "hrsh7th/nvim-cmp",                                       -- Completion plugin
+      "hrsh7th/cmp-nvim-lsp",                                   -- LSP completion source for nvim-cmp
       { "antosha417/nvim-lsp-file-operations", config = true }, -- LSP-based file operations
-      { "folke/neodev.nvim", opts = {} }, -- Neovim API support for Lua
+      { "folke/neodev.nvim",                   opts = {} },     -- Neovim API support for Lua
     },
     config = function()
       -- Import required plugins
       local lspconfig = require("lspconfig")
       local mason_lspconfig = require("mason-lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
-      local keymap = vim.keymap -- for keybinding convenience
 
       -- Key mappings for LSP functionality
       local function on_attach(_, bufnr)

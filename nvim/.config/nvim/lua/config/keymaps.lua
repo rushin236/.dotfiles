@@ -1,7 +1,10 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 local map = vim.keymap.set
 
 -- use jk to exit insert mode
-map({ "i" }, "jk", "<ESC>", { desc = "Exit Insert mode", silent = true })
+map({ "i" }, "jk", "<ESC>", { noremap = true, desc = "Exit Insert mode", silent = true })
 
 -- Clear highlights
 map("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
@@ -25,37 +28,37 @@ map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window wi
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
 -- Move Lines
-map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { noremap = true, desc = "Move down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { noremap = true, desc = "Move up" })
+map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { noremap = true, desc = "Move down" })
+map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { noremap = true, desc = "Move up" })
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { noremap = true, desc = "Move down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { noremap = true, desc = "Move up" })
 
 -- save file
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { noremap = true, desc = "Save file" })
 
 -- better indenting
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- Terminal Mappings
-map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
-map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
-map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
-map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
-map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
-map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
-map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
+map("t", "<esc><esc>", "<c-\\><c-n>", { noremap = true, desc = "Enter Normal Mode" })
+map("t", "<C-h>", "<cmd>wincmd h<cr>", { noremap = true, desc = "Go to left window" })
+map("t", "<C-j>", "<cmd>wincmd j<cr>", { noremap = true, desc = "Go to lower window" })
+map("t", "<C-k>", "<cmd>wincmd k<cr>", { noremap = true, desc = "Go to upper window" })
+map("t", "<C-l>", "<cmd>wincmd l<cr>", { noremap = true, desc = "Go to right window" })
+map("t", "<C-/>", "<cmd>close<cr>", { noremap = true, desc = "Hide Terminal" })
+map("t", "<c-_>", "<cmd>close<cr>", { noremap = true, desc = "which_key_ignore" })
 
 -- window management
-map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
-map("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
-map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
-map("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
+map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })                   -- split window vertically
+map("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })                 -- split window horizontally
+map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })                    -- make split windows equal width & height
+map("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })               -- close current split window
 
-map("n", "<leader>to", "<cmd>tabnew<CR>", { desc = "Open new tab" }) -- open new tab
-map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" }) -- close current tab
-map("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" }) --  go to next tab
-map("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) --  go to previous tab
+map("n", "<leader>to", "<cmd>tabnew<CR>", { desc = "Open new tab" })                     -- open new tab
+map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" })              -- close current tab
+map("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" })                     --  go to next tab
+map("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" })                 --  go to previous tab
 map("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
