@@ -88,12 +88,12 @@ return {
         set_keymap("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", "Show LSP type definitions")
         set_keymap({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "See available code actions")
         set_keymap("n", "<leader>rn", vim.lsp.buf.rename, "Smart rename")
-        set_keymap("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", "Show buffer diagnostics")
-        set_keymap("n", "<leader>d", vim.diagnostic.open_float, "Show line diagnostics")
+        set_keymap("n", "<leader>cD", "<cmd>Telescope diagnostics bufnr=0<CR>", "Show buffer diagnostics")
+        set_keymap("n", "<leader>cd", vim.diagnostic.open_float, "Show line diagnostics")
         set_keymap("n", "[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
         set_keymap("n", "]d", vim.diagnostic.goto_next, "Go to next diagnostic")
         set_keymap("n", "K", vim.lsp.buf.hover, "Show documentation")
-        set_keymap("n", "<leader>rs", ":LspRestart<CR>", "Restart LSP")
+        set_keymap("n", "<leader>crs", ":LspRestart<CR>", "Restart LSP")
       end
 
       -- Setup diagnostic symbols
