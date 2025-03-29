@@ -25,11 +25,18 @@ return {
                 table.insert(c_exec, exec_args) -- Append execution arguments
               end
 
-              require("code_runner.commands").run_from_fn(vim.list_extend(c_base, c_exec))
+              vim.list_extend(c_base, c_exec)
+              local cmd_str = table.concat(c_base, " ")
+              require("code_runner.commands").run_from_fn(cmd_str)
             end)
           end)
         end,
       },
     })
+
+    vim.keymap.set('n', '<leader>rr', ':RunCode<CR>', { noremap = true, silent = false })
+    vim.keymap.set('n', '<leader>rf', ':RunFile<CR>', { noremap = true, silent = false })
+    vim.keymap.set('n', '<leader>rp', ':RunProject<CR>', { noremap = true, silent = false })
+    vim.keymap.set('n', '<leader>rc', ':RunClose<CR>', { noremap = true, silent = false })
   end,
 }
