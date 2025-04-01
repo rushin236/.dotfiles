@@ -9,6 +9,8 @@ map({ "i" }, "jk", "<ESC>", { noremap = true, desc = "Exit Insert mode", silent 
 -- Clear highlights
 map("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 
+map("n", "<leader>fnr", ":%s///g<Left><Left>", { desc = "Find and Replace" })
+
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })

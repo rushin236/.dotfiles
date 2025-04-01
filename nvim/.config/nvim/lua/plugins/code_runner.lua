@@ -5,7 +5,7 @@ return {
       filetype = {
         python = "python -u '$dir/$fileName'",
         sh = "bash",
-        c = function(...)
+        c = function()
           local c_base = {
             "cd $dir &&",
             "gcc $fileName -o",

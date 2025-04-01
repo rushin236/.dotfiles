@@ -8,13 +8,14 @@ return {
       { "<leader>c",  group = "code" },
       { "<leader>cr", group = "code restart" },
       { "<leader>e",  group = "explorer" },
-      { "<leader>f",  group = "file" },
+      { "<leader>f",  group = "file files" },
       { "<leader>g",  group = "git" },
       { "<leader>gh", group = "githunk" },
       { "<leader>n",  group = "no" },
       { "<leader>r",  group = "run/restart" },
       { "<leader>s",  group = "surround/split" },
-      { "<leader>t",  group = "tabs" }
+      { "<leader>t",  group = "tabs" },
+      { "g",          group = "goto" }
     })
   end
 }

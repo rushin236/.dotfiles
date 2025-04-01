@@ -1,23 +1,23 @@
 return {
   {
     'echasnovski/mini.surround',
-    version = '*',
+    version = false,
     config = function()
       require("mini.surround").setup({
         mappings = {
-          add = '<leader>sa',            -- Add surrounding in Normal and Visual modes
-          delete = '<leader>sd',         -- Delete surrounding
-          find = '<leader>sf',           -- Find surrounding (to the right)
-          find_left = '<leader>sF',      -- Find surrounding (to the left)
-          replace = '<leader>sr',        -- Replace surrounding
-          update_n_lines = '<leader>sn', -- Update `n_lines`
+          add = 'gsa',            -- add surrounding in normal and visual modes
+          delete = 'gsd',         -- delete surrounding
+          find = 'gsf',           -- find surrounding (to the right)
+          find_left = 'gsf',      -- find surrounding (to the left)
+          replace = 'gsr',        -- replace surrounding
+          update_n_lines = 'gsn', -- update `n_lines`
         }
       })
     end
   },
   {
     'echasnovski/mini.pairs',
-    version = '*',
+    version = false,
     config = function()
       require("mini.pairs").setup(
         {
@@ -42,7 +42,7 @@ return {
   {
     {
       'echasnovski/mini.ai',
-      version = '*',
+      version = false,
       config = function()
         require("mini.ai").setup({
           {
@@ -54,8 +54,8 @@ return {
               inside_next = 'in',
               around_last = 'al',
               inside_last = 'il',
-              goto_left = 'g[',
-              goto_right = 'g]',
+              goto_left = 'gt[',
+              goto_right = 'gt]',
             },
             n_lines = 50,
             search_method = 'cover_or_next',
@@ -64,5 +64,5 @@ return {
         })
       end
     }
-  }
+  },
 }

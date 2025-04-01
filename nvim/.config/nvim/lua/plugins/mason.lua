@@ -81,18 +81,18 @@ return {
         end
 
         -- Keymaps for LSP actions
-        set_keymap("n", "gR", "<cmd>Telescope lsp_references<CR>", "Show LSP references")
-        set_keymap("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
-        set_keymap("n", "gd", "<cmd>Telescope lsp_definitions<CR>", "Show LSP definitions")
-        set_keymap("n", "gi", "<cmd>Telescope lsp_implementations<CR>", "Show LSP implementations")
-        set_keymap("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", "Show LSP type definitions")
-        set_keymap({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "See available code actions")
+        set_keymap("n", "<leader>gR", "<cmd>Telescope lsp_references<CR>", "Goto LSP references")
+        set_keymap("n", "<leader>gD", vim.lsp.buf.declaration, "Goto declaration")
+        set_keymap("n", "<leader>gd", "<cmd>Telescope lsp_definitions<CR>", "Goto LSP definitions")
+        set_keymap("n", "<leader>gi", "<cmd>Telescope lsp_implementations<CR>", "Goto LSP implementations")
+        set_keymap("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<CR>", "Goto LSP type definitions")
+        set_keymap("n", "<leader>gK", vim.lsp.buf.hover, "Goto documentation")
         set_keymap("n", "<leader>rn", vim.lsp.buf.rename, "Smart rename")
-        set_keymap("n", "<leader>cD", "<cmd>Telescope diagnostics bufnr=0<CR>", "Show buffer diagnostics")
-        set_keymap("n", "<leader>cd", vim.diagnostic.open_float, "Show line diagnostics")
-        set_keymap("n", "[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
-        set_keymap("n", "]d", vim.diagnostic.goto_next, "Go to next diagnostic")
-        set_keymap("n", "K", vim.lsp.buf.hover, "Show documentation")
+        set_keymap("n", "<leader>cD", "<cmd>Telescope diagnostics bufnr=0<CR>", "Goto buffer diagnostics")
+        set_keymap("n", "<leader>ca", vim.lsp.buf.code_action, "Goto code actions")
+        set_keymap("n", "<leader>cd", vim.diagnostic.open_float, "Goto line diagnostics")
+        set_keymap("n", "<leader>cpd", vim.diagnostic.get_prev, "Goto previous diagnostic")
+        set_keymap("n", "<leader>cnd", vim.diagnostic.get_next, "Goto next diagnostic")
         set_keymap("n", "<leader>crs", ":LspRestart<CR>", "Restart LSP")
       end
 
