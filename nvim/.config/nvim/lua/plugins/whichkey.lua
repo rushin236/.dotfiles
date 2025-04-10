@@ -8,7 +8,7 @@ return {
     spec = {
       {
         mode = { "n", "v" },
-        { "<leader>cr", group = "code runner" },
+        { "<leader>cr", group = "Code Runner" },
       },
     },
   },
