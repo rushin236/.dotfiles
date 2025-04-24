@@ -38,7 +38,11 @@ for info in "${monitor_info[@]}"; do
 	fi
 
 	# Check if the monitor is currently on (has resolution set)
-	is_on=$(echo "$info" | grep -q '[0-9]x[0-9]+' && echo "yes" || echo "no")
+	if echo "$info" | grep -q '[0-9]x[0-9]\+'; then
+		is_on="yes"
+	else
+		is_on="no"
+	fi
 
 	# Only show Toggle if monitor is currently active
 	if [[ "$is_on" == "yes" ]]; then
@@ -134,7 +138,7 @@ Extend*)
 	i3-msg restart
 	;;
 
-Mirror)
+Mirror*)
 	primary_monitor=$(echo "$monitors" | awk '{print $1}')
 	secondary_monitor=$(echo "$monitors" | awk '{print $2}')
 	res_rate=$(get_max_res_rate "$primary_monitor")
