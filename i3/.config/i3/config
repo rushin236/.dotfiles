@@ -199,32 +199,33 @@ set $green #9ece6a
 set $teal #73daca
 set $sky #89ddff
 set $sapphire #7dcfff
-set $blue #7aa2f7
+set $blue #539bf5
 set $lavender #7aa2f7
-set $text #c0caf5
-set $subtext1 #a9b1d6
-set $subtext0 #9aa5ce
-set $overlay2 #565f89
-set $overlay1 #50587a
-set $overlay0 #414868
-set $surface2 #292e42
-set $surface1 #24283b
-set $surface0 #1f2335
-set $base #1a1b26
-set $mantle #16161e
-set $crust #13131a
+set $text #d3dbe3
+set $subtext1 #768390
+set $subtext0 #636e7b
+set $overlay2 #444c56
+set $overlay1 #373e47
+set $overlay0 #2d333b
+set $surface2 #1f2428
+set $surface1 #24292e
+set $surface0 #2d333b
+set $base #1f2428
+set $mantle #24292e
+set $crust #2d333b
 
-# target                 title     bg    text   indicator  border
-client.focused           $lavender $base $text  $blue      $lavender
-client.focused_inactive  $overlay0 $base $text  $overlay0  $overlay0
-client.unfocused         $overlay0 $base $text  $overlay0  $overlay0
-client.urgent            $peach    $base $peach $overlay0  $peach
-client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
+# GitHub Dark Dimmed Theme for i3
+# ====================== border    bg    text      indicator border_bg
+client.focused           $overlay2 $base $text     $base     $base
+client.focused_inactive  $overlay2 $base $subtext1 $base     $overlay2
+client.unfocused         $overlay2 $base $subtext0 $base     $base
+client.urgent            $flamingo $base $text     $flamingo $flamingo
+client.placeholder       $base     $base $text     $base     $base
 client.background        $base
 
 # GAPS
-# gaps inner 5px
-# gaps outer 5px
+gaps inner 2px
+gaps outer 2px
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
