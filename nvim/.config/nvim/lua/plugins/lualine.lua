@@ -6,30 +6,30 @@ return {
       options = {
         theme = {
           normal = {
-            a = { bg = "#1f2428", fg = "#adbac7", gui = "bold" },
-            b = { bg = "#1f2428", fg = "#adbac7" },
-            c = { bg = "#1f2428", fg = "#768390" },
+            a = { bg = "#d3dbe3", fg = "#181b1e", gui = "bold" },
+            b = { bg = "#2d333b", fg = "#d3dbe3" },
+            c = { bg = "#181b1e", fg = "#768390" },
           },
           insert = {
-            a = { bg = "#1f2428", fg = "#57ab5a", gui = "bold" }, -- Green
-            b = { bg = "#1f2428", fg = "#adbac7" },
+            a = { bg = "#d3dbe3", fg = "#181b1e", gui = "bold" },
+            b = { bg = "#2d333b", fg = "#d3dbe3" },
           },
           visual = {
-            a = { bg = "#1f2428", fg = "#b083f0", gui = "bold" }, -- Purple
-            b = { bg = "#1f2428", fg = "#adbac7" },
+            a = { bg = "#d3dbe3", fg = "#181b1e", gui = "bold" },
+            b = { bg = "#2d333b", fg = "#d3dbe3" },
           },
           replace = {
-            a = { bg = "#1f2428", fg = "#f47067", gui = "bold" }, -- Red
-            b = { bg = "#1f2428", fg = "#adbac7" },
+            a = { bg = "#d3dbe3", fg = "#181b1e", gui = "bold" },
+            b = { bg = "#2d333b", fg = "#d3dbe3" },
           },
           command = {
-            a = { bg = "#1f2428", fg = "#539bf5", gui = "bold" }, -- Blue
-            b = { bg = "#1f2428", fg = "#adbac7" },
+            a = { bg = "#d3dbe3", fg = "#181b1e", gui = "bold" },
+            b = { bg = "#2d333b", fg = "#d3dbe3" },
           },
           inactive = {
-            a = { bg = "#1f2428", fg = "#636e7b", gui = "bold" },
-            b = { bg = "#1f2428", fg = "#636e7b" },
-            c = { bg = "#1f2428", fg = "#636e7b" },
+            a = { bg = "#181b1e", fg = "#768390", gui = "bold" },
+            b = { bg = "#181b1e", fg = "#768390" },
+            c = { bg = "#181b1e", fg = "#768390" },
           },
         },
         component_separators = { left = "│", right = "│" },
@@ -37,9 +37,9 @@ return {
       },
       sections = {
         lualine_a = { "mode" },
-        lualine_b = { "branch", "diff", "diagnostics" },
+        lualine_b = { "branch", "diff" },
         lualine_c = { "filename" },
-        lualine_x = { "encoding", "fileformat", "filetype" },
+        lualine_x = { "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" },
       },

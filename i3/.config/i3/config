@@ -187,63 +187,25 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-set $rosewater #ff9eaa
 set $flamingo #ff7a93
-set $pink #f7768e
-set $mauve #bb9af7
-set $red #db4b4b
-set $maroon #f7768e
-set $peach #ff9e64
-set $yellow #e0af68
-set $green #9ece6a
-set $teal #73daca
-set $sky #89ddff
-set $sapphire #7dcfff
-set $blue #539bf5
-set $lavender #7aa2f7
 set $text #d3dbe3
 set $subtext1 #768390
-set $subtext0 #636e7b
+set $overlay1 #a7a7a7
 set $overlay2 #444c56
-set $overlay1 #373e47
-set $overlay0 #2d333b
-set $surface2 #1f2428
-set $surface1 #24292e
-set $surface0 #2d333b
-set $base #1f2428
-set $mantle #24292e
-set $crust #2d333b
+set $base #181b1e
 
 # GitHub Dark Dimmed Theme for i3
 # ====================== border    bg    text      indicator border_bg
-client.focused           $overlay2 $base $text     $base     $base
-client.focused_inactive  $overlay2 $base $subtext1 $base     $overlay2
-client.unfocused         $overlay2 $base $subtext0 $base     $base
+client.focused           $overlay1 $base $text     $overlay1 $overlay1
+client.focused_inactive  $overlay2 $base $subtext1 $overlay2 $overlay2
+client.unfocused         $overlay2 $base $subtext1 $overlay2 $overlay2
 client.urgent            $flamingo $base $text     $flamingo $flamingo
-client.placeholder       $base     $base $text     $base     $base
+client.placeholder       $base     $base $text     $base     $text
 client.background        $base
 
 # GAPS
 gaps inner 2px
 gaps outer 2px
-
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-# bar {
-#   status_command i3status
-#   colors {
-#     background         $base
-#     statusline         $text
-#     focused_statusline $text
-#     focused_separator  $base
-#
-#     # target           border bg        text
-#     focused_workspace  $base  $mauve    $crust
-#     active_workspace   $base  $surface2 $text
-#     inactive_workspace $base  $base     $text
-#     urgent_workspace   $base  $red      $crust
-#   }
-# }
 
 # Startup applications
 exec_always feh --bg-scale "$(find ~/rushikesh/pc/wallpapers | shuf -n 1)"

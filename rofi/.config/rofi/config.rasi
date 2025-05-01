@@ -5,7 +5,7 @@ configuration {
 
 * {
     background-color: transparent;
-    text-color: #9aa5ce;
+    text-color: #768390;
     spacing: 30;
 }
 
@@ -13,7 +13,7 @@ configuration {
     font: "JetBrainsMono Nerd Font 14";
     fullscreen: true;
     transparency: "background";
-    background-color: #282c34d0;
+    background-color: #181b1ed0;
     children: [ dummy1, hdum, dummy2 ];
 }
 
@@ -23,5 +23,5 @@ configuration {
 }
 
 #element-text.selected {
-    text-color: #7aa2f7;
+    text-color: #d3dbe3;
 }
