@@ -159,6 +159,12 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# Lock screen settings
+bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
+# Power Menu
+bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
+# Monitor control
+bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -207,30 +213,15 @@ client.background        $base
 gaps inner 2px
 gaps outer 2px
 
+# Polybar config
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+# Auto-lock after 10 minutes
+exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock.sh" -detectsleep
 # Startup applications
-exec_always feh --bg-scale "$(find ~/rushikesh/pc/wallpapers | shuf -n 1)"
+exec_always --no-startup-id feh --bg-scale "$(find ~/rushikesh/pc/wallpapers | shuf -n 1)"
 exec_always --no-startup-id picom
 exec_always --no-startup-id dispwin -d 1 ~/rushikesh/pc/icc_profiles/aoc/24G3U_V1.icc
 exec_always --no-startup-id dispwin -d 2 ~/rushikesh/pc/icc_profiles/acer/EK220Q_H3.icc
 exec_always --no-startup-id easyeffects --gapplication-service
 exec --no-startup-id coolercontrol
-
-# Polybar config
-exec_always --no-startup-id ~/.config/polybar/launch.sh
-
-# Lock screen settings
-bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
-
-# Auto-lock after 10 minutes
-exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock.sh" -detectsleep
-
-# Power Menu
-bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
-
-# Monitor control
-bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
-
-# exec_always xrandr --output HDMI-0 --mode 1920x1080 --rate 100 --pos 1920x0 --rotate normal \
-# --output DP-0 --primary --mode 1920x1080 --rate 144 --pos 0x0 --rotate normal --output \
-# DP-1 --off --output HDMI-1 --off --output DP-2 --off --output DP-3 --off
 
