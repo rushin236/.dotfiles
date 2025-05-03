@@ -162,4 +162,5 @@ alias rmdir='rmdir -v'   # Remove directories interactively with verbose output
 alias grep='grep --color=auto'    # Highlight search matches
 alias fgrep='fgrep --color=auto'  # Highlight fixed string matches
 alias egrep='egrep --color=auto'  # Highlight extended regex matches
-
+alias virsh='virsh -c qemu:///system' # To access system qemu vms
+alias virt-viewer='virt-viewer -c qemu:///system' # To launch system qemu vms
