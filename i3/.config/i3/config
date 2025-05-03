@@ -213,6 +213,11 @@ client.background        $base
 gaps inner 2px
 gaps outer 2px
 
+# For launching GTK apps
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# exec --no-startup-id lxqt-policykit-agent
+# exec --no-startup-id mate-polkit
+
 # Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 # Auto-lock after 10 minutes
