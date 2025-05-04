@@ -5,6 +5,10 @@ export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 
 export SUDO_EDITOR=nvim
 
+#######################################################
+# shell integrations and functions
+#######################################################
+
 # Init oh-my-posh
 # eval "$(oh-my-posh init bash --config ~/.cache/oh-my-posh/themes/paradox.omp.json)"
 
@@ -23,7 +27,27 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# shell integrations
+# >>> conda activation function <<<
+function conda_toggle_env() {
+	local current_env="${CONDA_DEFAULT_ENV:-}"
+	if [[ -n "$current_env" ]]; then
+		echo "Deactivating Conda environment: $current_env"
+		conda deactivate
+		sleep 1
+	else
+		local selected_env=$(conda env list | awk '{print $1}' | grep -vE '^(#|$)' | fzf --prompt="Select Conda Env: ")
+		if [[ -n "$selected_env" ]]; then
+			echo "Activating Conda environment: $selected_env"
+			conda activate "$selected_env"
+			sleep 1
+		else
+			echo "No environment selected."
+			sleep 1
+		fi
+	fi
+}
+# >>> conda activation function <<<
+
 # node js nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
@@ -35,5 +59,8 @@ export NVM_DIR="$HOME/.nvm"
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# fzf integration
-eval "$(fzf --bash)"
+#######################################################
+# BASH Keybindings
+#######################################################
+
+bind -x '"\et":conda_toggle_env' # Alt+Ctrl+C toggle conda env

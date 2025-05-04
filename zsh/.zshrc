@@ -12,6 +12,10 @@ export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 
 export SUDO_EDITOR=nvim
 
+#######################################################
+# shell integrations and functions
+#######################################################
+
 # # Init oh-my-posh
 # eval "$(oh-my-posh init zsh --config ~/.cache/oh-my-posh/themes/paradox.omp.json)"
 
@@ -30,7 +34,27 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# shell integrations
+# >>> conda activation function <<<
+function conda_toggle_env() {
+	local current_env="${CONDA_DEFAULT_ENV:-}"
+	if [[ -n "$current_env" ]]; then
+		echo "Deactivating Conda environment: $current_env"
+		conda deactivate
+		sleep 1
+	else
+		local selected_env=$(conda env list | awk '{print $1}' | grep -vE '^(#|$)' | fzf --prompt="Select Conda Env: ")
+		if [[ -n "$selected_env" ]]; then
+			echo "Activating Conda environment: $selected_env"
+			conda activate "$selected_env"
+			sleep 1
+		else
+			echo "No environment selected."
+			sleep 1
+		fi
+	fi
+}
+# >>> conda activation function <<<
+
 # nodejs nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
@@ -97,6 +121,20 @@ zinit cdreplay -q
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 #######################################################
+# ZSH Keybindings functions
+#######################################################
+
+autoload -U add-zsh-hook
+
+function conda_toggle_widget() {
+    zle -I
+    conda_toggle_env
+    zle reset-prompt
+}
+
+zle -N conda_toggle_widget
+
+#######################################################
 # ZSH Keybindings
 #######################################################
 
@@ -107,6 +145,7 @@ bindkey '^n' history-search-forward
 # bindkey ' ' magic-space                           # do history expansion on space
 # bindkey "^[[A" history-beginning-search-backward  # search history with up key
 # bindkey "^[[B" history-beginning-search-forward   # search history with down key
+bindkey '^[t' conda_toggle_widget  # Alt+Ctrl+C toggle conda env
 
 #######################################################
 # History Configuration
