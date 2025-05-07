@@ -228,5 +228,6 @@ exec_always --no-startup-id picom
 exec_always --no-startup-id dispwin -d 1 ~/rushikesh/pc/icc_profiles/aoc/24G3U_V1.icc
 exec_always --no-startup-id dispwin -d 2 ~/rushikesh/pc/icc_profiles/acer/EK220Q_H3.icc
 exec_always --no-startup-id easyeffects --gapplication-service
+exec --no-startup-id fdm --hidden
 exec --no-startup-id coolercontrol
 
