@@ -8,9 +8,9 @@ return {
         "css-lsp", -- CSS
         "html-lsp", -- HTML
         "typescript-language-server", -- JavaScript and TypeScript
-        "ruff", -- Ruff
         "bash-language-server", -- bash-language-server
         "clangd", -- c programming
+        "clang-format", -- c formatter
         "prettier", -- formatter for multiple languages
         "stylua", -- Lua formatter
         "isort", -- Python import sorter
