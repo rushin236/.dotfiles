@@ -1,27 +1,16 @@
 configuration {
     show-icons:   true;
-    sidebar-mode: false;
 }
 
 * {
-    background-color: transparent;
-    text-color: #768390;
-    spacing: 30;
+    bg0:    #212121F2;
+    bg1:    #2A2A2A;
+    bg2:    #3D3D3D80;
+    bg3:    #616161F2;
+    fg0:    #E6E6E6;
+    fg1:    #FFFFFF;
+    fg2:    #969696;
+    fg3:    #3D3D3D;
 }
 
-#window {
-    font: "JetBrainsMono Nerd Font 14";
-    fullscreen: true;
-    transparency: "background";
-    background-color: #181b1ed0;
-    children: [ dummy1, hdum, dummy2 ];
-}
-
-#hdum {
-    orientation: horizontal;
-    children: [ dummy3, mainbox, dummy4 ];
-}
-
-#element-text.selected {
-    text-color: #d3dbe3;
-}
+@import "rounded-template.rasi"

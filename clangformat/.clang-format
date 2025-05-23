@@ -1,0 +1,31 @@
+# Core indentation changes
+IndentWidth: 2
+TabWidth: 2
+ContinuationIndentWidth: 2
+ConstructorInitializerIndentWidth: 2
+
+# Enhanced brace wrapping
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Always # Changed from MultiLine
+  AfterEnum: true
+  AfterExternBlock: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: false
+  BeforeElse: true
+  BeforeLambdaBody: false
+  BeforeWhile: false
+  IndentBraces: false # This is CRUCIAL for your style
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+# Additional supporting settings
+BreakBeforeBraces: Custom
+AllowShortFunctionsOnASingleLine: None # Changed from All
+SpaceBeforeParens: ControlStatements

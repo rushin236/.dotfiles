@@ -50,7 +50,7 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -193,6 +193,8 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+for_window [class=".*"] border pixel 4
+
 set $flamingo #ff7a93
 set $text #d3dbe3
 set $subtext1 #768390
@@ -210,8 +212,8 @@ client.placeholder       $base     $base $text     $base     $text
 client.background        $base
 
 # GAPS
-gaps inner 2px
-gaps outer 2px
+gaps inner 10px
+gaps outer 5px
 
 # For launching GTK apps
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
