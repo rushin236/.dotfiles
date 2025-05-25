@@ -3,3 +3,6 @@
 -- Add any additional keymaps here
 
 vim.keymap.set({ "i" }, "jk", "<ESC>", { noremap = true, desc = "Exit Insert mode", silent = true })
+
+-- Terminal mode fix
+vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })

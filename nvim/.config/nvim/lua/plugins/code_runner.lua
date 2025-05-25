@@ -34,7 +34,7 @@ return {
         cpp = function()
           local cpp_base = {
             "cd $dir &&",
-            "gcc $fileName -o",
+            "g++ $fileName -o",
             "$dir/$fileNameWithoutExt",
           }
           local cpp_exec = {

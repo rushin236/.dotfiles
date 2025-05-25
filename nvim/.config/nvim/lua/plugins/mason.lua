@@ -15,6 +15,7 @@ return {
         "stylua", -- Lua formatter
         "isort", -- Python import sorter
         "black", -- Python formatter
+        "debugpy", -- Python debug
         "trivy", -- JavaScript linter
         "ruff", -- Python linter
         "beautysh", -- bash formatting
