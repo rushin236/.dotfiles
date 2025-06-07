@@ -88,10 +88,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+backslash split h
+bindsym $mod+minus split h
 
-# split in vertical orientation
-bindsym $mod+v split v
+# split in vertical orientation (Shift + backslash = |)
+bindsym $mod+Shift+backslash split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -153,6 +153,10 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
+# Class assign
+assign [class="Vncviewer"] 4
+assign [class="Virt-viewer"] 3
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -165,6 +169,8 @@ bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
 bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
 # Monitor control
 bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
+# Virt Manager
+bindsym $mod+v exec ~/.config/rofi/virt-manager/virt-manager.sh
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -198,13 +204,12 @@ for_window [class=".*"] border pixel 7
 set $flamingo #ff7a93
 set $text #d3dbe3
 set $subtext1 #768390
-set $overlay1 #a7a7a7
 set $overlay2 #444c56
 set $base #181b1e
 
 # GitHub Dark Dimmed Theme for i3
 # ====================== border    bg    text      indicator border_bg
-client.focused           $overlay1 $base $text     $overlay1 $overlay1
+client.focused           $text     $base $text     $text     $text
 client.focused_inactive  $overlay2 $base $subtext1 $overlay2 $overlay2
 client.unfocused         $overlay2 $base $subtext1 $overlay2 $overlay2
 client.urgent            $flamingo $base $text     $flamingo $flamingo
@@ -217,8 +222,7 @@ gaps outer 5px
 
 # For launching GTK apps
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-# exec --no-startup-id lxqt-policykit-agent
-# exec --no-startup-id mate-polkit
+exec --no-startup-id dunst
 
 # Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh

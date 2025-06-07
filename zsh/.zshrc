@@ -194,9 +194,9 @@ alias c='clear'          # Clear the screen
 alias q='exit'           # Exit the terminal
 alias ..='cd ..'         # Move up one directory
 alias mkdir='mkdir -pv'  # Create directories with verbose output
-alias cp='cp -iv'        # Copy files interactively with verbose output
-alias mv='mv -iv'        # Move files interactively with verbose output
-alias rm='rm -iv'        # Remove files interactively with verbose output
+alias cp='cp -v'         # Copy files interactively with verbose output
+alias mv='mv -v'        # Move files interactively with verbose output
+alias rm='rm -v'        # Remove files interactively with verbose output
 alias rmdir='rmdir -v'   # Remove directories interactively with verbose output
 alias grep='grep --color=auto'    # Highlight search matches
 alias fgrep='fgrep --color=auto'  # Highlight fixed string matches
