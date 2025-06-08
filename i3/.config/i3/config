@@ -108,7 +108,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -171,6 +171,8 @@ bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
 bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
 # Virt Manager
 bindsym $mod+v exec ~/.config/rofi/virt-manager/virt-manager.sh
+# Audio Switch
+bindsym $mod+a exec ~/.config/rofi/audio-switch/audio_switch.sh
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
