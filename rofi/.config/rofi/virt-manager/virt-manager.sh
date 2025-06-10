@@ -1,7 +1,4 @@
-#!/usr/bin/env bash
-
-# VM Manager for i3 with Rofi (no notify-send version)
-# Requires: virt-manager, virsh, virt-viewer, rofi
+#!/bin/bash
 
 # Configuration
 ROFI_THEME="-theme ~/.config/rofi/config.rasi" # Adjust to your theme
@@ -52,7 +49,7 @@ start_vm() {
 
 	if [ -z "$vms" ]; then
 		show_message "No VMs found"
-		return
+		return 1 # Failure exit code
 	fi
 
 	local chosen_vm
@@ -60,7 +57,14 @@ start_vm() {
 
 	if [ -n "$chosen_vm" ]; then
 		show_message "Starting $chosen_vm..."
-		virt-viewer -c "$VIRSH_URI" -a "$chosen_vm" &>/dev/null &
+		if virt-viewer -c "$VIRSH_URI" -a "$chosen_vm" &>/dev/null & then
+			return 0 # Success exit code
+		else
+			show_message "Failed to start $chosen_vm"
+			return 1 # Failure exit code
+		fi
+	else
+		return 1 # No VM selected (failure)
 	fi
 }
 
@@ -70,14 +74,14 @@ start_vm_from_snapshot() {
 
 	if [ -z "$vms" ]; then
 		show_message "No VMs found"
-		return
+		return 1 # Explicit failure code
 	fi
 
 	local chosen_vm
 	chosen_vm=$(echo "$vms" | rofi -dmenu -p "Select VM" $ROFI_THEME)
 
 	if [ -z "$chosen_vm" ]; then
-		return
+		return 1 # No VM selected
 	fi
 
 	local snapshots
@@ -85,7 +89,7 @@ start_vm_from_snapshot() {
 
 	if [ -z "$snapshots" ]; then
 		show_message "No snapshots found for $chosen_vm"
-		return
+		return 1 # No snapshots exist
 	fi
 
 	local chosen_snapshot
@@ -93,8 +97,17 @@ start_vm_from_snapshot() {
 
 	if [ -n "$chosen_snapshot" ]; then
 		show_message "Starting $chosen_vm from snapshot $chosen_snapshot..."
-		virsh -c "$VIRSH_URI" snapshot-revert "$chosen_vm" "$chosen_snapshot"
-		virt-viewer -c "$VIRSH_URI" -a "$chosen_vm" &>/dev/null &
+
+		# Attempt snapshot revert and VM launch
+		if virsh -c "$VIRSH_URI" snapshot-revert "$chosen_vm" "$chosen_snapshot" &&
+			virt-viewer -c "$VIRSH_URI" -a "$chosen_vm" &>/dev/null & then
+			return 0 # Success - both commands worked
+		else
+			show_message "Failed to start $chosen_vm from snapshot"
+			return 1 # Either snapshot revert or virt-viewer failed
+		fi
+	else
+		return 1 # No snapshot selected
 	fi
 }
 
@@ -107,6 +120,8 @@ list_running_vms() {
 	else
 		show_message "Running VMs:\n$running_vms"
 	fi
+	# Always return failure (non-zero) to prevent workspace switch
+	return 1
 }
 
 shutdown_vm() {
@@ -115,7 +130,7 @@ shutdown_vm() {
 
 	if [ -z "$running_vms" ]; then
 		show_message "No running VMs to shutdown"
-		return
+		return 1 # Explicit failure to prevent workspace switch
 	fi
 
 	local chosen_vm
@@ -123,9 +138,51 @@ shutdown_vm() {
 
 	if [ -n "$chosen_vm" ]; then
 		show_message "Shutting down $chosen_vm..."
-		virsh -c "$VIRSH_URI" shutdown "$chosen_vm"
+		if virsh -c "$VIRSH_URI" shutdown "$chosen_vm"; then
+			return 1 # Successfully shutdown, but don't switch workspace
+		else
+			show_message "Failed to shutdown $chosen_vm"
+			return 1 # Explicit failure
+		fi
+	else
+		return 1 # No VM selected
 	fi
 }
+
+# Check for required dependencies
+check_dependencies() {
+	local missing=()
+
+	# Check for virsh (libvirt-clients)
+	if ! command -v virsh &>/dev/null; then
+		missing+=("libvirt-clients (virsh)")
+	fi
+
+	# Check for virt-viewer
+	if ! command -v virt-viewer &>/dev/null; then
+		missing+=("virt-viewer")
+	fi
+
+	# Check for virt-manager (optional, but recommended)
+	if ! command -v virt-manager &>/dev/null; then
+		missing+=("virt-manager (optional GUI)")
+	fi
+
+	# If any dependencies are missing
+	if [ ${#missing[@]} -gt 0 ]; then
+		show_message "
+      Missing required packages:
+      ${missing[*]}
+
+      Checkout Debian: https://christitus.com/vm-setup-in-linux/
+
+      Checkout Arch: https://christitus.com/setup-qemu-in-archlinux/"
+		exit 1 # Exit with error
+	fi
+}
+
+# Call the check before main_menu
+check_dependencies
 
 # Start the main menu
 main_menu

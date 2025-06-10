@@ -170,7 +170,7 @@ bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
 # Monitor control
 bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
 # Virt Manager
-bindsym $mod+v exec ~/.config/rofi/virt-manager/virt-manager.sh
+bindsym $mod+v exec "~/.config/rofi/virt-manager/virt-manager.sh && i3-msg 'workspace number 3'"
 # Audio Switch
 bindsym $mod+a exec ~/.config/rofi/audio-switch/audio_switch.sh
 
