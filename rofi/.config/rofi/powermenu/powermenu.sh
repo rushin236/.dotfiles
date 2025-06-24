@@ -3,7 +3,7 @@
 options="Lock\nLogout\nReboot\nShutdown"
 selected=$(echo -e "$options" | rofi -dmenu -i -p "Power Menu" -theme ~/.config/rofi/config.rasi)
 case $selected in
-"Lock") ~/.config/i3/lock/i3lock.sh ;;
+"Lock") betterlockscreen -l blur --off 60 ;;
 "Logout") i3-msg exit ;;
 "Reboot") systemctl reboot ;;
 "Shutdown") systemctl poweroff ;;

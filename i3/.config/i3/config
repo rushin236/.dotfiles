@@ -228,10 +228,13 @@ exec --no-startup-id dunst
 
 # Polybar config
 exec_always --no-startup-id ~/.config/polybar/launch.sh
+
 # Auto-lock after 10 minutes
-exec_always --no-startup-id xautolock -time 10 -locker "~/.config/i3/lock/i3lock.sh" -detectsleep
+exec --no-startup-id xset +dpms
+exec_always --no-startup-id bash -c 'wall="$(find ~/.config/i3/wallpapers -type f | shuf -n 1)"; feh --bg-fill "$wall"; betterlockscreen -u "$wall" --fx blur'
+exec --no-startup-id xautolock -time 15 -locker "~/.config/i3/lock/betterlockscreen.sh" -detectsleep
+
 # Startup applications
-exec_always --no-startup-id feh --bg-scale "$(find ~/.config/i3/wallpapers | shuf -n 1)"
 exec_always --no-startup-id picom
 exec_always --no-startup-id dispwin -d 1 ~/rushikesh/pc/icc_profiles/aoc/24G3U_V1.icc
 exec_always --no-startup-id dispwin -d 2 ~/rushikesh/pc/icc_profiles/acer/EK220Q_H3.icc

@@ -64,3 +64,8 @@ export NVM_DIR="$HOME/.nvm"
 #######################################################
 
 bind -x '"\et":conda_toggle_env' # Alt+Ctrl+C toggle conda env
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/rushin/.lmstudio/bin"
+# End of LM Studio CLI section
+

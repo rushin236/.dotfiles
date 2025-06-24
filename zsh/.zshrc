@@ -111,3 +111,8 @@ alias egrep='egrep --color=auto'
 alias virsh='virsh -c qemu:///system'
 alias virt-viewer='virt-viewer -c qemu:///system'
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/rushin/.lmstudio/bin"
+# End of LM Studio CLI section
+
