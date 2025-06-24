@@ -171,12 +171,13 @@ check_dependencies() {
 	# If any dependencies are missing
 	if [ ${#missing[@]} -gt 0 ]; then
 		show_message "
-      Missing required packages:
-      ${missing[*]}
+    Missing required packages:
+    $(printf '  - %s\n' "${missing[@]}")
 
-      Checkout Debian: https://christitus.com/vm-setup-in-linux/
+    Checkout Debian: https://christitus.com/vm-setup-in-linux/
 
-      Checkout Arch: https://christitus.com/setup-qemu-in-archlinux/"
+    Checkout Arch: https://christitus.com/setup-qemu-in-archlinux/
+    "
 		exit 1 # Exit with error
 	fi
 }

@@ -154,8 +154,9 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # Class assign
-assign [class="Vncviewer"] 4
-assign [class="Virt-viewer"] 3
+assign [class="LM Studio"] 3
+assign [class="Virt-viewer"] 4
+assign [class="Vncviewer"] 5
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -164,15 +165,17 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Lock screen settings
-bindsym $mod+x exec ~/.config/i3/lock/i3lock.sh
+bindsym $mod+x exec "$HOME/.config/i3/scripts/betterlockscreen.sh"
 # Power Menu
-bindsym $mod+p exec ~/.config/rofi/powermenu/powermenu.sh
+bindsym $mod+p exec "$HOME/.config/i3/scripts/powermenu.sh"
 # Monitor control
-bindsym $mod+m exec ~/.config/rofi/monitor/monitor.sh
+bindsym $mod+m exec "$HOME/.config/i3/scripts/monitor.sh"
 # Virt Manager
-bindsym $mod+v exec "~/.config/rofi/virt-manager/virt-manager.sh && i3-msg 'workspace number 3'"
+bindsym $mod+v exec "$HOME/.config/i3/scripts/virt-manager.sh && i3-msg 'workspace number 4'"
 # Audio Switch
-bindsym $mod+a exec ~/.config/rofi/audio-switch/audio_switch.sh
+bindsym $mod+a exec "$HOME/.config/i3/scripts/audio_switch.sh"
+# LM Studio
+bindsym $mod+i exec "$HOME/.config/i3/scripts/lm-studio-launch.sh && i3-msg 'workspace number 3'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
