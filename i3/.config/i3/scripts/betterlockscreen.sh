@@ -8,4 +8,4 @@ for player in $(playerctl -l 2>/dev/null); do
 	fi
 done
 
-betterlockscreen -l blur --off 960
+betterlockscreen -l blur --off 720
