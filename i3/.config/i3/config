@@ -93,7 +93,7 @@ bindsym $mod+f fullscreen toggle
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+t layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -170,6 +170,8 @@ bindsym $mod+v exec "$HOME/.config/i3/scripts/virt-manager.sh && i3-msg 'workspa
 bindsym $mod+a exec "$HOME/.config/i3/scripts/audio_switch.sh"
 # LM Studio
 bindsym $mod+i exec "$HOME/.config/i3/scripts/lm-studio-launch.sh && i3-msg 'workspace number 3'"
+# Explorer
+bindsym $mod+e exec "$HOME/.config/i3/scripts/recent_dir.sh"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
