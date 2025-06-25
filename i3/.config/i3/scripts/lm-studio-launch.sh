@@ -44,15 +44,17 @@ main_menu() {
 	case $choice in
 	"1. Start LM Studio")
 		launch_lm_studio
+		exit 0
 		;;
 	"2. Unload all models")
 		unload_all_models
+		exit 1
 		;;
 	"3. Exit")
-		exit 0
+		exit 1
 		;;
 	*)
-		exit 0
+		exit 1
 		;;
 	esac
 }
