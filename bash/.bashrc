@@ -69,3 +69,20 @@ bind -x '"\et":conda_toggle_env' # Alt+Ctrl+C toggle conda env
 export PATH="$PATH:/home/rushin/.lmstudio/bin"
 # End of LM Studio CLI section
 
+log_recent_dir() {
+	local DIR="$PWD"
+	local FILE="$HOME/.recent_dirs"
+
+	[[ "$DIR" == "$LAST_LOGGED_DIR" ]] && return
+	LAST_LOGGED_DIR="$DIR"
+
+	mkdir -p "$(dirname "$FILE")"
+	grep -Fxv "$DIR" "$FILE" 2>/dev/null >"$FILE.tmp"
+	echo "$DIR" >>"$FILE.tmp"
+	mv "$FILE.tmp" "$FILE"
+	tail -n 50 "$FILE" >"$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+}
+
+if [[ "$PROMPT_COMMAND" != *"log_recent_dir"* ]]; then
+	PROMPT_COMMAND="log_recent_dir; $PROMPT_COMMAND"
+fi

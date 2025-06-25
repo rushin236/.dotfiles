@@ -96,6 +96,22 @@ setopt notify
 setopt numericglobsort
 setopt promptsubst
 
+log_recent_dir() {
+  local DIR="$PWD"
+  local FILE="$HOME/.recent_dirs"
+
+  [[ "$DIR" == "$LAST_LOGGED_DIR" ]] && return
+  LAST_LOGGED_DIR="$DIR"
+
+  mkdir -p "$(dirname "$FILE")"
+  grep -Fxv "$DIR" "$FILE" 2>/dev/null > "$FILE.tmp"
+  echo "$DIR" >> "$FILE.tmp"
+  mv "$FILE.tmp" "$FILE"
+  tail -n 50 "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+}
+
+precmd_functions+=(log_recent_dir)
+
 # Aliases
 alias c='clear'
 alias q='exit'
