@@ -25,7 +25,6 @@ PAC_PACKAGES=(
 	pavucontrol
 	polkit-gnome
 	xautolock
-	xss-lock
 	argyllcms
 	easyeffects
 	calf

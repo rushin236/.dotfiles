@@ -33,7 +33,7 @@ Install Instructions:
 }
 
 choose_mode() {
-	local options=("📁 Thunar" "🖥️ Alacritty" "📝 Neovim")
+	local options=("🖥️ Alacritty" "📝 Neovim" "📁 Thunar")
 	printf "%s\n" "${options[@]}" | rofi -dmenu -i -p "Open with" $ROFI_THEME
 }
 
@@ -60,8 +60,13 @@ choose_path() {
 		menu_list+=("$short")
 	done
 
-	# Show short menu
-	choice=$(printf "%s\n" "${menu_list[@]}" | rofi -dmenu -i -p "Select Directory" $ROFI_THEME)
+	# Reverse array before showing in rofi
+	reversed_menu=()
+	for ((idx = ${#menu_list[@]} - 1; idx >= 0; idx--)); do
+		reversed_menu+=("${menu_list[idx]}")
+	done
+
+	choice=$(printf "%s\n" "${reversed_menu[@]}" | rofi -dmenu -i -p "Select Directory" $ROFI_THEME)
 
 	if [[ -z "$choice" ]]; then
 		exit 0
@@ -121,9 +126,9 @@ open_path() {
 	transpose_entry "$RECENT_DIR_FILE" "$path"
 
 	case "$mode" in
-	"📁 Thunar") thunar "$path" & ;;
 	"🖥️ Alacritty") alacritty --working-directory "$path" & ;;
 	"📝 Neovim") alacritty -e nvim "$path" & ;;
+	"📁 Thunar") thunar "$path" & ;;
 	*) show_message "Unknown mode: $mode" && exit 1 ;;
 	esac
 }

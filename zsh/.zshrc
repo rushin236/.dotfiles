@@ -42,6 +42,7 @@ function conda_toggle_env() {
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+autoload -U compinit; compinit
 # Load plugins manually
 source ~/.dotfiles/zsh/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.dotfiles/zsh/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
