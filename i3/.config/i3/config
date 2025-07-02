@@ -159,7 +159,7 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Lock screen settings
-bindsym $mod+x exec "$HOME/.config/i3/scripts/betterlockscreen.sh"
+bindsym $mod+x exec --no-startup-id betterlockscreen -l blur --off 720
 # Power Menu
 bindsym $mod+p exec "$HOME/.config/i3/scripts/powermenu.sh"
 # Monitor control
