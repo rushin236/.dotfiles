@@ -25,7 +25,7 @@ exec_always --no-startup-id xautolock -time 1 -locker "$HOME/.config/i3/scripts/
 # Startup applications
 exec_always --no-startup-id picom
 exec_always --no-startup-id easyeffects --gapplication-service
-exec --no-startup-id "$HOME/.config/i3/scripts/icc.sh"
+exec_always --no-startup-id "$HOME/.config/i3/scripts/icc.sh"
 exec --no-startup-id fdm --hidden
 exec --no-startup-id coolercontrol
 
