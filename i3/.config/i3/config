@@ -20,7 +20,7 @@ exec_always --no-startup-id "$HOME/.config/polybar/launch.sh"
 # Auto-lock after 10 minutes
 exec_always --no-startup-id "$HOME/.config/i3/scripts/dpms_on_off.sh"
 exec_always --no-startup-id bash -c 'wall="$(find $HOME/.config/i3/wallpapers -type f | shuf -n 1)"; feh --bg-fill "$wall"; betterlockscreen -u "$wall" --fx blur'
-exec_always --no-startup-id xautolock -time 1 -locker "$HOME/.config/i3/scripts/betterlockscreen.sh" -detectsleep
+exec_always --no-startup-id xautolock -time 10 -locker "$HOME/.config/i3/scripts/betterlockscreen.sh" -detectsleep
 
 # Startup applications
 exec_always --no-startup-id picom
