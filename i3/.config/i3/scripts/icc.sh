@@ -7,7 +7,7 @@ show_message() {
 }
 
 # Path to ICC profile folder
-ICC_DIR="$HOME/.config/i3/icc"
+ICC_DIR="$HOME/.dotfiles/i3/.config/i3/icc"
 
 # Check if any .icc or .icm files exist
 if ! find "$ICC_DIR" -maxdepth 1 \( -name '*.icc' -o -name '*.icm' \) | grep -q .; then
@@ -26,9 +26,11 @@ xrandr --query | grep " connected" | while read -r line; do
 
 	if [ -f "$ICC_PROFILE_ICC" ]; then
 		dispwin -d "$MONITOR_NUMBER" "$ICC_PROFILE_ICC"
+		# echo "$ICC_PROFILE_ICC"
 		show_message "Applied ICC profile ($MONITOR_NAME.icc) for $MONITOR_NAME"
 	elif [ -f "$ICC_PROFILE_ICM" ]; then
 		dispwin -d "$MONITOR_NUMBER" "$ICC_PROFILE_ICM"
+		# echo "$ICC_PROFILE_ICM"
 		show_message "Applied ICC profile ($MONITOR_NAME.icm) for $MONITOR_NAME"
 	else
 		show_message "No ICC profile found for $MONITOR_NUMBER"
