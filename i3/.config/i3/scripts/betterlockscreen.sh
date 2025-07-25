@@ -24,6 +24,8 @@ for player in $(playerctl -l 2>/dev/null); do
 done
 
 # No media is playing, enable DPMS again and lock
-xset +dpms
+if [[ "$dpms_status" == "Disabled" ]]; then
+	xset +dpms
+fi
 betterlockscreen -l blur --off 720
 exit 0
