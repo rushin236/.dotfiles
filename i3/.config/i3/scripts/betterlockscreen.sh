@@ -8,7 +8,7 @@ if [[ "$1" == "lock" ]]; then
 	if [[ "$dpms_status" == "Disabled" ]]; then
 		xset +dpms
 	fi
-	betterlockscreen -l blur --off 720
+	betterlockscreen -l blur
 	exit 0
 fi
 
@@ -27,5 +27,5 @@ done
 if [[ "$dpms_status" == "Disabled" ]]; then
 	xset +dpms
 fi
-betterlockscreen -l blur --off 720
+betterlockscreen -l blur
 exit 0
