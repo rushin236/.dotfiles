@@ -36,8 +36,6 @@ main() {
 			is_primary=0
 			monitor=$(echo "$line" | awk '{print $1}')
 
-			xrandr --output $monitor --off
-
 			if [[ "$line" == *" primary "* ]]; then
 				respos=$(echo "$line" | awk '{print $4}')
 				is_primary=1
