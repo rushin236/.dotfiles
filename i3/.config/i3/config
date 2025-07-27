@@ -4,15 +4,19 @@ set $mod Mod4
 
 font pango:JetBrainsMono Nerd Font 14
 
+exec --no-startup-id dunst
+
 exec --no-startup-id dex --autostart --environment i3
+
+# For launching GTK apps
+exec --no-startup-id "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+
+# Monitor Config
+exec --no-startup-id "$HOME/.config/i3/scripts/monitor_config.sh"
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
-
-# For launching GTK apps
-exec --no-startup-id "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-exec --no-startup-id dunst
 
 # Polybar config
 exec_always --no-startup-id "$HOME/.config/polybar/launch.sh"

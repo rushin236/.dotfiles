@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MONITOR_STATE="$HOME/.monitor_state.txt"
+
 # Function to show desktop notification
 show_message() {
 	local message="$1"
@@ -11,6 +13,12 @@ check_dependencies() {
 		show_message "Error: xrandr is not installed or not in PATH."
 		exit 1
 	fi
+}
+
+save_xrandr_output() {
+	# Run xrandr and save output
+	xrandr >"$MONITOR_STATE"
+	show_message "xrandr output saved to: $MONITOR_STATE"
 }
 
 # Function to get max resolution and refresh rate
@@ -157,6 +165,7 @@ option=$(get_monitor_choice)
 
 if handle_monitor_choice "$option"; then
 	i3-msg restart
+	save_xrandr_output
 fi
 
 exit 0
