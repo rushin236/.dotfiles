@@ -63,7 +63,7 @@ function conda_toggle_widget() {
 zle -N conda_toggle_widget
 
 # Keybindings
-bindkey -v
+bindkey -e
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey '^[t' conda_toggle_widget
