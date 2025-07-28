@@ -63,7 +63,7 @@ function conda_toggle_widget() {
 zle -N conda_toggle_widget
 
 # Keybindings
-bindkey -e
+bindkey -v
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey '^[t' conda_toggle_widget
@@ -130,6 +130,6 @@ alias virt-viewer='virt-viewer -c qemu:///system'
 
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/rushin/.lmstudio/bin"
+export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
