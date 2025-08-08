@@ -2,7 +2,6 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 export SUDO_EDITOR=nvim
-export NVM_DIR="$HOME/.nvm"
 
 eval "$(oh-my-posh init zsh --config ~/.dotfiles/zsh/.zsh/themes/craver.omp.json)"
 
@@ -34,13 +33,14 @@ function conda_toggle_env() {
 }
 
 # Source NVM
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # Cargo
-[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+# [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 # fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 autoload -U compinit; compinit
 # Load plugins manually

@@ -10,7 +10,7 @@ export SUDO_EDITOR=nvim
 #######################################################
 
 # Init oh-my-posh
-# eval "$(oh-my-posh init bash --config ~/.cache/oh-my-posh/themes/paradox.omp.json)"
+eval "$(oh-my-posh init bash --config ~/.dotfiles/zsh/.zsh/themes/craver.omp.json)"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -54,10 +54,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 # rust
-. "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
 # fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 #######################################################
 # BASH Keybindings

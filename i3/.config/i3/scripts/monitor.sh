@@ -1,7 +1,5 @@
 #!/bin/bash
 
-MONITOR_STATE="$HOME/.monitor_state.txt"
-
 # Function to show desktop notification
 show_message() {
 	local message="$1"
@@ -15,10 +13,13 @@ check_dependencies() {
 	fi
 }
 
-save_xrandr_output() {
-	# Run xrandr and save output
-	xrandr >"$MONITOR_STATE"
-	show_message "xrandr output saved to: $MONITOR_STATE"
+apply_icc_profiles() {
+	$HOME/.config/i3/scripts/icc.sh
+}
+
+save_new_monitor_layout() {
+	$HOME/.config/i3/scripts/xrandr_command_generator.sh
+	show_message "Saved layout to: $HOME/.xrandr.conf"
 }
 
 # Function to get max resolution and refresh rate
@@ -165,7 +166,7 @@ option=$(get_monitor_choice)
 
 if handle_monitor_choice "$option"; then
 	i3-msg restart
-	save_xrandr_output
+	save_new_monitor_layout
 fi
 
 exit 0
