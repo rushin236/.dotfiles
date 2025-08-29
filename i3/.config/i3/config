@@ -6,7 +6,8 @@ font pango:JetBrainsMono Nerd Font 14
 
 exec --no-startup-id dunst
 
-exec --no-startup-id bash "$HOME/.xrandr.conf"
+# exec --no-startup-id bash "$HOME/.xrandr.conf"
+exec --no-startup-id autorandr -l lastUsed
 
 exec --no-startup-id dex --autostart --environment i3
 
@@ -19,8 +20,8 @@ exec --no-startup-id nm-applet
 
 # Polybar config
 exec_always --no-startup-id "$HOME/.config/polybar/launch.sh"
-exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 exec_always --no-startup-id bash -c 'wall="$(find $HOME/.config/i3/wallpapers -type f | shuf -n 1)"; feh --bg-fill "$wall"; betterlockscreen -u "$wall" --fx blur'
+exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 
 # Auto-lock after 10 minutes
 exec --no-startup-id "$HOME/.config/i3/scripts/dpms_on_off.sh"
@@ -34,8 +35,8 @@ exec --no-startup-id coolercontrol
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +2% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -2% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
@@ -203,7 +204,7 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-for_window [class=".*"] border pixel 7
+for_window [class=".*"] border pixel 5
 
 set $flamingo #ff7a93
 set $text #d3dbe3

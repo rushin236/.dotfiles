@@ -13,13 +13,11 @@ check_dependencies() {
 	fi
 }
 
-apply_icc_profiles() {
-	$HOME/.config/i3/scripts/icc.sh
-}
-
 save_new_monitor_layout() {
-	$HOME/.config/i3/scripts/xrandr_command_generator.sh
-	show_message "Saved layout to: $HOME/.xrandr.conf"
+	# "$HOME/.config/i3/scripts/xrandr_command_generator.sh"
+	autorandr -s lastUsed --force
+	# show_message "Saved layout to: $HOME/.xrandr.conf"
+	show_message "Saved layout to: $HOME/.config/autorandr/lastUsed/"
 }
 
 # Function to get max resolution and refresh rate
@@ -32,13 +30,13 @@ get_primary_monitor() {
 	xrandr --query | grep "primary" | awk '{print $1}'
 }
 
-get_focused_workspace() {
-	# Use i3-msg to get workspaces and jq to filter the focused one
-	focused_workspace=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).name')
-
-	# Print the focused workspace
-	echo "Current focused workspace: $focused_workspace"
-}
+# get_focused_workspace() {
+# 	# Use i3-msg to get workspaces and jq to filter the focused one
+# 	focused_workspace=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).name')
+#
+# 	# Print the focused workspace
+# 	echo "Current focused workspace: $focused_workspace"
+# }
 
 get_monitor_choice() {
 	local monitor_info_raw primary_monitor options=""
@@ -120,18 +118,18 @@ handle_monitor_choice() {
 		esac
 
 		# Move workspace logic
-		primary_ws=$(i3-msg -t get_workspaces | jq -r ".[] | select(.output==\"$other_monitor\").name")
-		ws_count=$(echo "$primary_ws" | grep -c '.')
-
-		if [ "$ws_count" -ge 2 ]; then
-			ws_to_move=$(echo "$primary_ws" | sort | tail -n 1)
-			i3-msg workspace "$ws_to_move"
-			i3-msg move workspace to output "$selected_monitor"
-		else
-			max_ws=$(i3-msg -t get_workspaces | jq '.[].num' | sort -n | tail -n 1)
-			i3-msg workspace "$max_ws"
-			i3-msg move workspace to output "$selected_monitor"
-		fi
+		# primary_ws=$(i3-msg -t get_workspaces | jq -r ".[] | select(.output==\"$other_monitor\").name")
+		# ws_count=$(echo "$primary_ws" | grep -c '.')
+		#
+		# if [ "$ws_count" -ge 2 ]; then
+		# 	ws_to_move=$(echo "$primary_ws" | sort | tail -n 1)
+		# 	i3-msg workspace "$ws_to_move"
+		# 	i3-msg move workspace to output "$selected_monitor"
+		# else
+		# 	max_ws=$(i3-msg -t get_workspaces | jq '.[].num' | sort -n | tail -n 1)
+		# 	i3-msg workspace "$max_ws"
+		# 	i3-msg move workspace to output "$selected_monitor"
+		# fi
 
 		return 0
 		;;

@@ -56,8 +56,8 @@ export NVM_DIR="$HOME/.nvm"
 # rust
 # . "$HOME/.cargo/env"
 
-# fzf
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 #######################################################
 # BASH Keybindings
