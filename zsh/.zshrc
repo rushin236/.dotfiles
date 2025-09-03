@@ -1,6 +1,7 @@
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+export EDITOR=nvim
 export SUDO_EDITOR=nvim
 
 eval "$(oh-my-posh init zsh --config ~/.dotfiles/zsh/.zsh/themes/craver.omp.json)"

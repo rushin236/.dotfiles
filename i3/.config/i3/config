@@ -169,7 +169,7 @@ bindsym $mod+p exec "$HOME/.config/i3/scripts/powermenu.sh"
 # Monitor control
 bindsym $mod+m exec "$HOME/.config/i3/scripts/monitor.sh"
 # Virt Manager
-bindsym $mod+v exec "$HOME/.config/i3/scripts/virt-manager.sh && i3-msg 'workspace number 4'"
+bindsym $mod+v exec "$HOME/.config/i3/scripts/virt-manager.sh"
 # Audio Switch
 bindsym $mod+a exec "$HOME/.config/i3/scripts/audio_switch.sh"
 # LM Studio
