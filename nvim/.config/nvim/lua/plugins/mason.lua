@@ -21,6 +21,8 @@ return {
         "ruff", -- Python linter
         "beautysh", -- bash formatting
         "shellcheck",
+        "markdownlint-cli2", -- markdown linter
+        "marksman", -- markdown lsp
       },
     },
   },

@@ -1,3 +1,4 @@
 nvim/.config/nvim/lazy-lock.json
 i3/.config/i3/icc/*.icc
 i3/.config/i3/icc/*.icm
+install.log

@@ -7,6 +7,7 @@ return {
       lua = { "stylua" },
       sh = { "shfmt" },
       c = { "clang_format" },
+      markdown = { "prettier", "markdownlint_cli2" },
     },
   },
 }
