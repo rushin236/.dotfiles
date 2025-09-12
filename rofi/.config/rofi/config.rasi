@@ -5,8 +5,8 @@ configuration {
 * {
     bg0: #181b1e;
     bg1: #181b1e;
-    bg2: #d3dbe3;
-    bg3: #444c56;
+    bg2: #2c3135;
+    bg3: #d3dbe3;
 
     fg0: #d3dbe3;
     fg1: #d3dbe3;
