@@ -155,6 +155,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 # Class assign
 assign [class="LM Studio"] 3
 assign [class="Virt-viewer"] 4
+assign [class="Virt-manager"] 4
 assign [class="Vncviewer"] 5
 
 # reload the configuration file
@@ -205,10 +206,10 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-for_window [class=".*"] border pixel 5
+default_border none
 
 set $flamingo #ff7a93
-set $text #d3dbe3
+set $text #9faab8
 set $subtext1 #768390
 set $overlay2 #444c56
 set $base #181b1e
