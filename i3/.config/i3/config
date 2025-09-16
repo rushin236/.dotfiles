@@ -24,8 +24,8 @@ exec_always --no-startup-id bash -c 'wall="$(find $HOME/.config/i3/wallpapers -t
 exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 
 # Auto-lock after 10 minutes
-exec --no-startup-id "$HOME/.config/i3/scripts/dpms_on_off.sh"
-exec --no-startup-id xautolock -time 10 -locker "$HOME/.config/i3/scripts/betterlockscreen.sh" -detectsleep
+exec --no-startup-id xset s off s noblank s noexpose; xset s 0 0; xset dpms 0 0 720
+exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "betterlockscreen -l blur" ""
 
 # Startup applications
 exec --no-startup-id picom
@@ -165,7 +165,7 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Lock screen settings
-bindsym $mod+x exec --no-startup-id ~/.config/i3/scripts/betterlockscreen.sh lock
+bindsym $mod+x exec betterlockscreen -l blur
 # Power Menu
 bindsym $mod+p exec "$HOME/.config/i3/scripts/powermenu.sh"
 # Monitor control
