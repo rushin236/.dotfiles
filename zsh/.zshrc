@@ -157,6 +157,10 @@ zvm_after_lazy_keybindings() {
     zvm_bindkey visual '^p' my_history_search_backward
 }
 
+zvm_after_init_commands+=(
+  zvm_after_lazy_keybindings
+)
+
 # Keybinding for Conda Toggle
 autoload -U add-zsh-hook
 function conda_toggle_widget() {
@@ -168,8 +172,8 @@ zle -N conda_toggle_widget
 
 # Keybindings
 bindkey -v
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
+# bindkey '^p' history-search-backward
+# bindkey '^n' history-search-forward
 bindkey '^[t' conda_toggle_widget
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
@@ -232,7 +236,6 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias virsh='virsh -c qemu:///system'
 alias virt-viewer='virt-viewer -c qemu:///system'
-
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"

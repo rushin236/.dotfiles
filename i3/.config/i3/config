@@ -12,7 +12,7 @@ exec --no-startup-id autorandr -l lastUsed
 exec --no-startup-id dex --autostart --environment i3
 
 # For launching GTK apps
-exec --no-startup-id "/usr/lib/polkit-lxqt-authentication-agent-1"
+exec --no-startup-id "/usr/bin/lxqt-policykit-agent"
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -165,19 +165,19 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Lock screen settings
-bindsym $mod+x exec betterlockscreen -l blur
+bindsym $mod+x exec --no-startup-id betterlockscreen -l blur
 # Power Menu
-bindsym $mod+p exec "$HOME/.config/i3/scripts/powermenu.sh"
+bindsym $mod+p exec --no-startup-id "$HOME/.config/i3/scripts/powermenu.sh"
 # Monitor control
-bindsym $mod+m exec "$HOME/.config/i3/scripts/monitor.sh"
+bindsym $mod+m exec --no-startup-id "$HOME/.config/i3/scripts/monitor.sh"
 # Virt Manager
-bindsym $mod+v exec "$HOME/.config/i3/scripts/virt-manager.sh"
+bindsym $mod+v exec --no-startup-id "$HOME/.config/i3/scripts/virt-manager.sh"
 # Audio Switch
-bindsym $mod+a exec "$HOME/.config/i3/scripts/audio_switch.sh"
+bindsym $mod+a exec --no-startup-id "$HOME/.config/i3/scripts/audio_switch.sh"
 # LM Studio
-bindsym $mod+i exec "$HOME/.config/i3/scripts/lm-studio-launch.sh && i3-msg 'workspace number 3'"
+bindsym $mod+i exec --no-startup-id "$HOME/.config/i3/scripts/lm-studio-launch.sh && i3-msg 'workspace number 3'"
 # Explorer
-bindsym $mod+e exec "$HOME/.config/i3/scripts/recent_dir.sh"
+bindsym $mod+e exec --no-startup-id "$HOME/.config/i3/scripts/recent_dir.sh"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {

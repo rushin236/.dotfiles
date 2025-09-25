@@ -63,5 +63,19 @@ return {
     set_hl(0, "NeoTreeGitConflict", { fg = "#768390" })
     set_hl(0, "NeoTreeRootName", { fg = "#d3dbe3", bold = true })
     set_hl(0, "NeoTreeTitleBar", { fg = "#181b1e", bg = "#d3dbe3" })
+
+    -- Toggle Neo-tree in the current working directory
+    vim.keymap.set("n", "<leader>fe", "<cmd>Neotree toggle<cr>", { desc = "Neo-tree (cwd)" })
+
+    -- Reveal the current buffer’s file in Neo-tree
+    vim.keymap.set("n", "<leader>fE", function()
+      -- Open Neo-tree anchored at the file’s directory, focusing that file
+      require("neo-tree.command").execute({
+        action = "focus", -- or "show", depending on preference
+        source = "filesystem", -- can also be "buffers" or "git_status"
+        position = "left", -- left, right, float etc
+        reveal = true, -- ensures it reveals the current file
+      })
+    end, { desc = "Neo-tree (reveal current file)" })
   end,
 }
