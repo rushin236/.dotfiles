@@ -29,6 +29,27 @@ return {
         { "gx", ":!open <cfile><CR>", desc = "Open with system app" },
         { "z", group = "fold" },
       },
+      {
+        mode = { "o", "x" }, -- operator-pending + visual
+        { "ao", group = "around block/conditional/loop" },
+        { "io", group = "inside block/conditional/loop" },
+        { "af", group = "around function" },
+        { "if", group = "inside function" },
+        { "ac", group = "around class" },
+        { "ic", group = "inside class" },
+        { "at", group = "around tag" },
+        { "it", group = "inside tag" },
+        { "ad", group = "around digit" },
+        { "id", group = "inside digit" },
+        { "ae", group = "around word (case aware)" },
+        { "ie", group = "inside word (case aware)" },
+        { "ag", group = "around whole buffer" },
+        { "ig", group = "inside whole buffer" },
+        { "au", group = "around function call" },
+        { "iu", group = "inside function call" },
+        { "aU", group = "around function call (simple)" },
+        { "iU", group = "inside function call (simple)" },
+      },
     })
 
     -- Extra helper mappings

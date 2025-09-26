@@ -40,10 +40,16 @@ export NVM_DIR="$HOME/.nvm"
 # Cargo
 # [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 autoload -U compinit; compinit
+
+function zvm_config() {
+  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
+  ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  ZVM_VISUAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  ZVM_VISUAL_LINE_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+}
 
 # Load plugins manually
 source ~/.dotfiles/zsh/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -108,17 +114,26 @@ my_zvm_vi_replace_selection() {
     echo -en "${CUTBUFFER}" | xclip -selection clipboard
 }
 
-my_history_search_backward() {
-  zle history-search-backward
-}
+# my_history_search_backward() {
+#   zle history-search-backward
+# }
+#
+# my_history_search_forward() {
+#   zle history-search-forward
+# }
+#
+# my_fzf_history_widget() {
+#   zle fzf-history-widget
+# }
 
-my_history_search_forward() {
-  zle history-search-forward
+# Keybinding for Conda Toggle
+autoload -U add-zsh-hook
+function conda_toggle_widget() {
+  zle -I
+  conda_toggle_env
+  zle reset-prompt
 }
-
-my_fzf_history_widget() {
-  zle fzf-history-widget
-}
+zle -N conda_toggle_widget
 
 zvm_after_lazy_keybindings() {
     zvm_define_widget my_zvm_vi_yank
@@ -130,21 +145,23 @@ zvm_after_lazy_keybindings() {
     zvm_define_widget my_zvm_vi_substitute
     zvm_define_widget my_zvm_vi_substitute_whole_line
     zvm_define_widget my_zvm_vi_replace_selection
-    zvm_define_widget my_history_search_forward
-    zvm_define_widget my_history_search_backward
-    zvm_define_widget my_fzf_history_widget
+    # zvm_define_widget my_history_search_forward
+    # zvm_define_widget my_history_search_backward
+    # zvm_define_widget my_fzf_history_widget
+    zvm_define_widget conda_toggle_env
 
-    zvm_bindkey viins '^r' my_fzf_history_widget
-    zvm_bindkey viins '^n' my_history_search_forward
-    zvm_bindkey viins '^p' my_history_search_backward
+    # zvm_bindkey viins '^r' my_fzf_history_widget
+    # zvm_bindkey viins '^n' my_history_search_forward
+    # zvm_bindkey viins '^p' my_history_search_backward
 
+    zvm_bindkey viins '^p' history-search-backward
+    zvm_bindkey viins '^n' history-search-forward
+    zvm_bindkey viins '^[t' conda_toggle_widget
+    
     zvm_bindkey vicmd 'y' my_zvm_vi_change_eol
     zvm_bindkey vicmd 'P' my_zvm_vi_put_before
     zvm_bindkey vicmd 'yy' my_zvm_vi_substitute_whole_line
     zvm_bindkey vicmd 'p' my_zvm_vi_put_after
-    zvm_bindkey vicmd '^r' my_fzf_history_widget
-    zvm_bindkey vicmd '^n' my_history_search_forward
-    zvm_bindkey vicmd '^p' my_history_search_backward
 
     zvm_bindkey visual 'p' my_zvm_vi_replace_selection
     zvm_bindkey visual 'c' my_zvm_vi_change
@@ -152,30 +169,26 @@ zvm_after_lazy_keybindings() {
     zvm_bindkey visual 's' my_zvm_vi_substitute
     zvm_bindkey visual 'x' my_zvm_vi_delete
     zvm_bindkey visual 'y' my_zvm_vi_yank
-    zvm_bindkey visual '^r' my_fzf_history_widget
-    zvm_bindkey visual '^n' my_history_search_forward
-    zvm_bindkey visual '^p' my_history_search_backward
 }
 
-# zvm_after_init_commands+=(
-#   zvm_after_lazy_keybindings
-# )
 
-# Keybinding for Conda Toggle
-autoload -U add-zsh-hook
-function conda_toggle_widget() {
-    zle -I
-    conda_toggle_env
-    zle reset-prompt
-}
-zle -N conda_toggle_widget
+zvm_after_init_commands+=(
+  zvm_after_lazy_keybindings
+  # fzf
+  '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh'
+
+)
+
+# zsh mode
+# normal mode
+# bindkey -e
+# vim mode
+bindkey -v 
 
 # Keybindings
-bindkey -v
-# bindkey '^p' history-search-backward
-# bindkey '^n' history-search-forward
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
 bindkey '^[t' conda_toggle_widget
-ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
 # History config
 HISTSIZE=10000

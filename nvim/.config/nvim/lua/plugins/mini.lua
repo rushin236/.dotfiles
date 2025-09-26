@@ -2,63 +2,6 @@ return {
   {
     "nvim-mini/mini.ai",
     version = "*",
-    config = function()
-      local ai = require("mini.ai")
-
-      require("mini.ai").setup({
-        n_lines = 500,
-        custom_textobjects = {
-          o = ai.gen_spec.treesitter({
-            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
-            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
-          }),
-          f = ai.gen_spec.treesitter({
-            a = "@function.outer",
-            i = "@function.inner",
-          }),
-          c = ai.gen_spec.treesitter({
-            a = "@class.outer",
-            i = "@class.inner",
-          }),
-          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" }, -- tags
-          d = { "%f[%d]%d+" }, -- digits
-          e = {
-            {
-              "%u[%l%d]+%f[^%l%d]",
-              "%f[%S][%l%d]+%f[^%l%d]",
-              "%f[%P][%l%d]+%f[^%l%d]",
-              "^[%l%d]+%f[^%l%d]",
-            },
-            "^().*()$",
-          },
-
-          -- g = whole buffer
-          g = {
-            a = function()
-              return {
-                from = { line = 1, col = 1 },
-                to = {
-                  line = vim.fn.line("$"),
-                  col = math.max(1, vim.fn.col({ vim.fn.line("$"), "$" })),
-                },
-              }
-            end,
-            i = function()
-              return {
-                from = { line = 1, col = 1 },
-                to = {
-                  line = vim.fn.line("$"),
-                  col = math.max(1, vim.fn.col({ vim.fn.line("$"), "$" })),
-                },
-              }
-            end,
-          },
-
-          u = ai.gen_spec.function_call(), -- "usage"
-          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }),
-        },
-      })
-    end,
   },
   {
     "nvim-mini/mini.files",
@@ -121,22 +64,6 @@ return {
           require("mini.trailspace").unhighlight()
         end,
       })
-    end,
-  },
-  -- Split & join
-  {
-    "echasnovski/mini.splitjoin",
-    config = function()
-      local miniSplitJoin = require("mini.splitjoin")
-      miniSplitJoin.setup({
-        mappings = { toggle = "" }, -- Disable default mapping
-      })
-      vim.keymap.set({ "n", "x" }, "sj", function()
-        miniSplitJoin.join()
-      end, { desc = "Join arguments" })
-      vim.keymap.set({ "n", "x" }, "sk", function()
-        miniSplitJoin.split()
-      end, { desc = "Split arguments" })
     end,
   },
   {
