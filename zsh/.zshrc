@@ -157,9 +157,9 @@ zvm_after_lazy_keybindings() {
     zvm_bindkey visual '^p' my_history_search_backward
 }
 
-zvm_after_init_commands+=(
-  zvm_after_lazy_keybindings
-)
+# zvm_after_init_commands+=(
+#   zvm_after_lazy_keybindings
+# )
 
 # Keybinding for Conda Toggle
 autoload -U add-zsh-hook

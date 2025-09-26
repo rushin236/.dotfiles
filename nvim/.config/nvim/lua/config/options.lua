@@ -54,3 +54,10 @@ vim.opt.mouse = "a"
 
 -- save
 vim.g.autoformat = true
+
+vim.opt.guicursor = {
+  "n-v-c:block",
+  "i:block-blinkon200-blinkoff200-blinkwait100",
+  "r:block",
+  "o:block",
+}
