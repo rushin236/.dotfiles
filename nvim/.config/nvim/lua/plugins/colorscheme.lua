@@ -60,7 +60,7 @@ return {
           hl.FloatBorder = { bg = colors.bg_float, fg = colors.border }
         end,
       })
-      vim.cmd.colorscheme("tokyonight")
+      -- vim.cmd.colorscheme("tokyonight")
     end,
   },
   -- NOTE: Rose pine

@@ -48,7 +48,8 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 -- misc
-vim.opt.colorcolumn = "80"
+-- vim.opt.colorcolumn = "80"
+vim.opt.cursorline = true
 vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 vim.opt.mouse = "a"
 

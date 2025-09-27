@@ -38,18 +38,40 @@ return {
       sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff" },
-        lualine_c = { "filename" },
+        lualine_c = {
+          { "filename" },
+          {
+            "diagnostics",
+            sources = { "nvim_diagnostic" }, -- uses Neovim built-in LSP client
+            sections = { "error", "warn", "info", "hint" },
+            diagnostics_color = {
+              error = { fg = "#db4b4b" },
+              warn = { fg = "#e0af68" },
+              info = { fg = "#0db9d7" },
+              hint = { fg = "#1abc9c" },
+            },
+            symbols = { error = " ", warn = " ", info = " ", hint = " " },
+            colored = true,
+            update_in_insert = false,
+            always_visible = false,
+          },
+        },
         lualine_x = { "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" },
       },
       inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { "filename" },
-        lualine_x = { "location" },
-        lualine_y = {},
-        lualine_z = {},
+        lualine_a = { "mode" },
+        -- lualine_b = {},
+        -- lualine_c = {},
+        lualine_x = { "filetype" },
+        lualine_y = { "location" },
+        -- lualine_z = {},
+      },
+      extensions = {
+        "neo-tree",
+        "toggleterm",
+        "quickfix",
       },
     })
   end,

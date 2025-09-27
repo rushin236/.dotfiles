@@ -18,11 +18,11 @@ return {
     { "<leader>bo", "<Cmd>BufferLineCloseOthers<CR>", desc = "Delete other buffers" },
     { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete buffers to the right" },
     { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete buffers to the left" },
-    { "<leader>bs", "<Cmd>BufferLinePick<CR>", desc = "Select buffers" },
-    { "<leader>br", "<Cmd>e!<CR>", desc = "Reload buffer" },
     { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
     { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
     { "<leader>bd", "<cmd>BufDel<cr>", desc = "Delete Current Bufrn" },
+    { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+    { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
   },
   opts = {
     options = {
@@ -46,7 +46,7 @@ return {
         {
           filetype = "neo-tree",
           text = "Neo-tree",
-          highlight = "Directory",
+          highlight = "BufferLineGroupSeparator",
           text_align = "left",
           separator = true,
         },

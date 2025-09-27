@@ -31,11 +31,11 @@ return {
         keyword = "wide",
         after = "fg",
         pattern = {
-          [[.*<(KEYWORDS)\s*:]],                    -- default pattern
-          [[<!--\s*(KEYWORDS)\s*:.*-->]],           -- HTML comments with colon
-          [[<!--\s*(KEYWORDS)\s*.*-->]],            -- HTML comments without colon
+          [[.*<(KEYWORDS)\s*:]], -- default pattern
+          [[<!--\s*(KEYWORDS)\s*:.*-->]], -- HTML comments with colon
+          [[<!--\s*(KEYWORDS)\s*.*-->]], -- HTML comments without colon
         },
-        comments_only = false,                      -- highlighting outside of comments
+        comments_only = false, -- highlighting outside of comments
       },
       search = {
         command = "rg",
