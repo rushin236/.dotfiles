@@ -114,7 +114,7 @@ return {
               -- Avoid conflicts in diff mode
               if not (vim.wo.diff and key:find("[cC]")) then
                 vim.keymap.set({ "n", "x", "o" }, key, function()
-                  require("nvim-treesitter.textobjects.move")[method](query, "textobjects")
+                  require("nvim-treesitter-textobjects.move")[method](query, "textobjects")
                 end, {
                   buffer = ev.buf,
                   desc = desc,
