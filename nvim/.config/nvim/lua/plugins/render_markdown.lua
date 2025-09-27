@@ -3,7 +3,7 @@ return {
   enabled = true,
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
-    "nvim-tree/nvim-web-devicons"
+    "nvim-tree/nvim-web-devicons",
   },
   ---@module 'render-markdown'
   -- ft = { "markdown", "norg", "rmd", "org" },

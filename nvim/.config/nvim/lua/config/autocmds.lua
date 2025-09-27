@@ -55,3 +55,13 @@ vim.api.nvim_create_autocmd("FileType", {
     end)
   end,
 })
+
+-- Hightlight yanking
+vim.api.nvim_set_hl(0, "YankHighlight", { bg = "#3b3b3d", fg = "#dcdcdc", bold = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+  callback = function()
+    vim.hl.on_yank({ higroup = "YankHighlight", timeout = 250 })
+  end,
+})
