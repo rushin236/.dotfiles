@@ -104,48 +104,26 @@ return {
     })
     vim.lsp.enable("lua_ls")
 
-    -- emmet_language_server
-    vim.lsp.config("emmet_language_server", {
+    -- eslint-lsp
+    vim.lsp.config("eslint", {
+      cmd = { "vscode-eslint-language-server", "--stdio" },
       filetypes = {
-        "css",
-        "eruby",
-        "html",
         "javascript",
         "javascriptreact",
-        "less",
-        "sass",
-        "scss",
-        "pug",
+        "typescript",
         "typescriptreact",
-      },
-      init_options = {
-        includeLanguages = {},
-        excludeLanguages = {},
-        extensionsPath = {},
-        preferences = {},
-        showAbbreviationSuggestions = true,
-        showExpandedAbbreviation = "always",
-        showSuggestionsAsSnippets = false,
-        syntaxProfiles = {},
-        variables = {},
-      },
-    })
-    vim.lsp.enable("emmet_language_server")
-
-    -- emmet_ls
-    vim.lsp.config("emmet_ls", {
-      filetypes = {
-        "html",
-        "typescriptreact",
-        "javascriptreact",
-        "css",
-        "sass",
-        "scss",
-        "less",
+        "vue",
         "svelte",
       },
+      settings = {
+        eslint = {
+          enable = true,
+          workingDirectory = { mode = "auto" }, -- lets eslint resolve its own config
+        },
+      },
+      single_file_support = true,
     })
-    vim.lsp.enable("emmet_ls")
+    vim.lsp.enable("eslint")
 
     -- ts_ls (TypeScript/JavaScript)
     vim.lsp.config("ts_ls", {

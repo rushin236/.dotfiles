@@ -35,19 +35,16 @@ return {
       automatic_enable = false,
       -- servers for mason to install
       ensure_installed = {
-        "lua_ls",
-        "ts_ls", -- currently using a ts plugin
-        "html",
-        "cssls",
-        "tailwindcss",
-        "gopls",
-        "angularls",
-        "emmet_ls",
-        "emmet_language_server",
-        -- "eslint",
-        "marksman",
-        "pyright",
-        "ruff",
+        "lua_ls", -- lua-language-server
+        "ts_ls", -- ts and js language server
+        "html", -- html language server
+        "cssls", -- css language server
+        "gopls", -- go language server, linter, formatter
+        "eslint", -- ts and js linter
+        "marksman", -- markdown language server
+        "pyright", -- python-language-server
+        "ruff", -- python-language-server, linter, formatter
+        "clangd", -- c and cpp language server
       },
     })
 
@@ -57,12 +54,11 @@ return {
         "stylua", -- lua formatter
         "isort", -- python formatter
         "black", -- python formatter
-        "clangd",
-        "denols",
-        -- { 'eslint_d', version = '13.1.2' },
+        "eslint_d", -- JS and TS linting
         "cpplint", -- c, cpp linter
         "clang-format", -- c, cpp formatter
         "codelldb", -- c, cpp debugger
+        "markdown-toc", -- markdown formatter
       },
 
       -- NOTE: mason BREAKING Change! Removed setup_handlers
