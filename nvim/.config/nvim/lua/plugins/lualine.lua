@@ -69,9 +69,17 @@ return {
         -- lualine_z = {},
       },
       extensions = {
-        "neo-tree",
-        "toggleterm",
-        "quickfix",
+        {
+          sections = {
+            lualine_a = { "mode" },
+            -- lualine_b = {},
+            -- lualine_c = {},
+            lualine_x = {},
+            lualine_y = { "filetype" },
+            lualine_z = { "location" },
+          },
+          filetypes = { "neo-tree", "toggleterm" }, -- tells lualine this config applies only to neo-tree
+        },
       },
     })
   end,
