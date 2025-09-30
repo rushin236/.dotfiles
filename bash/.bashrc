@@ -56,7 +56,7 @@ export NVM_DIR="$HOME/.nvm"
 # rust
 # . "$HOME/.cargo/env"
 
-fzf
+# fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 #######################################################

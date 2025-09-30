@@ -33,8 +33,10 @@ Install Instructions:
 }
 
 choose_mode() {
-	local options=("🖥️ Alacritty" "📝 Neovim" "📁 Thunar")
-	printf "%s\n" "${options[@]}" | rofi -dmenu -i -p "Open with" $ROFI_THEME
+    local options=("Alacritty" "Neovim" "Thunar")
+    printf "%s\n" "${options[@]}" | rofi -dmenu -i -p "Open with" \
+        $ROFI_THEME \
+        -theme-str 'window { width: 15%; }'
 }
 
 choose_path() {
@@ -126,9 +128,9 @@ open_path() {
 	transpose_entry "$RECENT_DIR_FILE" "$path"
 
 	case "$mode" in
-	"🖥️ Alacritty") alacritty --working-directory "$path" & ;;
-	"📝 Neovim") alacritty -e nvim "$path" & ;;
-	"📁 Thunar") thunar "$path" & ;;
+	"Alacritty") alacritty --working-directory "$path" & ;;
+	"Neovim") alacritty -e nvim "$path" & ;;
+	"Thunar") thunar "$path" & ;;
 	*) show_message "Unknown mode: $mode" && exit 1 ;;
 	esac
 }

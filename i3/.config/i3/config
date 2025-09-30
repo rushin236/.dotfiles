@@ -9,6 +9,8 @@ exec --no-startup-id dunst
 # exec --no-startup-id bash "$HOME/.xrandr.conf"
 exec --no-startup-id autorandr -l lastUsed
 
+exec_always --no-startup-id xsettingsd
+
 exec --no-startup-id dex --autostart --environment i3
 
 # For launching GTK apps
@@ -206,7 +208,7 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-default_border none
+for_window [class=".*"] border pixel 0
 
 set $flamingo #ff7a93
 set $text #9faab8
