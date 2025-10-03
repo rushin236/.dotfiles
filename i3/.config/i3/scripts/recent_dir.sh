@@ -52,30 +52,45 @@ choose_path() {
 	declare -A path_map
 	menu_list=()
 
-	for full in "${all_paths[@]}"; do
-		short="$(basename "$full")"
-		# If short name already exists, disambiguate
-		while [[ -n "${path_map[$short]}" && "${path_map[$short]}" != "$full" ]]; do
-			short="$short/"
-		done
-		path_map["$short"]="$full"
-		menu_list+=("$short")
-	done
+	# for full in "${all_paths[@]}"; do
+	# 	short="$(basename "$full")"
+	# 	# If short name already exists, disambiguate
+	# 	while [[ -n "${path_map[$short]}" && "${path_map[$short]}" != "$full" ]]; do
+	# 		short="$short/"
+	# 	done
+	# 	path_map["$short"]="$full"
+	# 	menu_list+=("$short")
+	# done
+
+  HOME_DIR="/home/$USER"
 
 	# Reverse array before showing in rofi
 	reversed_menu=()
-	for ((idx = ${#menu_list[@]} - 1; idx >= 0; idx--)); do
-		reversed_menu+=("${menu_list[idx]}")
-	done
+	# for ((idx = ${#menu_list[@]} - 1; idx >= 0; idx--)); do
+	for ((idx = ${#all_paths[@]} - 1; idx >= 0; idx--)); do
+    if [[ ${all_paths[idx]} == $HOME_DIR* ]]; then
+      reversed_menu+=("~${all_paths[idx]#$HOME_DIR}")
+    else
+      reversed_menu+=("${all_paths[idx]}")
+    fi	
+  done
 
-	choice=$(printf "%s\n" "${reversed_menu[@]}" | rofi -dmenu -i -p "Select Directory" $ROFI_THEME)
+  local maxlen
+  maxlen=$(printf "%s\n" "${reversed_menu[@]}" | awk '{ if (length>m) m=length } END { print m }')
+  # add small padding
+  local width=$(((maxlen + 2) * 10))
+
+	choice=$(printf "%s\n" "${reversed_menu[@]}" \
+    | rofi -dmenu -i -p "Select Directory" $ROFI_THEME -theme-str "window { width: ${width}px; }")
 
 	if [[ -z "$choice" ]]; then
 		exit 0
 	fi
 
 	# Resolve back to full path
-	full_path="${path_map[$choice]}"
+	# full_path="${path_map[$choice]}"
+  
+	full_path="${choice/#\~/$HOME}"
 	if [[ ! -d "$full_path" ]]; then
 		show_message "Invalid path: $full_path"
 		exit 1
