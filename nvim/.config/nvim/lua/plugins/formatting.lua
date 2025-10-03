@@ -41,7 +41,7 @@ return {
         markdown = { "prettier", "markdown-toc" },
         c = { "clang-format" },
         cpp = { "clang-format" },
-        bash = { "beautysh" },
+        sh = { "beautysh" },
         zsh = { "beautysh" },
       },
       format_on_save = {
