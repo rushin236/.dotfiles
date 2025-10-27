@@ -26,7 +26,7 @@ exec_always --no-startup-id bash -c 'wall="$(find $HOME/.config/i3/wallpapers -t
 exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 
 # Auto-lock after 10 minutes
-exec --no-startup-id xset s off s noblank s noexpose; xset s 0 0; xset dpms 0 0 720
+exec --no-startup-id "$HOME/.config/i3/scripts/dpms_control.sh"
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "betterlockscreen -l blur" ""
 
 # Startup applications
