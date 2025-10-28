@@ -69,30 +69,36 @@ return {
             ["]f"] = "@function.outer",
             ["]c"] = "@class.outer",
             ["]a"] = "@parameter.inner",
+            ["]l"] = "@loop.outer", -- <- next loop start
+            ["]b"] = "@block.outer", -- <- next block start
           },
           goto_next_end = {
             ["]F"] = "@function.outer",
             ["]C"] = "@class.outer",
             ["]A"] = "@parameter.inner",
+            ["]L"] = "@loop.outer", -- <- next loop end
+            ["]B"] = "@block.outer", -- <- next block end
           },
           goto_previous_start = {
             ["[f"] = "@function.outer",
             ["[c"] = "@class.outer",
             ["[a"] = "@parameter.inner",
+            ["[l"] = "@loop.outer", -- <- prev loop start
+            ["[b"] = "@block.outer", -- <- prev block start
           },
           goto_previous_end = {
             ["[F"] = "@function.outer",
             ["[C"] = "@class.outer",
             ["[A"] = "@parameter.inner",
+            ["[L"] = "@loop.outer", -- <- prev loop end
+            ["[B"] = "@block.outer", -- <- prev block end
           },
         },
       },
     },
     config = function(_, opts)
       require("nvim-treesitter.configs").setup({
-        textobjects = {
-          move = opts.move,
-        },
+        textobjects = { move = opts.move },
       })
 
       -- buffer-local keymaps
