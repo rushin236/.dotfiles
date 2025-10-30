@@ -163,6 +163,7 @@ check_dependencies
 option=$(get_monitor_choice)
 
 if handle_monitor_choice "$option"; then
+  sleep 1
 	i3-msg restart
 	save_new_monitor_layout
 fi

@@ -217,5 +217,8 @@ return {
       },
     })
     vim.lsp.enable("clangd")
+
+    -- bashls
+    vim.lsp.enable("bashls")
   end,
 }
