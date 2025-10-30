@@ -45,6 +45,7 @@ return {
         "pyright", -- python-language-server
         "ruff", -- python-language-server, linter, formatter
         "clangd", -- c and cpp language server
+        "bashls", -- bash-language-server
       },
     })
 
@@ -59,6 +60,7 @@ return {
         "clang-format", -- c, cpp formatter
         "codelldb", -- c, cpp debugger
         "markdown-toc", -- markdown formatter
+        "beautysh", -- bash formatter
       },
 
       -- NOTE: mason BREAKING Change! Removed setup_handlers
