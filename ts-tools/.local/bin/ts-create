@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+# ======================
+# Prompt example (visible)
+# ======================
+
+# # Show a message to terminal directly
+# echo "Do you want to continue? [y/N]" > /dev/tty
+#
+# # Read input from terminal directly (instead of from stderr-redirected stdin)
+# read -r answer < /dev/tty
+
+# === Log Configuration ===
+LOG_FILE="/tmp/tmux-ts.log"
+OLD_LOG_FILE="/tmp/tmux-ts.log.old"
+
+# Rotate log if it exists
+if [[ -f "$LOG_FILE" ]]; then
+    mv "$LOG_FILE" "$OLD_LOG_FILE"
+fi
+
+# Start fresh log
+echo "[$(date)] >>> Starting ts-create script with args: $@" > "$LOG_FILE"
+
+# Stream all output to log file
+exec >>"$LOG_FILE" 2>&1
+
+# === Logging Functions ===
+log_info() {
+    echo "[INFO] $*"
+}
+
+log_success() {
+    echo "[SUCCESS] $*"
+}
+
+log_warning() {
+    echo "[WARNING] $*"
+}
+
+log_error() {
+    echo "[ERROR] $*" >&2
+}
+
+# === Configuration ===
+FZF_PATH="${HOME}/.fzf/bin/fzf"
+RECENT_DIRS="${HOME}/.recent_dirs"
+
+log_info "FZF_PATH: $FZF_PATH"
+log_info "RECENT_DIRS: $RECENT_DIRS"
+
+# === Arguments ===
+dir="$1"
+cmd="$2"
+
+log_info "Directory argument: ${dir:-<not provided>}"
+log_info "Command argument: ${cmd:-<not provided>}"
+
+# === Select Directory ===
+if [[ -z "$dir" ]]; then
+    log_info "No directory provided, using fzf for selection"
+
+    # Check for fzf
+    if [[ ! -x "$FZF_PATH" ]]; then
+        log_error "fzf not found at: $FZF_PATH"
+        exit 1
+    fi
+    log_success "Found fzf at: $FZF_PATH"
+
+    # Check for recent directories file
+    if [[ ! -f "$RECENT_DIRS" ]]; then
+        log_warning "Recent directories file not found: $RECENT_DIRS"
+    fi
+
+    # Get recent directories
+    recent=$(tac "$RECENT_DIRS" 2>/dev/null | awk '!a[$0]++')
+    if [[ -z "$recent" ]]; then
+        log_warning "No recent directories found"
+    fi
+
+    # Run fzf
+    dir=$(echo "$recent" | "$FZF_PATH")
+    fzf_exit=$?
+
+    if [[ $fzf_exit -ne 0 ]]; then
+        log_info "fzf cancelled or failed (exit code: $fzf_exit)"
+        exit 0
+    fi
+
+    if [[ -z "$dir" ]]; then
+        log_info "No directory selected via fzf"
+        exit 0
+    fi
+    log_success "Selected directory via fzf: $dir"
+fi
+
+# === Validate Directory ===
+log_info "Validating directory: $dir"
+if [[ ! -d "$dir" ]]; then
+    log_error "Invalid directory: $dir"
+    exit 1
+fi
+log_success "Directory validated: $dir"
+
+# === Session Management ===
+session=$(basename "$dir" | tr . _)
+log_info "Session name: $session"
+log_info "Working directory: $dir"
+
+# Check if session already exists
+if tmux has-session -t="$session" 2>/dev/null; then
+    log_warning "Session '$session' already exists, reusing it"
+else
+    log_info "Creating new tmux session: $session"
+
+    if tmux new-session -ds "$session" -c "$dir"; then
+        log_success "Session created: $session"
+    else
+        log_error "Failed to create session: $session"
+        exit 1
+    fi
+
+    # Send command if provided
+    if [[ -n "$cmd" ]]; then
+        log_info "Sending command to session: $cmd"
+        if tmux send-keys -t "$session" "$cmd" Enter; then
+            log_success "Command sent successfully: $cmd"
+        else
+            log_error "Failed to send command: $cmd"
+        fi
+    fi
+fi
+
+# === Attach to Session ===
+if [[ -n "$TMUX" ]]; then
+    log_info "Already in tmux, switching client to: $session"
+    if tmux switch-client -t "$session"; then
+        log_success "Switched to session: $session"
+    else
+        log_error "Failed to switch to session: $session"
+        exit 1
+    fi
+else
+    log_info "Not in tmux, attaching to session: $session"
+    if tmux attach -t "$session"; then
+        log_success "Attached to session: $session"
+    else
+        log_error "Failed to attach to session: $session"
+        exit 1
+    fi
+fi
+
+unset DISABLE_AUTO_TMUX
+log_success "Script completed successfully"

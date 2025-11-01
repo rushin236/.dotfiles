@@ -44,11 +44,11 @@ export NVM_DIR="$HOME/.nvm"
 autoload -U compinit; compinit
 
 function zvm_config() {
-  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
-  ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-  ZVM_VISUAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-  ZVM_VISUAL_LINE_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-  ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+    ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
+    ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+    ZVM_VISUAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+    ZVM_VISUAL_LINE_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+    ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 }
 
 # Load plugins manually
@@ -118,9 +118,9 @@ my_zvm_vi_replace_selection() {
 # Keybinding for Conda Toggle
 autoload -U add-zsh-hook
 function conda_toggle_widget() {
-  zle -I
-  conda_toggle_env
-  zle reset-prompt
+    zle -I
+    conda_toggle_env
+    zle reset-prompt
 }
 zle -N conda_toggle_widget
 
@@ -146,7 +146,7 @@ zvm_after_lazy_keybindings() {
     zvm_bindkey viins '^p' history-search-backward
     zvm_bindkey viins '^n' history-search-forward
     zvm_bindkey viins '^[t' conda_toggle_widget
-    
+
     zvm_bindkey vicmd 'y' my_zvm_vi_yank
     zvm_bindkey vicmd 'P' my_zvm_vi_put_before
     zvm_bindkey vicmd 'yy' my_zvm_vi_substitute_whole_line
@@ -162,16 +162,16 @@ zvm_after_lazy_keybindings() {
 
 
 zvm_after_init_commands+=(
-  zvm_after_lazy_keybindings
-  # fzf
-  '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh'
+    zvm_after_lazy_keybindings
+    # fzf
+    '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh'
 )
 
 # zsh mode
 # normal mode
 # bindkey -e
 # vim mode
-bindkey -v 
+bindkey -v
 
 # Keybindings
 # bindkey '^p' history-search-backward
@@ -208,17 +208,17 @@ setopt numericglobsort
 setopt promptsubst
 
 log_recent_dir() {
-  local DIR="$PWD"
-  local FILE="$HOME/.recent_dirs"
+    local DIR="$PWD"
+    local FILE="$HOME/.recent_dirs"
 
-  [[ "$DIR" == "$LAST_LOGGED_DIR" ]] && return
-  LAST_LOGGED_DIR="$DIR"
+    [[ "$DIR" == "$LAST_LOGGED_DIR" ]] && return
+    LAST_LOGGED_DIR="$DIR"
 
-  mkdir -p "$(dirname "$FILE")"
-  grep -Fxv "$DIR" "$FILE" 2>/dev/null > "$FILE.tmp"
-  echo "$DIR" >> "$FILE.tmp"
-  mv "$FILE.tmp" "$FILE"
-  tail -n 50 "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+    mkdir -p "$(dirname "$FILE")"
+    grep -Fxv "$DIR" "$FILE" 2>/dev/null > "$FILE.tmp"
+    echo "$DIR" >> "$FILE.tmp"
+    mv "$FILE.tmp" "$FILE"
+    tail -n 50 "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 }
 
 precmd_functions+=(log_recent_dir)
@@ -241,4 +241,10 @@ alias virt-viewer='virt-viewer -c qemu:///system'
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
+
+# Only auto-launch tmux if not explicitly disabled
+if [[ -z "$DISABLE_AUTO_TMUX" && -z "$TMUX" ]] && ! tmux info &>/dev/null; then
+    ~/.local/bin/ts-create "$HOME"
+    exit 0
+fi
 

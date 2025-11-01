@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # === Config ===
 RECENT_DIR_FILE="$HOME/.recent_dirs"
@@ -141,13 +141,22 @@ open_path() {
 
 	# Apply transposition to the recent dir file
 	transpose_entry "$RECENT_DIR_FILE" "$path"
-
-	case "$mode" in
-	"Alacritty") alacritty --working-directory "$path" & ;;
-	"Neovim") alacritty -e nvim "$path" & ;;
-	"Thunar") thunar "$path" & ;;
-	*) show_message "Unknown mode: $mode" && exit 1 ;;
-	esac
+	
+  case "$mode" in
+    "Alacritty")
+      DISABLE_AUTO_TMUX=1 alacritty -e ~/.local/bin/ts-create "$path" &
+      ;;
+    "Neovim")
+      DISABLE_AUTO_TMUX=1 alacritty -e ~/.local/bin/ts-create "$path" "nvim" &
+      ;;
+    "Thunar")
+      thunar "$path" &
+      ;;
+    *)
+      show_message "Unknown mode: $mode"
+      exit 1
+      ;;
+  esac
 }
 
 # === Main Execution ===

@@ -5,8 +5,8 @@
 set -euo pipefail
 
 show_message() {
-	local message="$1"
-	notify-send "Message" "${message}"
+    local message="$1"
+    notify-send "Message" "${message}"
 }
 
 # ----- config -----

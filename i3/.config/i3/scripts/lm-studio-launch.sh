@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Configuration
 ROFI_THEME="-theme ~/.config/rofi/config.rasi" # Adjust to your theme

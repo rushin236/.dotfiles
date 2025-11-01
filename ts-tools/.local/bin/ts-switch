@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+# === Log Configuration ===
+LOG_FILE="/tmp/tmux-ts-switch.log"
+OLD_LOG_FILE="/tmp/tmux-ts-switch.log.old"
+
+# Rotate log if it exists
+if [[ -f "$LOG_FILE" ]]; then
+    mv "$LOG_FILE" "$OLD_LOG_FILE"
+fi
+
+# Start fresh log
+echo "[$(date)] >>> Starting ts-switch script with args: $@" > "$LOG_FILE"
+
+# Stream all output to log file
+exec >>"$LOG_FILE" 2>&1
+
+# === Logging Functions ===
+log_info() {
+    echo "[INFO] $*"
+}
+
+log_success() {
+    echo "[SUCCESS] $*"
+}
+
+log_warning() {
+    echo "[WARNING] $*"
+}
+
+log_error() {
+    echo "[ERROR] $*" >&2
+}
+
+# === Configuration ===
+FZF_PATH="$HOME/.fzf/bin/fzf"
+
+log_info "FZF_PATH: $FZF_PATH"
+
+# === Check for fzf ===
+log_info "Checking for fzf"
+if [[ ! -x "$FZF_PATH" ]]; then
+    log_error "fzf not found or not executable at: $FZF_PATH"
+    exit 1
+fi
+log_success "Found fzf at: $FZF_PATH"
+
+# === Check if we're inside tmux ===
+if [[ -z "$TMUX" ]]; then
+    log_error "Not running inside a tmux session"
+    log_error "This script must be run from within tmux"
+    exit 1
+fi
+log_info "Running inside tmux session"
+
+# === Get current session ===
+current_session=$(tmux display-message -p '#S' 2>/dev/null)
+if [[ -z "$current_session" ]]; then
+    log_error "Failed to get current session name"
+    exit 1
+fi
+log_info "Current session: $current_session"
+
+# === List all sessions ===
+log_info "Fetching list of tmux sessions"
+all_sessions=$(tmux list-sessions -F "#S" 2>/dev/null)
+if [[ -z "$all_sessions" ]]; then
+    log_error "Failed to list tmux sessions"
+    exit 1
+fi
+
+total_count=$(echo "$all_sessions" | wc -l)
+log_info "Found $total_count total session(s)"
+
+# === Get other sessions (exclude current) ===
+other_sessions=$(echo "$all_sessions" | grep -v "^$current_session$")
+if [[ -z "$other_sessions" ]]; then
+    log_warning "No other sessions available to switch to"
+    log_info "Only current session '$current_session' exists"
+    exit 0
+fi
+
+available_count=$(echo "$other_sessions" | wc -l)
+log_info "Available sessions to switch to: $available_count"
+log_info "Sessions list:"
+echo "$other_sessions" | while read -r s; do log_info "  - $s"; done
+
+# === Interactive selection with fzf ===
+log_info "Launching fzf for session selection"
+selected_session=$(
+    echo "$other_sessions" | "$FZF_PATH" \
+        --reverse \
+        --prompt="Switch to session > " \
+        --header="Current: $current_session"
+)
+fzf_exit=$?
+
+if [[ $fzf_exit -ne 0 ]]; then
+    log_info "fzf cancelled or failed (exit code: $fzf_exit)"
+    exit 0
+fi
+
+if [[ -z "$selected_session" ]]; then
+    log_info "No session selected via fzf"
+    exit 0
+fi
+
+log_success "Selected session: $selected_session"
+
+# === Verify selected session exists ===
+log_info "Verifying session exists: $selected_session"
+if ! tmux has-session -t="$selected_session" 2>/dev/null; then
+    log_error "Session does not exist: $selected_session"
+    exit 1
+fi
+log_success "Session verified: $selected_session"
+
+# === Switch to selected session ===
+log_info "Switching from '$current_session' to '$selected_session'"
+if tmux switch-client -t "$selected_session"; then
+    log_success "Successfully switched to session: $selected_session"
+    log_success "Script completed successfully"
+    exit 0
+else
+    log_error "Failed to switch to session: $selected_session"
+    exit 1
+fi
