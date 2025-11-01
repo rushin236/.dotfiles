@@ -47,11 +47,11 @@ fi
 log_success "Found fzf at: $FZF_PATH"
 
 # === Check if tmux is running ===
-if ! pgrep -x tmux >/dev/null; then
-    log_warning "No tmux server is running"
-    exit 0
-fi
-log_info "Tmux server is running"
+# if ! pgrep -x tmux >/dev/null; then
+#     log_warning "No tmux server is running"
+#     exit 0
+# fi
+# log_info "Tmux server is running"
 
 # === Get current session ===
 current_session=$(tmux display-message -p '#S' 2>/dev/null)
@@ -82,6 +82,9 @@ fi
 
 if [[ -z "$available_sessions" ]]; then
     log_warning "No sessions available to kill (only current session exists)"
+    if [[ -n "$TMUX" ]]; then
+        tmux display-message "No other tmux sessions available except the current one."
+    fi
     exit 0
 fi
 
