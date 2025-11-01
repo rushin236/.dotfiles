@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+# === Log Configuration ===
+LOG_FILE="/tmp/tmux-ts-menu.log"
+OLD_LOG_FILE="/tmp/tmux-ts-menu.log.old"
+
+# Rotate log if it exists
+if [[ -f "$LOG_FILE" ]]; then
+    mv "$LOG_FILE" "$OLD_LOG_FILE"
+fi
+
+# Start fresh log
+echo "[$(date)] >>> Starting ts-menu script with args: $@" > "$LOG_FILE"
+
+# Stream all output to log file
+exec >>"$LOG_FILE" 2>&1
+
+# === Logging Functions ===
+log_info() {
+    echo "[INFO] $*"
+}
+
+log_success() {
+    echo "[SUCCESS] $*"
+}
+
+log_warning() {
+    echo "[WARNING] $*"
+}
+
+log_error() {
+    echo "[ERROR] $*" >&2
+}
+
+# === Configuration ===
+FZF_PATH="$HOME/.fzf/bin/fzf"
+SCRIPT_DIR="$HOME/.local/bin"
+
+TS_CREATE="$SCRIPT_DIR/ts-create"
+TS_SWITCH="$SCRIPT_DIR/ts-switch"
+TS_KILL="$SCRIPT_DIR/ts-kill"
+
+log_info "FZF_PATH: $FZF_PATH"
+log_info "Script directory: $SCRIPT_DIR"
+log_info "ts-create: $TS_CREATE"
+log_info "ts-switch: $TS_SWITCH"
+log_info "ts-kill: $TS_KILL"
+
+# === Check for fzf ===
+log_info "Checking for fzf"
+if [[ ! -x "$FZF_PATH" ]]; then
+    log_error "fzf not found at: $FZF_PATH"
+    exit 1
+fi
+log_success "Found fzf at: $FZF_PATH"
+
+# === Verify required scripts exist ===
+log_info "Verifying required scripts exist"
+missing_scripts=0
+
+for script in "$TS_CREATE" "$TS_SWITCH" "$TS_KILL"; do
+    if [[ ! -f "$script" ]]; then
+        log_error "Script not found: $script"
+        ((missing_scripts++))
+    elif [[ ! -x "$script" ]]; then
+        log_warning "Script exists but is not executable: $script"
+        log_info "Run: chmod +x $script"
+        ((missing_scripts++))
+    else
+        log_info "Verified: $(basename "$script")"
+    fi
+done
+
+if [[ $missing_scripts -gt 0 ]]; then
+    log_error "Missing or non-executable scripts: $missing_scripts"
+    log_error "Cannot continue without all required scripts"
+    exit 1
+fi
+log_success "All required scripts verified"
+
+# === Menu Options ===
+menu_options="Session Create
+Switch Session
+Kill Session"
+
+log_info "Displaying menu with fzf"
+log_info "Menu options:"
+echo "$menu_options" | while read -r opt; do log_info "  - $opt"; done
+
+# === Show fzf menu ===
+choice=$(printf "%s" "$menu_options" | "$FZF_PATH" \
+    --prompt="What do you want to do? > " \
+    --header="Select a tmux session operation")
+
+fzf_exit=$?
+
+if [[ $fzf_exit -ne 0 ]]; then
+    log_info "fzf cancelled or failed (exit code: $fzf_exit)"
+    exit 0
+fi
+
+if [[ -z "$choice" ]]; then
+    log_info "No choice selected, user cancelled"
+    exit 0
+fi
+
+log_success "User selected: $choice"
+
+# === Dispatch to appropriate script ===
+log_info "Dispatching to appropriate script"
+
+case "$choice" in
+    "Session Create")
+        log_info "Launching ts-create"
+        if "$TS_CREATE"; then
+            log_success "ts-create completed successfully"
+        else
+            log_error "ts-create failed with exit code: $?"
+            exit 1
+        fi
+        ;;
+    
+    "Switch Session")
+        log_info "Launching ts-switch"
+        if "$TS_SWITCH"; then
+            log_success "ts-switch completed successfully"
+        else
+            log_error "ts-switch failed with exit code: $?"
+            exit 1
+        fi
+        ;;
+    
+    "Kill Session")
+        log_info "Launching ts-kill"
+        if "$TS_KILL"; then
+            log_success "ts-kill completed successfully"
+        else
+            log_error "ts-kill failed with exit code: $?"
+            exit 1
+        fi
+        ;;
+    
+    *)
+        log_warning "Unknown option selected: '$choice'"
+        log_info "No action taken, exiting safely"
+        exit 0
+        ;;
+esac
+
+log_success "ts-menu completed successfully"
+exit 0
