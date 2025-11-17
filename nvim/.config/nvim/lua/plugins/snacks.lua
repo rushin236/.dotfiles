@@ -219,13 +219,13 @@ return {
       },
 
       -- Other Utils
-      {
-        "<leader>uC",
-        function()
-          require("snacks").picker.colorschemes({ layout = "ivy" })
-        end,
-        desc = "Pick Color Schemes",
-      },
+      -- {
+      --   "<leader>uC",
+      --   function()
+      --     require("snacks").picker.colorschemes({ layout = "ivy" })
+      --   end,
+      --   desc = "Pick Color Schemes",
+      -- },
       {
         "<leader>fh",
         function()

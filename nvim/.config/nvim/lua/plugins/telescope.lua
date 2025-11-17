@@ -50,11 +50,11 @@ return {
       builtin.grep_string({ search = word })
     end, { desc = "Find Connected Words under cursor" })
 
-    vim.keymap.set(
-      "n",
-      "<leader>uc",
-      "<cmd>Telescope themes<CR>",
-      { noremap = true, silent = true, desc = "Colorscheme Switcher" }
-    )
+    -- vim.keymap.set(
+    --   "n",
+    --   "<leader>uc",
+    --   "<cmd>Telescope themes<CR>",
+    --   { noremap = true, silent = true, desc = "Colorscheme Switcher" }
+    -- )
   end,
 }

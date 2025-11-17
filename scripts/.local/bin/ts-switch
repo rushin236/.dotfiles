@@ -77,6 +77,9 @@ other_sessions=$(echo "$all_sessions" | grep -v "^$current_session$")
 if [[ -z "$other_sessions" ]]; then
     log_warning "No other sessions available to switch to"
     log_info "Only current session '$current_session' exists"
+    if [[ -n "$TMUX" ]]; then
+        tmux display-message "Only current session '$current_session' exists"
+    fi
     exit 0
 fi
 
