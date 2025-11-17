@@ -144,10 +144,10 @@ open_path() {
 	
   case "$mode" in
     "Alacritty")
-      DISABLE_AUTO_TMUX=1 alacritty -e ~/.local/bin/ts-create "$path" &
+      alacritty -e ~/.local/bin/ts-create "$path" &
       ;;
     "Neovim")
-      DISABLE_AUTO_TMUX=1 alacritty -e ~/.local/bin/ts-create "$path" "nvim" &
+      alacritty -e ~/.local/bin/ts-create "$path" "nvim ." &
       ;;
     "Thunar")
       thunar "$path" &

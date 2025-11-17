@@ -1,5 +1,6 @@
 return {
   "akinsho/bufferline.nvim",
+  event = "VimEnter",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
     {
@@ -21,8 +22,8 @@ return {
     { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
     { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
     { "<leader>bd", "<cmd>BufDel<cr>", desc = "Delete Current Bufrn" },
-    { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
-    { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+    { "<leader>bn", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+    { "<leader>bN", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
   },
   opts = {
     options = {
