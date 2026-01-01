@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     -- Find the first directory argument
     for _, arg in ipairs(args) do
       if vim.fn.isdirectory(arg) == 1 then
-        vim.cmd("silent! lcd " .. arg)
+        vim.cmd("silent! cd " .. arg)
         break
       end
     end

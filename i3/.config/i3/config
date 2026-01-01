@@ -9,7 +9,7 @@ exec --no-startup-id dunst
 # exec --no-startup-id bash "$HOME/.xrandr.conf"
 exec --no-startup-id autorandr -l lastUsed
 
-exec_always --no-startup-id xsettingsd
+exec_always --no-startup-id xsettingsd &
 
 exec --no-startup-id dex --autostart --environment i3
 
@@ -29,11 +29,6 @@ exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 exec --no-startup-id "$HOME/.config/i3/scripts/dpms_control.sh"
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "betterlockscreen -l blur" ""
 
-# Startup applications
-exec --no-startup-id picom
-exec --no-startup-id easyeffects --gapplication-service
-exec --no-startup-id fdm --hidden
-exec --no-startup-id coolercontrol
 
 # Use pactl to adjust volume in PulseAudio.
 # set $refresh_i3status killall -SIGUSR1 i3status
@@ -218,14 +213,19 @@ set $base #181b1e
 
 # GitHub Dark Dimmed Theme for i3
 # ====================== border    bg    text      indicator border_bg
-client.focused           $text     $base $text     $text     $text
-client.focused_inactive  $overlay2 $base $subtext1 $overlay2 $overlay2
-client.unfocused         $overlay2 $base $subtext1 $overlay2 $overlay2
+client.focused           $base     $base $text     $text     $text
+client.focused_inactive  $base     $base $subtext1 $overlay2 $overlay2
+client.unfocused         $base     $base $subtext1 $overlay2 $overlay2
 client.urgent            $flamingo $base $text     $flamingo $flamingo
 client.placeholder       $base     $base $text     $base     $text
 client.background        $base
 
 # GAPS
-gaps inner 10px
-gaps outer 5px
+gaps inner 11px
+gaps outer 15px
 
+# Startup applications
+exec --no-startup-id picom
+exec --no-startup-id easyeffects --gapplication-service
+exec --no-startup-id fdm --hidden
+# exec --no-startup-id coolercontrol

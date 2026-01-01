@@ -5,12 +5,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- vim.g.loaded_netrw = 0
--- vim.g.loaded_netrwPlugin = 0
--- vim.cmd("let g:netrw_liststyle = 3")
--- Disable netrw banner
-vim.cmd("let g:netrw_banner = 0")
-
 -- line numbers
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -36,6 +30,7 @@ vim.opt.inccommand = "split"
 vim.opt.background = "dark"
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
+vim.opt.winborder = "rounded"
 
 -- folding (for nvim-ufo)
 vim.o.foldenable = true
@@ -62,3 +57,9 @@ vim.opt.guicursor = {
   "r:block",
   "o:block",
 }
+
+vim.opt.wildmenu = true
+vim.opt.wildmode = "longest:full,full"
+vim.opt.wildoptions = "pum"
+vim.opt.pumheight = 10
+vim.opt.pumblend = 10

@@ -6,105 +6,99 @@ return {
     { "antosha417/nvim-lsp-file-operations", config = true },
   },
   config = function()
-    -- NOTE: LSP Keybinds
+    ------------------------------------------------------------------
+    -- LSP keymaps (native, no Telescope, no workspace)
+    ------------------------------------------------------------------
     vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+      group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
       callback = function(ev)
-        -- Buffer local mappings
-        local opts = { buffer = ev.buf, silent = true }
+        local buf = ev.buf
+        local opts = { buffer = buf, silent = true }
 
-        -- Keymaps
-        opts.desc = "Show LSP references"
-        vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
+        local function map(mode, lhs, rhs, desc)
+          opts.desc = desc
+          vim.keymap.set(mode, lhs, rhs, opts)
+        end
 
-        opts.desc = "Go to declaration"
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+        -- Navigation / info (standard)
+        map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+        map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+        map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+        map("n", "gr", vim.lsp.buf.references, "Go to references")
+        map("n", "K", vim.lsp.buf.hover, "Hover documentation")
 
-        opts.desc = "Show LSP definitions"
-        vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+        -- Actions
+        map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+        map("n", "<leader>D", vim.lsp.buf.type_definition, "Type definition")
 
-        opts.desc = "Show LSP implementations"
-        vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+        -- Formatting (common convention)
+        map({ "n", "v" }, "<leader>f", function()
+          vim.lsp.buf.format({ async = true })
+        end, "Format buffer")
 
-        opts.desc = "Show LSP type definitions"
-        vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
+        -- Diagnostics
+        map("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
+        map("n", "[d", function()
+          vim.diagnostic.jump({ count = -1, float = true })
+        end, "Previous diagnostic")
+        map("n", "]d", function()
+          vim.diagnostic.jump({ count = 1, float = true })
+        end, "Next diagnostic")
 
-        opts.desc = "See available code actions"
-        vim.keymap.set({ "n", "v" }, "<leader>vca", function()
-          vim.lsp.buf.code_action()
-        end, opts)
+        -- Diagnostic lists (copy-friendly)
+        map("n", "gld", vim.diagnostic.setloclist, "Diagnostics (buffer)")
+        map("n", "gLd", vim.diagnostic.setqflist, "Diagnostics (workspace)")
 
-        opts.desc = "Smart rename"
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-
-        opts.desc = "Show buffer diagnostics"
-        vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
-
-        opts.desc = "Show line diagnostics"
-        vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
-
-        opts.desc = "Show documentation for what is under cursor"
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-
-        opts.desc = "Restart LSP"
-        vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
-
-        vim.keymap.set("i", "<C-h>", function()
-          vim.lsp.buf.signature_help()
-        end, opts)
+        -- Signature help (insert mode)
+        map("i", "<C-k>", vim.lsp.buf.signature_help, "Signature help")
       end,
     })
 
-    -- Define sign icons for each severity
-    local signs = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.HINT] = "󰠠 ",
-      [vim.diagnostic.severity.INFO] = " ",
-    }
-
-    -- Set diagnostic config
+    ------------------------------------------------------------------
+    -- Diagnostics UI
+    ------------------------------------------------------------------
     vim.diagnostic.config({
-      signs = {
-        text = signs,
-      },
       virtual_text = true,
       underline = true,
       update_in_insert = false,
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.HINT] = "󰠠 ",
+          [vim.diagnostic.severity.INFO] = " ",
+        },
+      },
     })
 
-    -- Setup servers
-    local cmp_nvim_lsp = require("cmp_nvim_lsp")
-    local capabilities = cmp_nvim_lsp.default_capabilities()
+    ------------------------------------------------------------------
+    -- Capabilities (ONLY for cmp)
+    ------------------------------------------------------------------
+    local capabilities = require("cmp_nvim_lsp").default_capabilities()
+    vim.lsp.config("*", { capabilities = capabilities })
 
-    -- Global LSP settings (applied to all servers)
-    vim.lsp.config("*", {
-      capabilities = capabilities,
-    })
+    ------------------------------------------------------------------
+    -- Servers
+    ------------------------------------------------------------------
 
-    -- Configure and enable LSP servers
     -- lua_ls
     vim.lsp.config("lua_ls", {
       settings = {
         Lua = {
-          diagnostics = {
-            globals = { "vim" },
-          },
-          completion = {
-            callSnippet = "Replace",
-          },
+          diagnostics = { globals = { "vim" } },
+          completion = { callSnippet = "Replace" },
           workspace = {
-            library = {
-              [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-              [vim.fn.stdpath("config") .. "/lua"] = true,
-            },
+            library = vim.api.nvim_get_runtime_file("", true),
+            checkThirdParty = false,
           },
+          telemetry = { enable = false },
         },
       },
     })
     vim.lsp.enable("lua_ls")
 
-    -- eslint-lsp
+    -- eslint
     vim.lsp.config("eslint", {
       cmd = { "vscode-eslint-language-server", "--stdio" },
       filetypes = {
@@ -117,15 +111,14 @@ return {
       },
       settings = {
         eslint = {
-          enable = true,
-          workingDirectory = { mode = "auto" }, -- lets eslint resolve its own config
+          workingDirectory = { mode = "auto" },
         },
       },
       single_file_support = true,
     })
     vim.lsp.enable("eslint")
 
-    -- ts_ls (TypeScript/JavaScript)
+    -- ts_ls
     vim.lsp.config("ts_ls", {
       filetypes = {
         "javascript",
@@ -134,12 +127,6 @@ return {
         "typescriptreact",
       },
       single_file_support = true,
-      init_options = {
-        preferences = {
-          includeCompletionsForModuleExports = true,
-          includeCompletionsForImportStatements = true,
-        },
-      },
     })
     vim.lsp.enable("ts_ls")
 
@@ -147,9 +134,7 @@ return {
     vim.lsp.config("gopls", {
       settings = {
         gopls = {
-          analyses = {
-            unusedparams = true,
-          },
+          analyses = { unusedparams = true },
           staticcheck = true,
           gofumpt = true,
         },
@@ -162,20 +147,18 @@ return {
       settings = {
         python = {
           analysis = {
-            -- Turn on type checking: "off", "basic", or "strict"
-            typeCheckingMode = "basic",
-
-            -- Report missing imports (helps with virtual env consistency)
-            diagnosticMode = "workspace", -- or "workspace"
+            typeCheckingMode = "standard",
+            diagnosticMode = "workspace",
             autoSearchPaths = true,
             useLibraryCodeForTypes = true,
-
-            -- Extra checks
             reportUnusedImports = true,
             reportUnusedVariable = true,
-
-            -- Indexing can speed up completion
-            indexing = true,
+            reportOptionalMemberAccess = true,
+            reportOptionalSubscript = true,
+            reportOptionalIterable = true,
+            reportMissingTypeStubs = false,
+            reportUnknownMemberType = true,
+            reportUnknownVariableType = true,
           },
         },
       },
@@ -185,13 +168,14 @@ return {
     -- ruff
     vim.lsp.config("ruff", {
       settings = {
-        -- Ruff has only a few settings exposed via LSP,
-        -- since most customization (rules, ignores, formatting style)
-        -- goes inside pyproject.toml or ruff.toml
-        ruff = {
-          -- Enable lint-only mode (no formatting, that's black's job if you want)
-          lint = {
-            enable = true,
+        lint = {
+          select = {
+            "E", -- pycodestyle
+            "F", -- pyflakes
+            "B", -- bugbear
+            "SIM", -- simplify
+            "UP", -- pyupgrade
+            "I", -- imports
           },
         },
       },
@@ -202,18 +186,11 @@ return {
     vim.lsp.config("clangd", {
       cmd = {
         "clangd",
-        "--background-index", -- keeps an index of your project for fast searches
-        "--clang-tidy", -- run clang-tidy diagnostics
-        "--completion-style=detailed", -- more detailed autocompletion info
-        "--cross-file-rename", -- smarter renaming across files
-        "--header-insertion=never", -- don’t auto-insert #includes (can set to “iwyu”)
-      },
-      settings = {
-        clangd = {
-          -- Example settings exposed via clangd (most config comes via cmd flags)
-          fallbackFlags = { "-std=c++20" }, -- ensure a default C++ standard
-          semanticHighlighting = true,
-        },
+        "--background-index",
+        "--clang-tidy",
+        "--completion-style=detailed",
+        "--cross-file-rename",
+        "--header-insertion=never",
       },
     })
     vim.lsp.enable("clangd")

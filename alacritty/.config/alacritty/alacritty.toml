@@ -1,3 +1,6 @@
+[general]
+live_config_reload = true
+
 [bell]
 animation = "EaseOutExpo"
 duration = 0
@@ -5,56 +8,59 @@ duration = 0
 [colors]
 draw_bold_text_with_bright_colors = true
 
-[[colors.indexed_colors]]
-color = "0xF8BD96"
-index = 16
-
-[[colors.indexed_colors]]
-color = "0xF5E0DC"
-index = 17
-
-[colors.bright]
-black = '#636e7b'   # Tokyo Night bg_highlight (darker than original)
-red = '#ff7a93'     # Brighter version of Tokyo Night red (#f7768e)
-green = '#9cee82'   # Brighter version of Tokyo Night green (#9ece6a)
-yellow = '#ffc777'  # Brighter version of Tokyo Night yellow (#e0af68)
-blue = '#7da6ff'    # Brighter version of Tokyo Night blue (#7aa2f7)
-magenta = '#d7a1f9' # Brighter version of Tokyo Night magenta (#bb9af7)
-cyan = '#5de4c7'    # Brighter version of Tokyo Night cyan (#7dcfff)
-white = '#c0caf5'   # Tokyo Night fg_dark (softer white)
+[colors.primary]
+background = "#181b1e"     # tmux window-style bg
+foreground = "#d3dbe3"     # tmux primary fg
+dim_foreground = "#768390" # tmux inactive text
 
 [colors.cursor]
-text = '#1f2428'   # Background color when cursor is over text
-cursor = '#FFFFFF' # Cursor color (blue from GitHub palette)
+text = "#181b1e"
+cursor = "#d3dbe3"
+
+[colors.selection]
+text = "#d3dbe3"
+background = "#2d333b"     # tmux copy/search bg
 
 [colors.normal]
-black = '#636e7b'   # Tokyo Night bg_highlight (darker than original)
-red = '#ff7a93'     # Brighter version of Tokyo Night red (#f7768e)
-green = '#9cee82'   # Brighter version of Tokyo Night green (#9ece6a)
-yellow = '#ffc777'  # Brighter version of Tokyo Night yellow (#e0af68)
-blue = '#7da6ff'    # Brighter version of Tokyo Night blue (#7aa2f7)
-magenta = '#d7a1f9' # Brighter version of Tokyo Night magenta (#bb9af7)
-cyan = '#5de4c7'    # Brighter version of Tokyo Night cyan (#7dcfff)
-white = '#c0caf5'   # Tokyo Night fg_dark (softer white)
+black   = "#181b1e"
+red     = "#ff7a93"
+green   = "#9cee82"
+yellow  = "#ffc777"
+blue    = "#7da6ff"
+magenta = "#d7a1f9"
+cyan    = "#5de4c7"
+white   = "#d3dbe3"
 
-[colors.primary]
-background = '#1f2428'     # Matched to GitHub Dark Dimmer bg
-foreground = '#adbac7'     # Default text color
-dim_foreground = '#768390' # Secondary text color
+[colors.bright]
+black   = "#373e47"        # pane borders / separators
+red     = "#ff7a93"
+green   = "#9cee82"
+yellow  = "#ffc777"
+blue    = "#7da6ff"
+magenta = "#d7a1f9"
+cyan    = "#5de4c7"
+white   = "#ffffff"
 
-[cursor]
-blink_interval = 500
-blink_timeout = 5
-unfocused_hollow = false
+[[colors.indexed_colors]]
+index = 16
+color = "#2d333b"
 
-[cursor.style]
-blinking = "Off"
-shape = "Block"
+[[colors.indexed_colors]]
+index = 17
+color = "#768390"
+
+# [cursor]
+# blink_interval = 500
+# blink_timeout = 5
+# unfocused_hollow = false
+
+# [cursor.style]
+# blinking = "On"
+# shape = "Block"
 
 [env]
 TERM = "xterm-256color"
-LANG = "en_US.UTF-8"
-LC_ALL = "en_US.UTF-8"
+
 [font]
 size = 14
 
@@ -62,16 +68,16 @@ size = 14
 family = "JetBrainsMono Nerd Font"
 style = "Bold"
 
-[font.glyph_offset]
-x = 0
-y = 0
-
 [font.italic]
 family = "JetBrainsMono Nerd Font"
 
 [font.normal]
 family = "JetBrainsMono Nerd Font"
 style = "Regular"
+
+[font.glyph_offset]
+x = 0
+y = 0
 
 [font.offset]
 x = 0
@@ -93,17 +99,10 @@ program = "/usr/bin/env"
 args = ["bash", "-i", "-c", "$HOME/.local/bin/ts-create $HOME"]
 
 [window]
-decorations = "full"
+# dimensions = { columns = 2, lines = 0 }
+padding = { x = 0, y = 0 }
+decorations = "None"
 dynamic_title = true
+dynamic_padding = true
 startup_mode = "Maximized"
 decorations_theme_variant = "Dark"
-
-[window.dimensions]
-columns = 160
-lines = 80
-
-[window.padding]
-x = 4
-y = 4
-
-[terminal]

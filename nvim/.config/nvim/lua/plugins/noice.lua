@@ -21,12 +21,37 @@ return {
           -- lua = false, -- to disable a format, set to `false`
         },
       },
+      lsp = {
+        override = {
+          -- override the default lsp markdown formatter with Noice
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          -- override the lsp markdown formatter with Noice
+          ["vim.lsp.util.stylize_markdown"] = true,
+          -- override cmp documentation with Noice (needs the other options to work)
+          ["cmp.entry.get_documentation"] = true,
+        },
+      },
       popupmenu = {
         enabled = true, -- keep completions
         backend = "nui", -- or "cmp" if you're using nvim-cmp for cmdline
       },
       views = {
+        hover = {
+          relative = "cursor",
+          border = {
+            style = "rounded",
+          },
+          win_options = {
+            winhighlight = {
+              Normal = "NormalFloat",
+              FloatBorder = "FloatBorder",
+            },
+          },
+        },
         cmdline_popup = {
+          border = {
+            style = "rounded",
+          },
           position = {
             row = 1,
             col = "50%",
@@ -49,6 +74,12 @@ return {
           border = {
             style = "rounded",
             padding = { 0, 1 },
+          },
+          win_options = {
+            winhighlight = {
+              Normal = "NormalFloat",
+              FloatBorder = "FloatBorder",
+            },
           },
         },
       },

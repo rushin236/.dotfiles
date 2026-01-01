@@ -1,5 +1,3 @@
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
 export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 export EDITOR=nvim
 export SUDO_EDITOR=nvim
@@ -131,52 +129,38 @@ zvm_after_lazy_keybindings() {
     zvm_define_widget my_zvm_vi_put_after
     zvm_define_widget my_zvm_vi_put_before
     zvm_define_widget my_zvm_vi_substitute
-    zvm_define_widget my_zvm_vi_substitute_whole_line
-    zvm_define_widget my_zvm_vi_replace_selection
-    # zvm_define_widget my_history_search_forward
-    # zvm_define_widget my_history_search_backward
-    # zvm_define_widget my_fzf_history_widget
+    # zvm_define_widget my_zvm_vi_substitute_whole_line
+    # zvm_define_widget my_zvm_vi_replace_selection
     zvm_define_widget conda_toggle_env
-
-    # zvm_bindkey viins '^r' my_fzf_history_widget
-    # zvm_bindkey viins '^n' my_history_search_forward
-    # zvm_bindkey viins '^p' my_history_search_backward
-
-    zvm_bindkey viins '^p' history-search-backward
-    zvm_bindkey viins '^n' history-search-forward
-    zvm_bindkey viins '^[t' conda_toggle_widget
 
     zvm_bindkey vicmd 'y' my_zvm_vi_yank
     zvm_bindkey vicmd 'p' my_zvm_vi_put_after
     zvm_bindkey vicmd 'P' my_zvm_vi_put_before
-    zvm_bindkey vicmd 'yy' my_zvm_vi_substitute_whole_line
+    # zvm_bindkey vicmd 'yy' my_zvm_vi_substitute_whole_line
 
     zvm_bindkey visual 'y' my_zvm_vi_yank
     zvm_bindkey visual 'p' my_zvm_vi_put_after
     zvm_bindkey visual 'P' my_zvm_vi_put_before
-    # zvm_bindkey visual 'r' my_zvm_vi_replace_selection
+    zvm_bindkey visual 'r' my_zvm_vi_replace_selection
     zvm_bindkey visual 'c' my_zvm_vi_change
     zvm_bindkey visual 'd' my_zvm_vi_delete
     zvm_bindkey visual 's' my_zvm_vi_substitute
     zvm_bindkey visual 'x' my_zvm_vi_delete
 }
 
-zvm_after_init_commands+=(
-    # zvm_after_lazy_keybindings
+# The plugin will auto execute this zvm_after_init function
+function zvm_after_init() {
     # fzf
-    '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh'
-)
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# zsh mode
-# normal mode
-# bindkey -e
-# vim mode
-bindkey -v
+    # vim mode (for normal mode use -e)
+    bindkey -v
 
-# Keybindings
-# bindkey '^p' history-search-backward
-# bindkey '^n' history-search-forward
-# bindkey '^[t' conda_toggle_widget
+    # Keybindings
+    bindkey '^p' history-search-backward
+    bindkey '^n' history-search-forward
+    bindkey '^t' conda_toggle_widget
+}
 
 # History config
 HISTSIZE=10000
@@ -245,32 +229,6 @@ alias dockstat='systemctl status docker'
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
-# Only auto-launch tmux if not explicitly disabled
-# if [[ -z "$DISABLE_AUTO_TMUX" && -z "$TMUX" ]] && ! tmux info &>/dev/null; then
-#     ~/.local/bin/ts-create "$HOME"
-#     exit 0
-# fi
 
-# Global flag variable (0 = not yet run, 1 = already ran)
-# typeset -g __vi_mode_fixup_done=0
-#
-# # Run once, then remove the widget so it never runs again this session
-# my_vi_mode_fixup() {
-#     # Guard — prevent re-execution
-#     (( __vi_mode_fixup_done )) && return 0
-#     __vi_mode_fixup_done=1
-#
-#     # Safe to call ZLE-dependent functions here
-#     zvm_exit_insert_mode
-#     my_zvm_vi_yank
-#     # zvm_viins_undo
-#     zvm_enter_insert_mode
-#
-#     # Remove the widget so it won't run on subsequent prompts
-#     zle -D zle-line-init 2>/dev/null || true
-# }
-#
-# # Only install if not already executed
-# if (( ! __vi_mode_fixup_done )); then
-#     zle -N zle-line-init my_vi_mode_fixup
-# fi
+# Created by `pipx` on 2025-12-15 15:01:40
+export PATH="$PATH:/home/rushin/.local/bin"
