@@ -54,7 +54,7 @@ return {
           hl.CursorLine = { bg = "#2c3135" }
           hl.LineNr = { fg = colors.fg_gutter }
           hl.CursorLineNr = { fg = colors.fg }
-          hl.Pmenu = { bg = colors.bg_highlight }
+          hl.Pmenu = { bg = colors.bg }
           hl.PmenuSel = { bg = "#373e47" }
           hl.NormalFloat = { bg = colors.bg_float }
           hl.FloatBorder = { bg = colors.bg_float, fg = colors.border }

@@ -38,6 +38,13 @@ return {
           highlight = "NeoTreeGitStatus",
         },
       },
+      filesystem = {
+        bind_to_cwd = true,
+        follow_current_file = {
+          enabled = true,
+        },
+        use_libuv_file_watcher = true,
+      },
       window = {
         position = "left",
         width = 30,

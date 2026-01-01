@@ -103,31 +103,44 @@ fi
 log_success "Directory validated: $dir"
 
 # === Session Management ===
-session=$(basename "$dir" | tr . _)
-log_info "Session name: $session"
+base_session=$(basename "$dir" | tr . _)
+session="$base_session"
+
+log_info "Base session name: $base_session"
 log_info "Working directory: $dir"
 
-# Check if session already exists
+# Find an available session name: base, base 01, base 02, ...
 if tmux has-session -t="$session" 2>/dev/null; then
-    log_warning "Session '$session' already exists, reusing it"
-else
-    log_info "Creating new tmux session: $session"
+    log_warning "Session '$session' already exists, searching for next free name"
 
-    if tmux new-session -ds "$session" -c "$dir"; then
-        log_success "Session created: $session"
-    else
-        log_error "Failed to create session: $session"
-        exit 1
-    fi
-
-    # Send command if provided
-    if [[ -n "$cmd" ]]; then
-        log_info "Sending command to session: $cmd"
-        if tmux send-keys -t "$session" "$cmd" Enter; then
-            log_success "Command sent successfully: $cmd"
-        else
-            log_error "Failed to send command: $cmd"
+    i=1
+    while :; do
+        candidate=$(printf '%s %02d' "$base_session" "$i")
+        if ! tmux has-session -t="$candidate" 2>/dev/null; then
+            session="$candidate"
+            break
         fi
+        i=$((i + 1))
+    done
+fi
+
+log_info "Using session name: $session"
+
+log_info "Creating new tmux session: $session"
+if tmux new-session -ds "$session" -c "$dir"; then
+    log_success "Session created: $session"
+else
+    log_error "Failed to create session: $session"
+    exit 1
+fi
+
+# Send command if provided
+if [[ -n "$cmd" ]]; then
+    log_info "Sending command to session: $cmd"
+    if tmux send-keys -t "$session" "$cmd" Enter; then
+        log_success "Command sent successfully: $cmd"
+    else
+        log_error "Failed to send command: $cmd"
     fi
 fi
 
@@ -150,5 +163,5 @@ else
     fi
 fi
 
-unset DISABLE_AUTO_TMUX
+# unset DISABLE_AUTO_TMUX
 log_success "Script completed successfully"
