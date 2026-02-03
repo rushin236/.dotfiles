@@ -96,7 +96,7 @@ semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 [terminal.shell]
 # program = "/usr/bin/zsh"
 program = "/usr/bin/env"
-args = ["bash", "-i", "-c", "$HOME/.local/bin/ts-create $HOME"]
+args = ["bash", "-i", "-c", "$HOME/.local/bin/ts-create \"$PWD\""]
 
 [window]
 # dimensions = { columns = 2, lines = 0 }
