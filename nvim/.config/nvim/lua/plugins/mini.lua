@@ -1,4 +1,5 @@
 return {
+  -- Mini.ai (around/inner)
   {
     "nvim-mini/mini.ai",
     version = "*",
@@ -38,6 +39,8 @@ return {
       }
     end,
   },
+
+  -- MiniFiles
   {
     "nvim-mini/mini.files",
     version = "*",
@@ -79,6 +82,8 @@ return {
       },
     },
   },
+
+  -- miniTrailspace
   {
     "echasnovski/mini.trailspace",
     event = { "BufReadPost", "BufNewFile" },
@@ -101,6 +106,8 @@ return {
       })
     end,
   },
+
+  -- MiniPairs
   {
     "nvim-mini/mini.pairs",
     event = "InsertEnter",
@@ -116,5 +123,36 @@ return {
       -- better deal with markdown code blocks
       markdown = true,
     },
+  },
+
+  -- MiniIndentscope
+  {
+    "nvim-mini/mini.indentscope",
+    version = "*",
+    event = "BufReadPre",
+    config = function()
+      -- Vertical scope line (thicker)
+      vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", {
+        fg = "#444c56",
+      })
+
+      -- Start of current indent scope (underline)
+      vim.api.nvim_set_hl(0, "MiniIndentscopePrefix", {
+        underline = true,
+        fg = "#444c56",
+      })
+
+      require("mini.indentscope").gen_animation.none()
+
+      require("mini.indentscope").setup({
+        symbol = "┃", -- thicker line
+        draw = {
+          delay = 0, -- no animation
+        },
+        options = {
+          try_as_border = true,
+        },
+      })
+    end,
   },
 }

@@ -23,6 +23,9 @@ return {
             return #diag > 0
           end,
         },
+        ["clang-format"] = {
+          command = "/usr/bin/clang-format",
+        },
       },
       formatters_by_ft = {
         javascript = { "prettier" },

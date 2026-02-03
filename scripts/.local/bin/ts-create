@@ -50,7 +50,7 @@ log_info "FZF_PATH: $FZF_PATH"
 log_info "RECENT_DIRS: $RECENT_DIRS"
 
 # === Arguments ===
-dir="$1"
+dir="${1:-$PWD}"
 cmd="$2"
 
 log_info "Directory argument: ${dir:-<not provided>}"

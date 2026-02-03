@@ -1,5 +1,8 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
+# unset wayland variables just in case
+exec_always --no-startup-id systemctl --user unset-environment WAYLAND_DISPLAY XDG_SESSION_TYPE
+
 set $mod Mod4
 
 font pango:JetBrainsMono Nerd Font 14
@@ -28,7 +31,6 @@ exec_always --no-startup-id "$HOME/.config/i3/scripts/apply_icc.sh"
 # Auto-lock after 10 minutes
 exec --no-startup-id "$HOME/.config/i3/scripts/dpms_control.sh"
 exec --no-startup-id xidlehook --not-when-fullscreen --not-when-audio --timer 600 "betterlockscreen -l blur" ""
-
 
 # Use pactl to adjust volume in PulseAudio.
 # set $refresh_i3status killall -SIGUSR1 i3status
@@ -226,6 +228,6 @@ gaps outer 15px
 
 # Startup applications
 exec --no-startup-id picom
-exec --no-startup-id easyeffects --gapplication-service
 exec --no-startup-id fdm --hidden
-# exec --no-startup-id coolercontrol
+exec --no-startup-id coolercontrol --disable-gpu
+exec --no-startup-id easyeffects --service-mode -w

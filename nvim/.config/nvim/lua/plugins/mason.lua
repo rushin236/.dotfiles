@@ -57,7 +57,7 @@ return {
         "black", -- python formatter
         "eslint_d", -- JS and TS linting
         "cpplint", -- c, cpp linter
-        "clang-format", -- c, cpp formatter
+        -- "clang-format", -- c, cpp formatter
         "codelldb", -- c, cpp debugger
         "markdown-toc", -- markdown formatter
         "beautysh", -- bash formatter
