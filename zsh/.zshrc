@@ -4,6 +4,12 @@ export SUDO_EDITOR=nvim
 
 eval "$(oh-my-posh init zsh --config ~/.dotfiles/zsh/.zsh/themes/craver.omp.json)"
 
+# SSH Agent Auto-Start
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   eval "$(ssh-agent -s)" > /dev/null
+   ssh-add ~/.ssh/id_ed25519
+fi
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$HOME/miniconda3/bin/conda" 'shell.zsh' 'hook' 2>/dev/null)"
@@ -159,7 +165,7 @@ function zvm_after_init() {
     # Keybindings
     bindkey '^p' history-search-backward
     bindkey '^n' history-search-forward
-    bindkey '^t' conda_toggle_widget
+    bindkey '\et' conda_toggle_widget
 }
 
 # History config
