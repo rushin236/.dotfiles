@@ -18,10 +18,13 @@ return {
               command = { "zsh" },
             },
             python = {
-              command = { "python3" }, -- or { "ipython", "--no-autoindent" }
+              command = { "python" }, -- or { "ipython", "--no-autoindent" }
               format = common.bracketed_paste_python,
               block_dividers = { "# %%", "#%%" },
               env = { PYTHON_BASIC_REPL = "1" }, --this is needed for python3.13 and up.
+            },
+            markdown = {
+              command = { "python" },
             },
           },
           -- set the file type of the newly created repl to ft
