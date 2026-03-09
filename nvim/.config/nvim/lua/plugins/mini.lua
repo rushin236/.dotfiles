@@ -1,5 +1,5 @@
 return {
-  -- Mini.ai (around/inner)
+  -- mini.ai
   {
     "nvim-mini/mini.ai",
     version = "*",
@@ -40,34 +40,7 @@ return {
     end,
   },
 
-  -- MiniFiles
-  {
-    "nvim-mini/mini.files",
-    version = "*",
-    config = function()
-      local MiniFiles = require("mini.files")
-      MiniFiles.setup({
-        options = {
-          use_as_default_explorer = false,
-        },
-        mappings = {
-          go_in = "<CR>", -- Map both Enter and L to enter directories or open files
-          go_in_plus = "l",
-          go_out_plus = "h",
-        },
-      })
-      vim.keymap.set(
-        "n",
-        "<leader>fm",
-        "<cmd>lua MiniFiles.open()<CR>",
-        { desc = "Toggle mini file explorer" }
-      ) -- toggle file explorer
-      vim.keymap.set("n", "<leader>fM", function()
-        MiniFiles.open(vim.api.nvim_buf_get_name(0), false)
-        MiniFiles.reveal_cwd()
-      end, { desc = "Toggle into currently opened file" })
-    end,
-  },
+  -- mini.surround
   {
     "nvim-mini/mini.surround",
     version = "*",
@@ -83,7 +56,7 @@ return {
     },
   },
 
-  -- miniTrailspace
+  -- mini.trailspace
   {
     "echasnovski/mini.trailspace",
     event = { "BufReadPost", "BufNewFile" },
@@ -107,7 +80,7 @@ return {
     end,
   },
 
-  -- MiniPairs
+  -- mini.pairs
   {
     "nvim-mini/mini.pairs",
     event = "InsertEnter",
@@ -125,7 +98,7 @@ return {
     },
   },
 
-  -- MiniIndentscope
+  -- mini.indentscope
   {
     "nvim-mini/mini.indentscope",
     version = "*",

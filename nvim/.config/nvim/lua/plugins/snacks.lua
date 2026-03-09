@@ -4,31 +4,35 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
-    -- NOTE: Options
+
     opts = {
-      styles = {
-        input = {
-          keys = {
-            n_esc = { "<C-c>", { "cmp_close", "cancel" }, mode = "n", expr = true },
-            i_esc = { "<C-c>", { "cmp_close", "stopinsert" }, mode = "i", expr = true },
-          },
-        },
-      },
-      -- Snacks Modules
-      input = {
-        enabled = true,
-      },
-      quickfile = {
-        enabled = true,
-        exclude = { "latex" },
-      },
-      -- HACK: read picker docs @ https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
+      -- Core UI improvements
+      notifier = { enabled = true },
+      input = { enabled = true },
+      quickfile = { enabled = true, exclude = { "latex" } },
+
+      -- Useful editing utilities
+      rename = { enabled = true },
+      scratch = { enabled = true },
+      scope = { enabled = true },
+      -- indent = { enabled = true },
+      toggle = { enabled = true },
+
+      -- UI modes
+      zen = { enabled = true },
+
+      -- Terminal integration
+      -- terminal = { enabled = true },
+
+      -- Picker (your search engine)
       picker = {
         enabled = true,
+
         matchers = {
           frecency = true,
           cwd_bonus = false,
         },
+
         formatters = {
           file = {
             filename_first = false,
@@ -36,12 +40,12 @@ return {
             icon_width = 2,
           },
         },
+
         layout = {
-          -- presets options : "default" , "ivy" , "ivy-split" , "telescope" , "vscode", "select" , "sidebar"
-          -- override picker layout in keymaps function as a param below
-          preset = "telescope", -- defaults to this layout unless overidden
+          preset = "telescope",
           cycle = false,
         },
+
         layouts = {
           select = {
             preview = false,
@@ -57,11 +61,18 @@ return {
               title_pos = "center",
               { win = "input", height = 1, border = "bottom" },
               { win = "list", border = "none" },
-              { win = "preview", title = "{preview}", width = 0.6, height = 0.4, border = "top" },
+              {
+                win = "preview",
+                title = "{preview}",
+                width = 0.6,
+                height = 0.4,
+                border = "top",
+              },
             },
           },
+
           telescope = {
-            reverse = true, -- set to false for search bar to be on top
+            reverse = true,
             layout = {
               box = "horizontal",
               backdrop = false,
@@ -88,6 +99,7 @@ return {
               },
             },
           },
+
           ivy = {
             layout = {
               box = "vertical",
@@ -108,22 +120,7 @@ return {
           },
         },
       },
-      -- image = {
-      --   enabled = true,
-      --   doc = {
-      --     float = true, -- show image on cursor hover
-      --     inline = false, -- show image inline
-      --     max_width = 50,
-      --     max_height = 30,
-      --     wo = {
-      --       wrap = false,
-      --     },
-      --   },
-      --   convert = {
-      --     notify = true,
-      --     command = "magick",
-      --   },
-      -- },
+
       dashboard = {
         enabled = true,
         sections = {
@@ -140,8 +137,9 @@ return {
         },
       },
     },
-    -- NOTE: Keymaps
+
     keys = {
+      -- Git
       {
         "<leader>gg",
         function()
@@ -156,82 +154,114 @@ return {
         end,
         desc = "Lazygit Logs",
       },
+
+      -- Rename file
+      {
+        "<leader>rN",
+        function()
+          require("snacks").rename.rename_file()
+        end,
+        desc = "Rename Current File",
+      },
+
+      -- Terminal
       -- {
-      --   "<leader>rN",
+      --   "<leader>tt",
       --   function()
-      --     require("snacks").rename.rename_file()
+      --     require("snacks").terminal.toggle()
       --   end,
-      --   desc = "Fast Rename Current File",
-      -- },
-      -- {
-      --   "<leader>dB",
-      --   function()
-      --     require("snacks").bufdelete()
-      --   end,
-      --   desc = "Delete or Close Buffer  (Confirm)",
+      --   desc = "Toggle Terminal",
       -- },
 
-      -- Snacks Picker
+      -- File search
       {
         "<leader>ff",
         function()
           require("snacks").picker.files({ hidden = true })
         end,
-        desc = "Find Files (Snacks Picker)",
+        desc = "Find Files",
       },
+
       {
-        "<leader>fc",
+        "<leader>fr",
         function()
-          require("snacks").picker.files({ cwd = "~/.dotfiles/nvim/.config/nvim/lua" })
+          require("snacks").picker.recent()
         end,
-        desc = "Find Config File",
+        desc = "Recent Files",
       },
+
+      {
+        "<leader>fb",
+        function()
+          require("snacks").picker.buffers()
+        end,
+        desc = "Buffers",
+      },
+
       {
         "<leader>fs",
         function()
-          require("snacks").picker.grep()
+          require("snacks").picker.grep({
+            hidden = true,
+            ignored = true,
+          })
         end,
-        desc = "Grep word",
+        desc = "Live Grep",
       },
+
       {
-        "<leader>fws",
+        "<leader>fw",
         function()
-          require("snacks").picker.grep_word()
+          require("snacks").picker.grep_word({
+            hidden = true,
+            ignored = true,
+          })
         end,
-        desc = "Search Visual selection or Word",
         mode = { "n", "x" },
+        desc = "Search Word",
       },
+
       {
         "<leader>fk",
         function()
           require("snacks").picker.keymaps({ layout = "ivy" })
         end,
-        desc = "Search Keymaps (Snacks Picker)",
+        desc = "Search Keymaps",
       },
 
-      -- Git Stuff
-      {
-        "<leader>gbr",
-        function()
-          require("snacks").picker.git_branches({ layout = "select" })
-        end,
-        desc = "Pick and Switch Git Branches",
-      },
-
-      -- Other Utils
-      -- {
-      --   "<leader>uC",
-      --   function()
-      --     require("snacks").picker.colorschemes({ layout = "ivy" })
-      --   end,
-      --   desc = "Pick Color Schemes",
-      -- },
       {
         "<leader>fh",
         function()
           require("snacks").picker.help()
         end,
         desc = "Help Pages",
+      },
+
+      -- Git branches
+      {
+        "<leader>gbr",
+        function()
+          require("snacks").picker.git_branches({ layout = "select" })
+        end,
+        desc = "Git Branches",
+      },
+
+      -- Zen mode
+      {
+        "<leader>uz",
+        function()
+          require("snacks").zen()
+        end,
+        desc = "Zen Mode",
+      },
+
+      -- Scratch buffer
+      {
+        "<leader>us",
+        function()
+          require("snacks").scratch()
+        end,
+        desc = "Scratch Buffer",
       },
     },
   },

@@ -32,11 +32,6 @@ return {
         map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
         map("n", "<leader>D", vim.lsp.buf.type_definition, "Type definition")
 
-        -- Formatting (common convention)
-        map({ "n", "v" }, "<leader>f", function()
-          vim.lsp.buf.format({ async = true })
-        end, "Format buffer")
-
         -- Diagnostics
         map("n", "gl", vim.diagnostic.open_float, "Line diagnostics")
         map("n", "[d", function()

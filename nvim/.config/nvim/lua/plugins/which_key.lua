@@ -6,6 +6,7 @@ return {
 
     wk.setup({
       preset = "helix",
+      delay = 200,
     })
 
     wk.add({
@@ -19,8 +20,9 @@ return {
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
-        { "<leader>s", group = "split" },
+        { "<leader>u", group = "ui" },
         { "<leader>v", group = "venv" },
+        { "<leader>w", group = "Window" },
         { "<leader>x", group = "diagnostics/quickfix" },
         { "[", group = "prev" },
         { "]", group = "next" },

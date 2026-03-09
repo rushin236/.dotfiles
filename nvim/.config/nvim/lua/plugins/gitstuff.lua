@@ -56,6 +56,7 @@ return {
       end,
     },
   },
+
   -- Lazy git
   {
     "kdheepak/lazygit.nvim",

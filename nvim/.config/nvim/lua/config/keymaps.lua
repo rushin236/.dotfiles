@@ -1,115 +1,123 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
-
+-- Keymaps
 local opts = { noremap = true, silent = true }
 local map = vim.keymap.set
 
--- Insert Exit Map
-map("i", "jk", "<Esc>")
+----------------------------------------------------
+-- INSERT MODE
+----------------------------------------------------
+map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 
--- Move to window using the <ctrl> hjkl keys
-map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
-
--- Resize window using <ctrl> arrow keys
-map({ "n", "t" }, "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
-map({ "n", "t" }, "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
-map({ "n", "t" }, "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
-map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
-
--- Move Lines in i, n, x mode
-map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
-map("n", "<A-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
-map("x", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
-map("x", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
-
-map("n", "J", "mzJ`z")
-map("n", "<C-d>", "<C-d>zz", { desc = "move down in buffer with cursor centered" })
-map("n", "<C-u>", "<C-u>zz", { desc = "move up in buffer with cursor centered" })
-map("n", "n", "nzzzv")
-map("n", "N", "Nzzzv")
+----------------------------------------------------
+-- BASIC EDITING
+----------------------------------------------------
+map("n", "<C-d>", "<C-d>zz", { desc = "Half page down centered" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Half page up centered" })
+map("n", "n", "nzzzv", { desc = "Next search centered" })
+map("n", "N", "Nzzzv", { desc = "Prev search centered" })
 
 map("x", "<", "<gv", opts)
 map("x", ">", ">gv", opts)
 
-map("n", "<ESC>", ":nohl<CR>", { desc = "Clear search hl", silent = true })
+----------------------------------------------------
+-- REGISTER SAFE OPERATIONS
+----------------------------------------------------
+map({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without yank" })
+map("x", "<leader>p", '"_dP', { desc = "Paste without replacing yank" })
 
--- format without prettier using the built in
-map("n", "<leader>cf", vim.lsp.buf.format)
+----------------------------------------------------
+-- SEARCH
+----------------------------------------------------
+-- Better clear highlight
+map("n", "<Esc>", function()
+  vim.cmd("nohlsearch")
+end, { desc = "Clear search highlight" })
 
---Stars new tmux session from in here
--- map("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+----------------------------------------------------
+-- WINDOW NAVIGATION
+----------------------------------------------------
+map("n", "<C-h>", "<C-w>h", { desc = "Window left" })
+map("n", "<C-j>", "<C-w>j", { desc = "Window down" })
+map("n", "<C-k>", "<C-w>k", { desc = "Window up" })
+map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 
--- tabs
-map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
-map("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
-map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
-map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
-map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
-map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
-map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+----------------------------------------------------
+-- WINDOW MANAGEMENT
+----------------------------------------------------
+map("n", "<leader>wv", "<C-w>v", { desc = "Vertical split" })
+map("n", "<leader>wh", "<C-w>s", { desc = "Horizontal split" })
+map("n", "<leader>we", "<C-w>=", { desc = "Equalize splits" })
+map("n", "<leader>wx", "<cmd>close<CR>", { desc = "Close window" })
 
---split management
-map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })
--- split window vertically
-map("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })
--- split window horizontally
-map("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
--- close current split window
-map("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
+----------------------------------------------------
+-- WINDOW RESIZING
+----------------------------------------------------
+map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase window height" })
+map("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease window height" })
+map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
+map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase window width" })
 
--- Copy filepath to the clipboard
+----------------------------------------------------
+-- MOVE LINES
+----------------------------------------------------
+map("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+map("n", "<A-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+map("i", "<A-j>", "<Esc><cmd>m .+1<CR>==gi", { desc = "Move line down" })
+map("i", "<A-k>", "<Esc><cmd>m .-2<CR>==gi", { desc = "Move line up" })
+map("x", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("x", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+
+----------------------------------------------------
+-- TABS
+----------------------------------------------------
+map("n", "<leader><tab>n", "<cmd>tabnew<CR>", { desc = "New tab" })
+map("n", "<leader><tab>x", "<cmd>tabclose<CR>", { desc = "Close tab" })
+map("n", "<leader><tab>o", "<cmd>tabonly<CR>", { desc = "Close other tabs" })
+map("n", "<leader><tab>]", "<cmd>tabnext<CR>", { desc = "Next tab" })
+map("n", "<leader><tab>[", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
+
+-- Numeric tab switching
+for i = 1, 9 do
+  map("n", "<leader><tab>" .. i, i .. "gt", { desc = "Go to tab " .. i })
+end
+
+----------------------------------------------------
+-- FILE UTILITIES
+----------------------------------------------------
 map("n", "<leader>fp", function()
-  local filePath = vim.fn.expand("%:~") -- Gets the file path relative to the home directory
-  vim.fn.setreg("+", filePath) -- Copy the file path to the clipboard register
-  print("File path copied to clipboard: " .. filePath) -- Optional: print message to confirm
-end, { desc = "Copy file path to clipboard" })
+  local path = vim.fn.expand("%:~")
+  vim.fn.setreg("+", path)
+  print("Copied: " .. path)
+end, { desc = "Copy file path" })
 
--- Diagnostics
+----------------------------------------------------
+-- DIAGNOSTICS
+----------------------------------------------------
 map("n", "]d", function()
   vim.diagnostic.jump({ count = 1 })
-end, vim.tbl_extend("force", opts, { desc = "Next Diagnostic" }))
+end, { desc = "Next diagnostic" })
 
 map("n", "[d", function()
   vim.diagnostic.jump({ count = -1 })
-end, vim.tbl_extend("force", opts, { desc = "Prev Diagnostic" }))
+end, { desc = "Previous diagnostic" })
 
 map("n", "]e", function()
-  vim.diagnostic.jump({
-    count = 1,
-    severity = vim.diagnostic.severity.ERROR,
-  })
-end, vim.tbl_extend("force", opts, { desc = "Next Error" }))
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Next error" })
 
 map("n", "[e", function()
-  vim.diagnostic.jump({
-    count = -1,
-    severity = vim.diagnostic.severity.ERROR,
-  })
-end, vim.tbl_extend("force", opts, { desc = "Prev Error" }))
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Previous error" })
 
 map("n", "]w", function()
-  vim.diagnostic.jump({
-    count = 1,
-    severity = vim.diagnostic.severity.WARN,
-  })
-end, vim.tbl_extend("force", opts, { desc = "Next Warning" }))
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
+end, { desc = "Next warning" })
 
 map("n", "[w", function()
-  vim.diagnostic.jump({
-    count = -1,
-    severity = vim.diagnostic.severity.WARN,
-  })
-end, vim.tbl_extend("force", opts, { desc = "Prev Warning" }))
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
+end, { desc = "Previous warning" })
 
--- Quickfix navigation
-map("n", "]q", "<cmd>cnext<CR>", vim.tbl_extend("force", opts, { desc = "Next Quickfix" }))
-
-map("n", "[q", "<cmd>cprev<CR>", vim.tbl_extend("force", opts, { desc = "Prev Quickfix" }))
-
-map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "mode t to n", noremap = true })
+----------------------------------------------------
+-- QUICKFIX
+----------------------------------------------------
+map("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix" })
+map("n", "[q", "<cmd>cprev<CR>", { desc = "Prev quickfix" })
