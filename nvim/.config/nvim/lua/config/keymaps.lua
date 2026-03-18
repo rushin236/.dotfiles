@@ -8,6 +8,22 @@ local map = vim.keymap.set
 map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 
 ----------------------------------------------------
+-- SAVE (WRITE) OPERATIONS
+----------------------------------------------------
+map("n", "<leader>ss", "<cmd>w<CR>", { desc = "Save current file" })
+map("n", "<leader>sa", "<cmd>wa<CR>", { desc = "Save all files" })
+map("n", "<leader>sq", "<cmd>wq<CR>", { desc = "Save and quit" })
+map("n", "<leader>sQ", "<cmd>wqa<CR>", { desc = "Save all and quit" })
+
+----------------------------------------------------
+-- QUIT OPERATIONS
+----------------------------------------------------
+map("n", "<leader>qq", "<cmd>q<CR>", { desc = "Quit all" })
+map("n", "<leader>qQ", "<cmd>q!<CR>", { desc = "Force quit all (Discard changes)" })
+map("n", "<leader>qa", "<cmd>qa<CR>", { desc = "Quit all" })
+map("n", "<leader>qA", "<cmd>qa!<CR>", { desc = "Quit all" })
+
+----------------------------------------------------
 -- BASIC EDITING
 ----------------------------------------------------
 map("n", "<C-d>", "<C-d>zz", { desc = "Half page down centered" })
@@ -21,8 +37,8 @@ map("x", ">", ">gv", opts)
 ----------------------------------------------------
 -- REGISTER SAFE OPERATIONS
 ----------------------------------------------------
-map({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without yank" })
-map("x", "<leader>p", '"_dP', { desc = "Paste without replacing yank" })
+-- map({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without yank" })
+-- map("x", "<leader>p", '"_dP', { desc = "Paste without replacing yank" })
 
 ----------------------------------------------------
 -- SEARCH
@@ -44,7 +60,7 @@ map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 -- WINDOW MANAGEMENT
 ----------------------------------------------------
 map("n", "<leader>wv", "<C-w>v", { desc = "Vertical split" })
-map("n", "<leader>wh", "<C-w>s", { desc = "Horizontal split" })
+map("n", "<leader>ws", "<C-w>s", { desc = "Horizontal split" })
 map("n", "<leader>we", "<C-w>=", { desc = "Equalize splits" })
 map("n", "<leader>wx", "<cmd>close<CR>", { desc = "Close window" })
 
