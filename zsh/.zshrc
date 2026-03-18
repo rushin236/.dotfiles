@@ -4,12 +4,6 @@ export SUDO_EDITOR=nvim
 
 eval "$(oh-my-posh init zsh --config ~/.dotfiles/zsh/.zsh/themes/craver.omp.json)"
 
-# SSH Agent Auto-Start
-if [ -z "$SSH_AUTH_SOCK" ]; then
-   eval "$(ssh-agent -s)" > /dev/null
-   ssh-add ~/.ssh/id_ed25519 > /dev/null
-fi
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$HOME/miniconda3/bin/conda" 'shell.zsh' 'hook' 2>/dev/null)"

@@ -1,16 +1,25 @@
--- Set root dir if dir is passed
+-- Set root dir if dir is passed (Oil.nvim compatible)
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
-    -- Ensure args is always a table
+    -- 1. Check if the active buffer was hijacked by Oil
+    if vim.bo.filetype == "oil" then
+      -- Ask Oil for the real, absolute path of the directory
+      local dir = require("oil").get_current_dir()
+      if dir then
+        vim.cmd("silent! cd " .. vim.fn.fnameescape(dir))
+      end
+      return -- Exit early since we successfully set the directory
+    end
+
+    -- 2. Fallback for non-Oil scenarios (Preserves your original logic)
     local args = vim.fn.argv()
     if type(args) == "string" then
       args = { args }
     end
 
-    -- Find the first directory argument
     for _, arg in ipairs(args) do
       if vim.fn.isdirectory(arg) == 1 then
-        vim.cmd("silent! cd " .. arg)
+        vim.cmd("silent! cd " .. vim.fn.fnameescape(arg))
         break
       end
     end

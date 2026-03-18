@@ -1,3 +1,18 @@
+-- Helper function to check if tmux is installed and we are in a session
+local function is_tmux_available()
+  if vim.fn.executable("tmux") == 0 then
+    vim.notify("Tmux is not installed or not in your PATH!", vim.log.levels.ERROR)
+    return false
+  end
+
+  if not vim.env.TMUX then
+    vim.notify("Not inside a tmux session!", vim.log.levels.WARN)
+    return false
+  end
+
+  return true
+end
+
 -- Helper function to actually execute the command in the chosen pane
 local function execute_in_pane(pane_id, cmd, is_idle)
   if not is_idle then
@@ -11,8 +26,7 @@ end
 
 -- The new Smart Pane Router
 local function send_to_tmux(cmd)
-  if not vim.env.TMUX then
-    print("Not inside a tmux session!")
+  if not is_tmux_available() then
     return
   end
 
@@ -73,7 +87,8 @@ local function send_to_tmux(cmd)
   vim.ui.select(options, {
     prompt = "Select Target Tmux Pane:",
     format_item = function(item)
-      local status_icon = item.is_idle and "🟢 [IDLE]" or "🔴 [BUSY]"
+      -- Changed to standard ASCII text
+      local status_icon = item.is_idle and "[-] [IDLE]" or "[*] [BUSY]"
       return string.format("%s %s (Running: %s)", status_icon, item.name, item.cmd)
     end,
   }, function(choice)
@@ -159,7 +174,7 @@ local function run_file_in_tmux()
       send_to_tmux(string.format("go run %s %s", file, run_args))
     end)
   else
-    print("No interactive tmux command defined for: ." .. file_ext)
+    vim.notify("No interactive tmux command defined for: ." .. file_ext, vim.log.levels.WARN)
   end
 end
 
@@ -181,15 +196,14 @@ local function run_project_in_tmux()
       send_to_tmux("npm " .. script)
     end)
   else
-    print("No project file found. Falling back to Run File.")
+    vim.notify("No project file found. Falling back to Run File.", vim.log.levels.INFO)
     run_file_in_tmux()
   end
 end
 
 -- Function 3: Smart Close Runner Pane
 local function close_runner_pane()
-  if not vim.env.TMUX then
-    print("Not inside a tmux session!")
+  if not is_tmux_available() then
     return
   end
 
@@ -211,7 +225,7 @@ local function close_runner_pane()
 
   -- Scenario A: No panes to close
   if #other_panes == 0 then
-    print("No active runner panes to close!")
+    vim.notify("No active runner panes to close!", vim.log.levels.INFO)
     return
   end
 
@@ -225,7 +239,8 @@ local function close_runner_pane()
   vim.ui.select(other_panes, {
     prompt = "Select Tmux Pane to KILL:",
     format_item = function(item)
-      local status_icon = item.is_idle and "🟢 [IDLE]" or "🔴 [BUSY]"
+      -- Changed to standard ASCII text
+      local status_icon = item.is_idle and "[-] [IDLE]" or "[*] [BUSY]"
       return string.format("%s %s (Running: %s)", status_icon, item.name, item.cmd)
     end,
   }, function(choice)
