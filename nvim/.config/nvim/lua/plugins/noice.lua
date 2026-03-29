@@ -22,6 +22,17 @@ return {
         },
       },
       lsp = {
+        signature = {
+          enabled = true,
+          auto_open = {
+            enabled = true,
+            trigger = true, -- Pops up when you type '(' or ','
+            throttle = 50,
+          },
+          opts = {
+            position = { row = 2, col = 2 },
+          },
+        },
         override = {
           -- override the default lsp markdown formatter with Noice
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,

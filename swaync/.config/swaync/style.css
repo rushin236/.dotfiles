@@ -1,0 +1,106 @@
+/* Clean Monochrome Variables */
+@define-color bg-glass rgba(40, 40, 40, 0.65);
+@define-color bg-hover rgba(255, 255, 255, 0.2);
+@define-color text-main #ffffff;
+@define-color text-sub rgba(255, 255, 255, 0.6);
+@define-color border-glass rgba(255, 255, 255, 0.2);
+
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Main Panel */
+.control-center {
+    background: @bg-glass;
+    border: 1px solid @border-glass;
+    border-radius: 16px;
+    margin: 10px;
+    padding: 10px;
+}
+
+/* Notification Popups */
+.notification {
+    /* background: @bg-glass; */
+    border: 1px solid @border-glass;
+    border-radius: 12px;
+    /* color: @text-main; */
+    margin-bottom: 8px;
+    padding: 12px;
+}
+
+/* --- Widgets --- */
+
+/* Buttons Grid (Control Center Icons) */
+.widget-buttons-grid {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+    background: transparent;
+    color: @text-main;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 4px;
+    font-size: 20px; /* Bigger icons */
+}
+
+/* .widget-buttons-grid > flowbox > flowboxchild > button:hover { */
+/*     background: @bg-hover; */
+/* } */
+
+/* MPRIS (Media) */
+.widget-mpris {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.widget-mpris-title {
+    font-weight: bold;
+    color: @text-main;
+}
+.widget-mpris-subtitle {
+    color: @text-sub;
+}
+
+/* Title & Clear Button */
+.widget-title {
+    color: @text-main;
+    font-size: 1.2rem;
+    padding: 10px;
+}
+
+.widget-title > button {
+    background: @bg-hover;
+    color: @text-main;
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
+/* DND Switch */
+.widget-dnd {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.widget-dnd > switch {
+    background: @bg-hover;
+    border-radius: 20px;
+}
+
+.widget-dnd > switch:checked {
+    background: #ffffff;
+}
+
+.widget-dnd > switch slider {
+    background: #1c1c1c;
+    border-radius: 20px;
+}

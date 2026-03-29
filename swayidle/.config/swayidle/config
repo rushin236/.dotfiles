@@ -1,0 +1,8 @@
+# Lock the session directly after 10 minutes
+timeout 600 'swaylock'
+
+# Turn off displays
+timeout 720 'wlopm --off \*' resume 'wlopm --on \*'
+
+# Lock before sleep (use the binary directly)
+before-sleep 'swaylock'

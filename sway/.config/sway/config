@@ -1,0 +1,222 @@
+#########################################################################################
+# SWAYFX CONFIGURATION
+#########################################################################################
+
+# -----------------------------------------------------
+# 1. ENVIRONMENT & VARIABLES
+# -----------------------------------------------------
+set $mod Mod4
+set $terminal alacritty
+set $menu rofi -show drun -theme ~/.config/rofi/launcher.rasi
+
+# -----------------------------------------------------
+# 2. MONITORS & INPUT
+# -----------------------------------------------------
+input "type:touchpad" {
+    tap enabled
+    natural_scroll enabled
+}
+
+# -----------------------------------------------------
+# 3. AUTOSTART (EXEC)
+# -----------------------------------------------------
+# Core Environment & Portals
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland SWAYSOCK I3SOCK
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK
+
+# Daemons
+exec gnome-keyring-daemon --start --components=secrets
+exec sh -c "pkill swaync; swaync"
+exec swayidle
+# Restart OSD server to ensure it sees the new Sway socket
+exec sh -c "pkill swayosd; swayosd-server"
+exec sway-audio-idle-inhibit
+exec /usr/bin/lxqt-policykit-agent
+exec nm-applet --indicator
+exec_always sh -c "pkill shikane; shikane"
+exec_always sh -c "pkill waybar; waybar"
+
+# Background apps
+exec dex --autostart --environment sway
+exec fdm --hidden
+exec coolercontrol --disable-gpu
+exec easyeffects --service-mode -w
+
+# Scripts
+# exec bash $HOME/.config/waybar/scripts/launch.sh
+exec set-wallpaper.sh
+
+# -----------------------------------------------------
+# 4. VISUALS & THEMING
+# -----------------------------------------------------
+smart_gaps off
+gaps inner 11
+gaps outer 15
+default_border pixel 0
+default_floating_border pixel 0
+
+corner_radius 20
+
+shadows on
+shadow_blur_radius 15
+shadow_color #1a1a1aee
+
+blur on
+blur_xray off
+blur_passes 2
+blur_radius 5
+
+# GitHub Dark Dimmed Colors
+set $flamingo #ff7a93
+set $text #9faab8
+set $subtext1 #768390
+set $overlay2 #444c56
+set $base #181b1e
+
+# target                 title      bg      text       indicator  child_border
+client.focused           $base      $base   $text      $text      $text
+client.focused_inactive  $base      $base   $subtext1  $overlay2  $overlay2
+client.unfocused         $base      $base   $subtext1  $overlay2  $overlay2
+client.urgent            $flamingo  $base   $text      $flamingo  $flamingo
+
+# -----------------------------------------------------
+# 5. LAYER RULES (GUI & BLUR)
+# -----------------------------------------------------
+# SwayNC Panel & Notifications
+layer_effects "swaync-control-center" blur enable
+layer_effects "swaync-control-center" blur_passes 2
+layer_effects "swaync-control-center" blur_radius 5
+layer_effects "swaync-control-center" corner_radius 20
+layer_effects "swaync-control-center" blur_ignore_transparent enable
+
+layer_effects "swaync-notification-window" blur enable
+layer_effects "swaync-notification-window" blur_passes 2
+layer_effects "swaync-notification-window" blur_radius 5
+layer_effects "swaync-notification-window" corner_radius 20
+layer_effects "swaync-notification-window" blur_ignore_transparent enable
+
+# Waybar Glassmorphism
+layer_effects "waybar" blur enable
+layer_effects "waybar" blur_passes 2
+layer_effects "waybar" blur_radius 5
+layer_effects "waybar" corner_radius 12
+
+# Rofi Glassmorphism
+layer_effects "rofi" blur enable; blur_ignore_transparent enable
+
+# SwayOSD Glassmorphism
+layer_effects "swayosd" blur enable; blur_ignore_transparent enable; corner_radius 20
+
+# -----------------------------------------------------
+# 6. KEYBINDINGS - CORE
+# -----------------------------------------------------
+bindsym $mod+Return exec $terminal
+bindsym $mod+d exec $menu
+bindsym $mod+n exec swaync-client -t -sw
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+r restart
+
+# Custom Scripts
+bindsym Print exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+x exec swaylock
+bindsym $mod+p exec powermenu.sh
+bindsym $mod+m exec wayland-monitor.py
+bindsym $mod+a exec audio_switch.sh
+bindsym $mod+e exec recent_dir.sh
+
+# -----------------------------------------------------
+# 7. KEYBINDINGS - MEDIA & CUSTOM SCRIPTS
+# -----------------------------------------------------
+# Define the monitor fetcher for brevity
+set $get_mon swaymsg -t get_outputs | jq -r '.[] | select(.focused == true).name'
+
+# Volume / Media
+bindsym XF86AudioRaiseVolume exec swayosd-client --monitor "$($get_mon)" --output-volume 2
+bindsym XF86AudioLowerVolume exec swayosd-client --monitor "$($get_mon)" --output-volume -2
+bindsym XF86AudioMute        exec swayosd-client --monitor "$($get_mon)" --output-volume mute-toggle
+bindsym XF86AudioMicMute     exec swayosd-client --monitor "$($get_mon)" --input-volume mute-toggle
+bindsym XF86MonBrightnessUp   exec swayosd-client --monitor "$($get_mon)" --brightness +10
+bindsym XF86MonBrightnessDown exec swayosd-client --monitor "$($get_mon)" --brightness -10
+bindsym --release Caps_Lock exec swayosd-client --monitor "$($get_mon)" --caps-lock
+bindsym XF86AudioPlay exec swayosd-client --monitor "$($get_mon)" --playerctl play-pause
+bindsym XF86AudioNext exec swayosd-client --monitor "$($get_mon)" --playerctl next
+
+# -----------------------------------------------------
+# 8. KEYBINDINGS - FOCUS & MOVEMENT
+# -----------------------------------------------------
+# Move Focus (vim keys & arrows)
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move Windows
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move to Workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# -----------------------------------------------------
+# 9. LAYOUT CONTROL
+# -----------------------------------------------------
+
+# Mouse Control (Drag floating windows with Mod + Left Click)
+floating_modifier $mod normal
+
+# Split & float & fullscreen
+bindsym $mod+f fullscreen toggle
+bindsym $mod+t layout toggle split
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+minus split h
+bindsym $mod+backslash split v
+bindsym $mod+v floating toggle
+bindsym $mod+Shift+v focus mode_toggle
+
+# Center and Resize
+bindsym $mod+y resize set 1200 800; move position center
+
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}

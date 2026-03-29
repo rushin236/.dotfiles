@@ -1,0 +1,92 @@
+configuration {
+    show-icons: true;
+    display-drun: " ";
+    drun-display-format: "{name}";
+}
+
+* {
+    font: "JetBrainsMono Nerd Font 11";
+    background-color: transparent;
+    text-color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+    spacing: 0px;
+}
+
+/* --- Fullscreen Overlay --- */
+window {
+    fullscreen: true;
+    /* A dark, semi-transparent background so your wallpaper blur shows through */
+    background-color: rgba(15, 15, 15, 0.7); 
+}
+
+/* --- Main Container --- */
+mainbox {
+    /* Pushes the content away from the edges of your screen */
+    padding: 8% 10%; 
+    spacing: 5%;
+}
+
+/* --- Floating Search Bar --- */
+inputbar {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 24px;
+    /* This margin pinches the search bar so it stays in the top center */
+    margin: 0px 30%; 
+    spacing: 12px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    text-color: rgba(255, 255, 255, 0.5);
+    vertical-align: 0.5;
+}
+
+entry {
+    placeholder: "Search Applications...";
+    placeholder-color: rgba(255, 255, 255, 0.5);
+    text-color: #ffffff;
+    vertical-align: 0.5;
+}
+
+/* --- The Grid --- */
+listview {
+    columns: 8;
+    lines: 4;
+    /* Spacing between grid items */
+    spacing: 2% 1%; 
+    cycle: false;
+    dynamic: true;
+    layout: vertical;
+}
+
+/* --- Individual App Items --- */
+element {
+    /* This is the magic line that puts the icon ABOVE the text */
+    orientation: vertical; 
+    padding: 20px 10px;
+    border-radius: 16px;
+}
+
+element normal.normal, element alternate.normal {
+    background-color: transparent;
+}
+
+element selected.normal, element selected.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    text-color: #ffffff;
+}
+
+/* --- Icons and Text --- */
+element-icon {
+    /* Huge icons to match GNOME */
+    size: 64px; 
+    horizontal-align: 0.5;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    margin: 10px 0px 0px 0px;
+}

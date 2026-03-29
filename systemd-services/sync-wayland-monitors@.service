@@ -1,0 +1,17 @@
+[Unit]
+Description=Sync Wayland monitor config for %i on logout/shutdown/reboot
+DefaultDependencies=no
+# Make sure we run before /home unmounts and before shutdown completes
+Before=umount.target shutdown.target reboot.target halt.target exit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/local/bin/sync-wayland-monitors.sh %i
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=halt.target
+WantedBy=reboot.target
+WantedBy=shutdown.target

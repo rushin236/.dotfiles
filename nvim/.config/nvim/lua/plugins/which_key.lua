@@ -20,6 +20,7 @@ return {
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
+        { "<leader>o", group = "oil" },
         { "<leader>q", group = "quit" },
         { "<leader>s", group = "save" },
         { "<leader>u", group = "ui" },

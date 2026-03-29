@@ -59,8 +59,10 @@ map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 ----------------------------------------------------
 -- WINDOW MANAGEMENT
 ----------------------------------------------------
-map("n", "<leader>wv", "<C-w>v", { desc = "Vertical split" })
-map("n", "<leader>ws", "<C-w>s", { desc = "Horizontal split" })
+map("n", "<leader>w\\", "<C-w>v", { desc = "Vertical split" })
+map("n", "<leader>\\", "<C-w>v", { desc = "Vertical split" })
+map("n", "<leader>w-", "<C-w>s", { desc = "Horizontal split" })
+map("n", "<leader>-", "<C-w>s", { desc = "Horizontal split" })
 map("n", "<leader>we", "<C-w>=", { desc = "Equalize splits" })
 map("n", "<leader>wx", "<cmd>close<CR>", { desc = "Close window" })
 

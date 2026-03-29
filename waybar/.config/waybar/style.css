@@ -1,0 +1,114 @@
+/* --- 1. GLOBAL SETTINGS --- */
+* {
+    border: none;
+    font-family: "JetBrainsMono Nerd Font", "SF Pro Display", sans-serif;
+    font-size: 14px;
+    font-weight: 600; /* Increased to make all text match the clock */
+    color: #ffffff; /* Pure white globally */
+}
+
+window#waybar {
+    background: rgba(40, 40, 40, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 2. LAYOUT & SPACING --- */
+#clock,
+#tray {
+    margin: 4px;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+
+/* --- 3. WORKSPACES --- */
+#workspaces {
+    margin: 4px;
+    padding: 2px;
+    padding-right: 2px;
+    padding-left: 12px;
+    border-radius: 8px;
+}
+
+#workspaces button {
+    color: rgba(255, 255, 255, 0.3); /* Dimmer white for inactive dots */
+    padding: 0 2px;
+}
+
+#workspaces button.active,
+#workspaces button.focused {
+    color: #ffffff;
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.4); /* Subtle modern glow */
+}
+
+#workspaces button:hover {
+    background: transparent;
+    color: #ffffff;
+    box-shadow: none;
+}
+
+/* --- 4. TASKBAR --- */
+#taskbar {
+    margin: 4px;
+    padding: 2px 2px;
+    border-radius: 8px;
+}
+
+#taskbar button {
+    padding: 0 6px;
+    border-radius: 6px;
+}
+
+#taskbar button.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#taskbar button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- 5. SYSTEM GROUPS --- */
+#group-hardware,
+#group-connectivity {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 4px 2px;
+    padding: 2px 4px;
+}
+
+#cpu,
+#memory,
+#network,
+#pulseaudio {
+    padding: 0 8px;
+}
+
+#pulseaudio {
+    padding-right: 12px;
+}
+
+/* Internal separators for grouped items */
+#cpu {
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+#network {
+    border-right: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+/* --- 6. HOVER STATES --- */
+#cpu:hover,
+#memory:hover,
+#network:hover,
+#pulseaudio:hover,
+#clock:hover {
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.4); /* Replaced color shift with a glow */
+}
+
+/* --- 7. CLEANUP --- */
+window#waybar.empty #taskbar {
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}

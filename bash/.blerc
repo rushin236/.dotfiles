@@ -1,8 +1,9 @@
 # Enable the interactive dropdown menu when you hit Tab
 bleopt complete_menu_complete=1
-
-# Enable auto-suggestions as you type (like fish/zsh)
 bleopt complete_auto_complete=1
+bleopt complete_menu_color=on
+bleopt complete_menu_style=linewise
+bleopt menu_desc_multicolumn_width=175
 
 function blerc/vim-mode-hook {
     # in blehook keymap_vi_load
@@ -21,30 +22,6 @@ ble-bind -f 'C-n' 'history-search-forward'
 # Optional: Match the arrow keys to this behavior as well
 ble-bind -f 'up'   'history-search-backward'
 ble-bind -f 'down' 'history-search-forward'
-
-# function ble/widget/osc52-yank-last {
-#   # Get text from kill ring or fallback to last yank register
-#   local text="${_ble_edit_kill_ring[0]:-${_ble_edit_reg_yank}}"
-#
-#   if [[ -n "$text" ]]; then
-#     # Base64 encode the text
-#     local b64_text=$(echo -n "$text" | base64 | tr -d '\n')
-#
-#     # Send OSC 52 sequence
-#     if [[ -n "$TMUX" ]]; then
-#         printf "\ePtmux;\e\e]52;c;%s\a\e\\" "$b64_text" > /dev/tty
-#     else
-#         printf "\e]52;c;%s\a" "$b64_text" > /dev/tty
-#     fi
-#
-#     # Correct way to print to the transient status line
-#   #   ble/widget/print -s "OSC 52: Copied to host clipboard"
-#   # else
-#   #   ble/widget/print -s "OSC 52: Kill ring is empty"
-#   fi
-# }
-#
-# ble-bind -m vi_nmap -f 'C-x y' osc52-yank-last
 
 # --- 1. Master Clipboard Sync Widget ---
 function ble/widget/yank-to-system-clipboard {
@@ -71,17 +48,7 @@ function ble/widget/yank-to-system-clipboard {
   else
     printf "\e]52;c;%s\a" "$b64_text" > /dev/tty
   fi
-  
-  # ble/widget/print -s "Copied to terminal via OSC 52"
 }
-
-# --- Visual Mode Wrapper ---
-# function ble/widget/yank-visual-to-system-clipboard {
-#   # 1. Execute standard visual yank (copies selection to kill ring)
-#   ble/widget/vi-command/yank
-#   # 2. Fire our clipboard sync logic
-#   ble/widget/yank-to-system-clipboard
-# }
 
 # --- Normal Mode ---
 # Yank normally (e.g., yy, yiw), then press Space followed by y to push to the system clipboard
@@ -91,6 +58,37 @@ ble-bind -m vi_nmap -f 'SP y' yank-to-system-clipboard
 # Pressing Space followed by y will simulate pressing 'y' (standard yank), 
 # dropping you to Normal mode, and then automatically typing ' y' to trigger the sync script.
 ble-bind -m vi_xmap -s 'SP y' 'y y'
+
+# --- Master Clipboard Paste Widget ---
+function ble/widget/paste-from-system-clipboard {
+  local clipboard_content=""
+
+  # 1. Native Host Clipboard (Wayland / X11)
+  if [[ "$XDG_SESSION_TYPE" == "wayland" ]] && command -v wl-paste >/dev/null 2>&1; then
+    clipboard_content=$(wl-paste --no-newline)
+  elif command -v xclip >/dev/null 2>&1; then
+    clipboard_content=$(xclip -selection clipboard -o)
+  elif command -v pbpaste >/dev/null 2>&1; then
+    clipboard_content=$(pbpaste)
+  else
+    ble/widget/print -s "Error: No supported clipboard tool (wl-paste, xclip) found."
+    return 1
+  fi
+
+  [[ -z "$clipboard_content" ]] && return 0
+
+  # 2. Safely insert at cursor position
+  ble/widget/insert-string "$clipboard_content"
+}
+
+# --- Normal Mode ---
+# Press Space followed by p to paste from system clipboard
+ble-bind -m vi_nmap -f 'SP p' paste-from-system-clipboard
+
+# --- Visual Mode ---
+# Simulates pressing 'd' (deletes selection, drops to Normal mode), 
+# then types ' p' (Space + p) to trigger the Normal mode paste widget above.
+ble-bind -m vi_xmap -s 'SP p' 'd p'
 
 # --- 2. The ble.sh Screen Wrapper ---
 ble/widget/my_conda_toggle() {

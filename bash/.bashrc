@@ -4,21 +4,15 @@
 # Source global definitions
 [ -f /etc/bashrc ] && . /etc/bashrc
 
-# Ensure essential directories exist
-LOCAL_BIN="$HOME/.local/bin"
-mkdir -p "$LOCAL_BIN" "$HOME/bin"
-
-# Path Management
-export PATH="$HOME/bin:$LOCAL_BIN:$HOME/.lmstudio/bin:$PATH"
 export USER=${USER:-$(id -un)}
 
 # Editor Settings
-if ! command -v "$EDITOR" >/dev/null 2>&1; then
-    if command -v nvim >/dev/null 2>&1; then
-        export EDITOR='nvim'
-    elif command -v vim >/dev/null 2>&1; then
-        export EDITOR='vim'
-    fi
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR="$(command -v nvim)"
+elif command -v vim >/dev/null 2>&1; then
+    export EDITOR="$(command -v vim)"
+elif command -v nano >/dev/null 2>&1; then
+    export EDITOR="$(command -v nano)"
 fi
 
 if [ -n "$EDITOR" ]; then
@@ -263,8 +257,8 @@ install_or_update_fzf() {
 
 # --- AUTOMATIC CARAPACE MANAGER ---
 install_or_update_carapace() {
-    local CARAPACE_BIN="$LOCAL_BIN/carapace"
-    local CHECK_FILE="$LOCAL_BIN/.carapace_update_check"
+    local CARAPACE_BIN="$HOME/.local/bin/carapace"
+    local CHECK_FILE="$HOME/.local/bin/.carapace_update_check"
 
     # 1. Detect Architecture dynamically
     local ARCH=$(uname -m)
@@ -326,7 +320,7 @@ install_or_update_carapace() {
 
             if [[ -n "$CARAPACE_URL" ]]; then
                 # Extract *only* the carapace binary into your local bin folder
-                curl -sL "$CARAPACE_URL" | tar -xz -C "$LOCAL_BIN" carapace 2>/dev/null || curl -sL "$CARAPACE_URL" | tar -xz -C "$LOCAL_BIN"
+                curl -sL "$CARAPACE_URL" | tar -xz -C "$HOME/.local/bin" carapace 2>/dev/null || curl -sL "$CARAPACE_URL" | tar -xz -C "$HOME/.local/bin"
                 chmod +x "$CARAPACE_BIN" 2>/dev/null
 
                 # WRITE THE VERSION TO THE CHECK FILE
@@ -409,30 +403,34 @@ alias ..='cd ..'
 alias cp='cp -v'
 alias mv='mv -v'
 alias rm='rm -v'
+alias mkdir='mkdir -v'
 alias grep='grep --color=auto'
 
 # ===================================================
 # ZONE 5: SHELL UI INITIALIZATION
 # ===================================================
 
-# Turn ON Vim keystrokes FIRST so ble.sh loads the Vi module
+# 1. Load basic system fallbacks FIRST (Crucial for ble.sh hooks)
+if [[ -z "$BASH_COMPLETION_VERSINFO" ]] && [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    . /usr/share/bash-completion/bash_completion
+fi
+
+# 2. Turn ON Vim keystrokes so ble.sh loads the Vi module
 set -o vi
 
-# Start the syntax highlighter in the background (Do not attach yet)
+# 3. Start the syntax highlighter in the background (Do not attach yet)
 if [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
     source "$HOME/.local/share/blesh/ble.sh" --noattach
 fi
 
-# Load basic system fallbacks
-[[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-
-# Load Carapace
+# 4. Load Carapace (must be AFTER ble.sh so it outputs the bash-ble bridge)
 if command -v carapace &> /dev/null; then
-    export CARAPACE_BRIDGES='zsh,fish,bash'
+    # export CARAPACE_BRIDGES='zsh,fish,bash'
+    export CARAPACE_BRIDGES='fish'
     source <(carapace _carapace)
 fi
 
-# STANDARD FZF
+# 5. STANDARD FZF
 if [[ -d "$HOME/.fzf/bin" ]]; then
     export PATH="$PATH:$HOME/.fzf/bin"
     eval "$(fzf --bash)"
