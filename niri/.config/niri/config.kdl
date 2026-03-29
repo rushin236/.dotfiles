@@ -1,0 +1,334 @@
+// #########################################################################################
+// # NIRI CONFIGURATION (Organized like Hyprland)
+// #########################################################################################
+
+// # -----------------------------------------------------
+// # 1. ENVIRONMENT & VARIABLES
+// # -----------------------------------------------------
+// Core Environment & Portals
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "NIRI_SOCKET" "XDG_CURRENT_DESKTOP=niri" "XDG_SESSION_TYPE=wayland"
+spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "NIRI_SOCKET" "XDG_CURRENT_DESKTOP"
+
+
+// # -----------------------------------------------------
+// # 2. MONITORS & INPUT
+// # -----------------------------------------------------
+input {
+    keyboard {
+        xkb {}
+        repeat-delay 200
+        repeat-rate 40
+    }
+
+    touchpad {
+        tap
+        // Inverted scrolling.
+        natural-scroll
+        // Disable acceleration.
+        accel-profile "flat"
+    }
+
+    mouse {
+        // Disable acceleration.
+        accel-profile "flat"
+        // Faster scrolling with the mouse wheel.
+        scroll-factor 2.0
+    }
+
+    focus-follows-mouse
+}
+
+
+// # -----------------------------------------------------
+// # 3. AUTOSTART (EXEC)
+// # -----------------------------------------------------
+// Daemons
+spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
+spawn-at-startup "sh" "-c" "pkill swaync; swaync"
+spawn-at-startup "swayidle"
+spawn-at-startup "sh" "-c" "pkill swayosd; swayosd-server"
+spawn-at-startup "sway-audio-idle-inhibit"
+spawn-at-startup "/usr/bin/lxqt-policykit-agent"
+spawn-at-startup "nm-applet" "--indicator"
+spawn-at-startup "sh" "-c" "pkill shikane; shikane"
+spawn-at-startup "sh" "-c" "pkill waybar; waybar"
+
+// Background apps
+spawn-at-startup "dex" "--autostart" "--environment" "niri"
+spawn-at-startup "fdm" "--hidden"
+spawn-at-startup "coolercontrol" "--disable-gpu"
+spawn-at-startup "easyeffects" "--service-mode" "-w"
+
+// Scripts 
+spawn-at-startup "set-wallpaper.sh"
+
+
+// # -----------------------------------------------------
+// # 4. VISUALS & THEMING
+// # -----------------------------------------------------
+layout {
+    gaps 16
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.5
+        proportion 1.0
+    }
+
+    default-column-width { proportion 0.5; }
+
+    // --- FROSTED GLASS FOCUS RING ---
+    focus-ring {
+        width 4 
+        
+        // Active window: A glass-like gradient catching the light
+        // Hex breakdown: #ffffff66 (40% white) to #ffffff1a (10% white)
+        active-gradient from="#ffffffcc" to="#ffffff4d" angle=45
+        
+        // Inactive window: Barely visible white, matching your Waybar inactive dots
+        inactive-color "#ffffff15" 
+    }
+
+    // --- OPTIONAL: INNER GLASS EDGE ---
+    border {
+        // off // Remove 'off' to enable the inner glass edge
+        width 2
+        active-color "#ffffff33"   // 20% white
+        inactive-color "#ffffff0d" // 5% white
+    }
+
+    // --- MATCHED SHADOW ---
+    shadow {
+        softness 15
+        spread 0
+        offset x=0 y=4
+        color "#0000004d" // 30% opacity black
+    }
+
+    struts {}
+}
+
+animations {}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+// # -----------------------------------------------------
+// # 5. WINDOW RULES (Alternative to Layer Rules)
+// # -----------------------------------------------------
+// --- 1. Universal Floating Windows ---
+window-rule {
+    // Picture-in-Picture
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    
+    // System Utilities & Settings
+    match app-id="pavucontrol"
+    match app-id="blueman-manager"
+    match app-id="nm-connection-editor"
+    match app-id="zenity"
+    
+    // Authentication Agents (Regex catches lxqt, kde, gnome, etc.)
+    match app-id=r#".*polkit.*"# 
+    match title=r#".*Authentication.*"#
+    
+    // Steam Dialogs
+    match app-id="steam" title=r#".*(Friends|Settings|Properties).*"#
+    
+    // Password Managers (Unlock/Auto-Type prompts)
+    match app-id="org.keepassxc.KeePassXC" title=r#".*Auto-Type.*"#
+    match app-id="Bitwarden" title=r#".*unlock.*"#
+    
+    // Common Dialog Titles
+    match title=r#".*(Dialog|Properties|Preferences|Settings|Rename).*"#
+
+    open-floating true
+}
+
+// --- 2. File Pickers & Save Dialogs ---
+window-rule {
+    match title=r#".*(Open|Save|Select|File).*"#
+    match app-id="org.gtk.FileChooserDialog"
+    
+    open-floating true
+    default-column-width { proportion 0.0; }
+    max-width 800
+    max-height 1000
+}
+
+// --- 3. Global Window Appearance ---
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+    open-maximized false
+    default-column-width { proportion 0.5; }
+}
+
+// --- 4. Inactive Window Transparency ---
+/-window-rule {
+    match is-active=false
+    opacity 0.9 
+}
+
+// #########################################################################################
+// # KEYBINDINGS MASTER BLOCK
+// #########################################################################################
+binds {
+    // # -----------------------------------------------------
+    // # 6. KEYBINDINGS - CORE
+    // # -----------------------------------------------------
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    Mod+D hotkey-overlay-title="Run an Application: Rofi" { spawn "rofi" "-show" "drun" "-theme" "/.config/rofi/launcher.rasi"; }
+    Mod+N hotkey-overlay-title="Open notification panel" { spawn "swaync-client" "-t" "-sw"; }
+    Mod+Shift+E { quit; }
+    Mod+Shift+Q repeat=false { close-window; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    
+    // Custom Scripts & Utils
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+X hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Mod+P hotkey-overlay-title="Monitor Control" { spawn "wayland-monitor.py"; }
+    Mod+A hotkey-overlay-title="Audio Switch" { spawn "audio_switch.sh"; }
+    Mod+E hotkey-overlay-title="Recent Dir" { spawn "recent_dir.sh"; }
+    Ctrl+Alt+Delete hotkey-overlay-title="Power Menu" { spawn "powermenu.sh"; }
+
+    // # -----------------------------------------------------
+    // # 7. KEYBINDINGS - MEDIA & CUSTOM SCRIPTS
+    // # -----------------------------------------------------
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --output-volume 2"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --output-volume -2"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --output-volume mute-toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --input-volume mute-toggle"; }
+
+    XF86AudioPlay allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --playerctl play-pause"; }
+    XF86AudioNext allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --playerctl next"; }
+    XF86AudioPrev allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --playerctl previous"; }
+    XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
+
+    Caps_Lock allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --caps-lock"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --brightness raise"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --brightness lower"; }
+
+    // # -----------------------------------------------------
+    // # 8. KEYBINDINGS - FOCUS & MOVEMENT
+    // # -----------------------------------------------------
+    
+    // Focus (vim keys & arrows)
+    Mod+Left  hotkey-overlay-title="Focus Window/Column (Arrows or hjkl)" { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    // Move Windows
+    Mod+Shift+Left  hotkey-overlay-title="Move Window/Column (Arrows or hjkl)" { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { consume-or-expel-window-left; }
+    Mod+Shift+J     { move-window-down-or-to-workspace-down; }
+    Mod+Shift+K     { move-window-up-or-to-workspace-up; }
+    Mod+Shift+L     { consume-or-expel-window-right; }
+
+    // Monitor Focus & Movement
+    Mod+Ctrl+Left  hotkey-overlay-title="Focus Monitor (Arrows or hjkl)" { focus-monitor-left; }
+    Mod+Ctrl+Down  { focus-monitor-down; }
+    Mod+Ctrl+Up    { focus-monitor-up; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+    Mod+Ctrl+H     { focus-monitor-left; }
+    Mod+Ctrl+J     { focus-monitor-down; }
+    Mod+Ctrl+K     { focus-monitor-up; }
+    Mod+Ctrl+L     { focus-monitor-right; }
+    
+    Mod+Alt+Left  hotkey-overlay-title="Move to Monitor (Arrows or hjkl)" { move-column-to-monitor-left; }
+    Mod+Alt+Down  { move-column-to-monitor-down; }
+    Mod+Alt+Up    { move-column-to-monitor-up; }
+    Mod+Alt+Right { move-column-to-monitor-right; }
+    Mod+Alt+H     { move-column-to-monitor-left; }
+    Mod+Alt+J     { move-column-to-monitor-down; }
+    Mod+Alt+K     { move-column-to-monitor-up; }
+    Mod+Alt+L     { move-column-to-monitor-right; }
+
+    // Workspaces
+    Mod+1 hotkey-overlay-title="Focus Workspace 1-10" { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+    
+    // Move to Workspace
+    Mod+Shift+1 hotkey-overlay-title="Move to Workspace 1-10" { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Shift+0 { move-column-to-workspace 10; }
+
+    // Mouse Wheel Navigation
+    Mod+WheelScrollDown      cooldown-ms=150 hotkey-overlay-title="Focus Workspace (Scroll U/D)" { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="Move to Workspace (Ctrl+Scroll U/D)" { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    
+    Mod+WheelScrollRight      hotkey-overlay-title="Focus Column (Scroll L/R or Shift+Scroll)" { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight hotkey-overlay-title="Move Column (Ctrl+Scroll L/R or Ctrl+Shift+Scroll)" { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    
+    Mod+Shift+WheelScrollDown      hotkey-overlay-title="Focus Column (Shift+Scroll U/D)" { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown hotkey-overlay-title="Move Column (Ctrl+Shift+Scroll U/D)" { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    Mod+Home hotkey-overlay-title="Focus First/Last Column (Home/End)" { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Ctrl+Home hotkey-overlay-title="Move to First/Last Column (Ctrl+Home/End)" { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    // # -----------------------------------------------------
+    // # 9. LAYOUT CONTROL
+    // # -----------------------------------------------------
+    Mod+TAB repeat=false hotkey-overlay-title="Toggle Overview" { toggle-overview; }
+
+    Mod+Comma  hotkey-overlay-title="Consume/Expel Window (Comma/Period)" { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    // Toggles
+    Mod+V       hotkey-overlay-title="Toggle Floating" { toggle-window-floating; }
+    Mod+Shift+V hotkey-overlay-title="Switch Focus Tiling/Floating" { switch-focus-between-floating-and-tiling; }
+    Mod+W       hotkey-overlay-title="Toggle Tabbed Display" { toggle-column-tabbed-display; }
+
+    // Sizing & Formatting
+    Mod+R hotkey-overlay-title="Cycle Preset Width (Shift+R for Height)" { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R hotkey-overlay-title="Reset Window Height" { reset-window-height; }
+    
+    Mod+F hotkey-overlay-title="Maximize Column (Shift+F Fullscreen)" { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+F hotkey-overlay-title="Expand Column Width" { expand-column-to-available-width; }
+    Mod+M hotkey-overlay-title="Maximize Window to Edges" { maximize-window-to-edges; }
+    
+    Mod+C hotkey-overlay-title="Center Column (Ctrl+C Center All)" { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
+
+    Mod+Minus hotkey-overlay-title="Adjust Width Size (-/=)" { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus hotkey-overlay-title="Adjust Height Size Shift (-/=)" { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+}

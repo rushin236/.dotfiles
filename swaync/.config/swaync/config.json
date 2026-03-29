@@ -1,0 +1,60 @@
+{
+    "$schema": "/etc/swaync/configSchema.json",
+    "positionX": "right",
+    "positionY": "top",
+    "layer": "overlay",
+    "control-center-layer": "top",
+    "layer-shell": true,
+    "cssPriority": "user",
+    "control-center-margin-top": 10,
+    "control-center-margin-right": 10,
+    "notification-icon-size": 64,
+    "notification-window-width": 400,
+    "control-center-width": 400,
+    "transition-time": 200,
+    "hide-on-clear": false,
+    "hide-on-action": true,
+    "widgets": ["buttons-grid", "mpris", "title", "dnd", "notifications"],
+    "widget-config": {
+        "title": {
+            "text": "Notifications",
+            "clear-all-button": true,
+            "button-text": "Clear"
+        },
+        "dnd": {
+            "text": "Do Not Disturb"
+        },
+        "buttons-grid": {
+            "actions": [
+                {
+                    "label": "󰤨",
+                    "command": "nm-connection-editor"
+                },
+                {
+                    "label": "",
+                    "command": "blueman-manager"
+                },
+                {
+                    "label": "󰕾",
+                    "command": "pavucontrol"
+                },
+                {
+                    "label": "󰖁",
+                    "command": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+                },
+                {
+                    "label": "󰜉",
+                    "command": "systemctl reboot"
+                },
+                {
+                    "label": "⏻",
+                    "command": "systemctl poweroff"
+                }
+            ]
+        },
+        "mpris": {
+            "image-size": 80,
+            "image-radius": 12
+        }
+    }
+}

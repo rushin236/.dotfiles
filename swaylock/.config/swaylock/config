@@ -1,0 +1,47 @@
+# --- GENERAL ---
+ignore-empty-password
+show-failed-attempts
+disable-caps-lock-text
+indicator
+indicator-radius=120
+indicator-thickness=10
+indicator-idle-visible
+
+# --- BACKGROUND & EFFECTS ---
+image=~/.cache/current_wallpaper.img
+effect-blur=7x5       
+effect-vignette=0.5:0.5
+
+# --- FONT ---
+font="JetBrainsMono Nerd Font Bold" 
+
+# --- COLORS (#RRGGBBAA) ---
+
+# Background "Glass" 
+inside-color=#1e1e1eb3
+inside-ver-color=#1e1e1eb3
+inside-wrong-color=#1e1e1eb3
+inside-clear-color=#1e1e1eb3
+
+# Ring Colors 
+ring-color=#ffffff33
+ring-ver-color=#ffffff
+ring-wrong-color=#f38ba8
+ring-clear-color=#a6adc8
+
+# Text Colors
+text-color=#ffffff
+text-ver-color=#ffffff
+text-wrong-color=#ffffff
+text-clear-color=#ffffff
+
+# Highlights
+key-hl-color=#ffffff
+bs-hl-color=#f38ba8
+line-color=#00000000
+separator-color=#00000000
+
+# --- CLOCK ---
+clock
+timestr=%H:%M
+datestr=%a, %b %d

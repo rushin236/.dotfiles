@@ -40,7 +40,7 @@ return {
 
       completion = {
         -- autocomplete = false, -- manual only
-        autocomplete = { "InsertEnter", "TextChanged" },
+        autocomplete = { "TextChanged" },
         completeopt = "menu,menuone,noselect",
         -- completeopt = "menu,menuone",
       },
@@ -65,8 +65,18 @@ return {
       -- Windows (completion only)
       ------------------------------------------------------------------
       window = {
-        completion = cmp.config.window.bordered("rounded"),
-        documentation = nil, -- disable docs window (performance)
+        -- You can keep borders on your completion menu if you like them
+        completion = {
+          border = "rounded",
+        },
+
+        -- Strip borders from the docs and enforce maximum dimensions to save space
+        documentation = {
+          zindex = 10,
+          max_width = 40,
+          max_height = 15,
+          border = "rounded",
+        },
       },
 
       ------------------------------------------------------------------
@@ -136,6 +146,12 @@ return {
       sources = {
         { name = "path" },
         { name = "cmdline" },
+      },
+    })
+
+    cmp.setup.filetype("python", {
+      window = {
+        documentation = cmp.config.disable,
       },
     })
   end,

@@ -13,27 +13,55 @@ return {
         signcolumn = "yes:2",
       },
       keymaps = {
-        ["g?"] = "actions.show_help",
+        -- Disable conflicting defaults
+        ["<C-h>"] = false,
+        ["<C-l>"] = false,
+        ["<C-s>"] = false,
+        ["<C-v>"] = false,
+        ["<C-p>"] = false,
+        ["<C-c>"] = false,
+        ["<C-t>"] = false,
+        ["gs"] = false,
+        ["gx"] = false,
+        ["g."] = false,
+        ["g?"] = false,
+        ["g\\"] = false,
+        ["g~"] = false,
+        ["`"] = false,
+        ["-"] = false,
+        ["_"] = false,
+
+        -- Your keymaps
+        ["<leader>o?"] = "actions.show_help",
         ["<CR>"] = "actions.select",
-        ["<C-s>"] = "actions.select_split",
-        ["<C-v>"] = "actions.select_vsplit",
-        ["<C-t>"] = "actions.select_tab",
-        ["<C-p>"] = "actions.preview",
-        ["<C-c>"] = "actions.close",
-        ["g."] = "actions.toggle_hidden",
-        -- The new Smart Quit function
+        ["<leader>o-"] = "actions.select_split",
+        ["<leader>o\\"] = "actions.select_vsplit",
+        ["<leader>ot"] = "actions.select_tab",
+        ["<leader>op"] = "actions.preview",
+        ["<leader>oc"] = "actions.close",
+        ["<leader>oh"] = "actions.toggle_hidden",
+        ["<leader>or"] = "actions.refresh",
+        ["<leader>os"] = "actions.change_sort",
+        ["<leader>ox"] = "actions.open_external",
+        ["<leader>oo"] = "actions.parent",
+        ["<leader>o_"] = "actions.open_cwd",
+        ["<leader>o`"] = "actions.cd",
+        ["<leader>o~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
+        ["<leader>ob"] = { "actions.toggle_trash", mode = "n" },
+
+        -- Smart quit
         ["q"] = function()
           local win_count = #vim.api.nvim_tabpage_list_wins(0)
           if win_count > 1 then
-            vim.cmd("close") -- Closes the physical window if in a split
+            vim.cmd("close")
           else
-            require("oil").close() -- Just closes Oil if it's the only window
+            require("oil").close()
           end
         end,
       },
     },
     keys = {
-      { "-", "<cmd>Oil<CR>", desc = "Open parent directory" },
+      { "-", "<cmd>Oil<CR>", desc = "File Explorer (Oil)" },
       { "<leader>fe", "<cmd>Oil<CR>", desc = "File Explorer (Oil)" },
     },
   },

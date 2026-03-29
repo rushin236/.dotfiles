@@ -104,5 +104,5 @@ padding = { x = 0, y = 0 }
 decorations = "None"
 dynamic_title = true
 dynamic_padding = true
-startup_mode = "Maximized"
+startup_mode = "Windowed"
 decorations_theme_variant = "Dark"
