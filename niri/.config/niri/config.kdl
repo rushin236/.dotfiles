@@ -72,6 +72,7 @@ layout {
 
     preset-column-widths {
         proportion 0.5
+        proportion 0.75
         proportion 1.0
     }
 
@@ -162,6 +163,7 @@ window-rule {
     geometry-corner-radius 20
     clip-to-geometry true
     open-maximized false
+    open-maximized-to-edges false
     default-column-width { proportion 0.5; }
 }
 
@@ -179,7 +181,7 @@ binds {
     // # 6. KEYBINDINGS - CORE
     // # -----------------------------------------------------
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+D hotkey-overlay-title="Run an Application: Rofi" { spawn "rofi" "-show" "drun" "-theme" "/.config/rofi/launcher.rasi"; }
+    Mod+D hotkey-overlay-title="Run an Application: Rofi" { spawn "rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"; }
     Mod+N hotkey-overlay-title="Open notification panel" { spawn "swaync-client" "-t" "-sw"; }
     Mod+Shift+E { quit; }
     Mod+Shift+Q repeat=false { close-window; }
