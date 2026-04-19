@@ -1,174 +1,194 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+# --------------------------------------------------
+# PATH
+# --------------------------------------------------
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-# === Config ===
+# --------------------------------------------------
+# CONFIG
+# --------------------------------------------------
 RECENT_DIR_FILE="$HOME/.recent_dirs"
-ROFI_THEME="-theme ~/.config/rofi/utility.rasi"
+ROFI_THEME=(-theme "$HOME/.config/rofi/utility.rasi")
 
-show_message() {
-    local message="$1"
-    notify-send "Recent Dirs" "$message"
+# --------------------------------------------------
+# HELPERS
+# --------------------------------------------------
+
+notify() {
+  notify-send "Recent Dirs" "$1" >/dev/null 2>&1
 }
 
-check_dependencies() {
-    local missing=()
+require_commands() {
+  local missing=()
 
-    for cmd in rofi alacritty nvim thunar; do
-        if ! command -v "$cmd" &>/dev/null; then
-            missing+=("$cmd")
-        fi
-    done
+  for cmd in rofi kitty nvim thunar; do
+    command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+  done
 
-    if [ ${#missing[@]} -gt 0 ]; then
-        show_message "
-Some required tools are missing:
-
-$(printf '  - %s\n' "${missing[@]}")
-
-Install Instructions:
-- Arch: sudo pacman -S <package>
-- Debian/Ubuntu: sudo apt install <package>
-"
-        exit 1
-    fi
+  if ((${#missing[@]} > 0)); then
+    notify "Missing commands: ${missing[*]}"
+    exit 1
+  fi
 }
+
+# --------------------------------------------------
+# MENU 1 : MODE SELECTION
+# --------------------------------------------------
 
 choose_mode() {
-    local options=("Alacritty" "Neovim" "Thunar")
-    printf "%s\n" "${options[@]}" | rofi -dmenu -i -p "Open with" \
-        $ROFI_THEME \
-        -theme-str 'window { padding: 35% 40%; }'
+  printf "%s\n" "Kitty" "Neovim" "Thunar" |
+    rofi -dmenu -i \
+      -p "Open with" \
+      "${ROFI_THEME[@]}" \
+      -theme-str 'window { padding: 35% 40%; }'
 }
 
-choose_path() {
-    [[ -f "$RECENT_DIR_FILE" ]] || {
-        show_message "No recent directories found."
-        exit 1
-    }
+# --------------------------------------------------
+# MENU 2 : DIRECTORY SELECTION
+# --------------------------------------------------
 
-    # Build menu: show basename with full path as map
-    mapfile -t all_paths <"$RECENT_DIR_FILE"
+choose_directory() {
+  [[ -f "$RECENT_DIR_FILE" ]] || {
+    notify "No recent directories found."
+    exit 1
+  }
 
-    # Build associative map
-    declare -A path_map
-    menu_list=()
+  mapfile -t dirs <"$RECENT_DIR_FILE"
 
-    # for full in "${all_paths[@]}"; do
-    # 	short="$(basename "$full")"
-    # 	# If short name already exists, disambiguate
-    # 	while [[ -n "${path_map[$short]}" && "${path_map[$short]}" != "$full" ]]; do
-    # 		short="$short/"
-    # 	done
-    # 	path_map["$short"]="$full"
-    # 	menu_list+=("$short")
-    # done
+  local home_dir="$HOME"
+  local display_list=()
 
-    HOME_DIR="/home/$USER"
-
-    # Reverse array before showing in rofi
-    reversed_menu=()
-    # for ((idx = ${#menu_list[@]} - 1; idx >= 0; idx--)); do
-    for ((idx = ${#all_paths[@]} - 1; idx >= 0; idx--)); do
-        if [[ ${all_paths[idx]} == $HOME_DIR* ]]; then
-            reversed_menu+=("~${all_paths[idx]#$HOME_DIR}")
-        else
-            reversed_menu+=("${all_paths[idx]}")
-        fi
-    done
-
-    local maxlen
-    maxlen=$(printf "%s\n" "${reversed_menu[@]}" | awk '{ if (length>m) m=length } END { print m }')
-    # add small padding
-    # local width=$(((maxlen + 2) * 20))
-    local width=$((maxlen + 2))
-
-    choice=$(printf "%s\n" "${reversed_menu[@]}" \
-        | rofi -dmenu -i -p "Select Directory" $ROFI_THEME -theme-str "window { padding: 35% 30%; }")
-
-    if [[ -z "$choice" ]]; then
-        exit 0
+  # Reverse order (latest first)
+  for ((i = ${#dirs[@]} - 1; i >= 0; i--)); do
+    if [[ ${dirs[i]} == "$home_dir"* ]]; then
+      display_list+=("~${dirs[i]#$home_dir}")
+    else
+      display_list+=("${dirs[i]}")
     fi
+  done
 
-    # Resolve back to full path
-    # full_path="${path_map[$choice]}"
+  # -----------------------------------
+  # Find longest visible entry
+  # -----------------------------------
+  local max_len=0
+  local item
 
-    full_path="${choice/#\~/$HOME}"
-    if [[ ! -d "$full_path" ]]; then
-        show_message "Invalid path: $full_path"
-        exit 1
+  for item in "${display_list[@]}"; do
+    ((${#item} > max_len)) && max_len=${#item}
+  done
+
+  # Add padding
+  ((max_len += 6))
+
+  # Convert chars -> pixels
+  local width=$((max_len * 11))
+
+  # Optional limits
+  ((width < 500)) && width=500
+  ((width > 1600)) && width=1600
+
+  local choice
+  choice=$(
+    printf "%s\n" "${display_list[@]}" |
+      rofi -dmenu -i \
+        -p "Select Directory" \
+        "${ROFI_THEME[@]}" \
+        -theme-str "
+                window {
+                    width: ${width}px;
+                    padding: 35% 30%;
+                }
+            "
+  )
+
+  [[ -z "$choice" ]] && exit 0
+
+  echo "${choice/#\~/$HOME}"
+}
+
+# --------------------------------------------------
+# MOVE SELECTED ENTRY UP BY ONE
+# --------------------------------------------------
+
+promote_recent_dir() {
+  local target="$1"
+
+  mapfile -t lines <"$RECENT_DIR_FILE"
+
+  for ((i = 0; i < ${#lines[@]}; i++)); do
+    if [[ "${lines[i]}" == "$target" ]]; then
+
+      if ((i > 0)); then
+        local temp="${lines[i - 1]}"
+        lines[i - 1]="${lines[i]}"
+        lines[i]="$temp"
+      fi
+
+      break
     fi
+  done
 
-    # Show full path via notify
-    show_message "Opening: $full_path"
-
-    # Return via echo (so caller can capture)
-    echo "$full_path"
+  printf "%s\n" "${lines[@]}" >"$RECENT_DIR_FILE"
 }
 
-transpose_entry() {
-    local file="$1"
-    local entry="$2"
+# --------------------------------------------------
+# OPEN DIRECTORY
+# --------------------------------------------------
 
-    # Read lines
-    mapfile -t lines <"$file"
+open_directory() {
+  local mode="$1"
+  local dir="$2"
 
-    for ((i = 0; i < ${#lines[@]}; i++)); do
-        # Trim whitespace for comparison
-        local current_line=$(echo "${lines[i]}" | xargs)
-        local target_entry=$(echo "$entry" | xargs)
+  [[ -d "$dir" ]] || {
+    notify "Invalid path: $dir"
+    exit 1
+  }
 
-        if [[ "$current_line" == "$target_entry" ]]; then
-            if [[ $i -gt 0 ]]; then
-                # Swap with previous line
-                tmp="${lines[i - 1]}"
-                lines[i - 1]="${lines[i]}"
-                lines[i]="$tmp"
-            fi
-            break
-        fi
-    done
+  promote_recent_dir "$dir"
 
-    # Write back
-    printf "%s\n" "${lines[@]}" >"$file"
+  case "$mode" in
+    Kitty)
+      kitty -e ~/.local/bin/ts-create.sh "$dir" &
+      ;;
+
+    Neovim)
+      kitty -e ~/.local/bin/ts-create.sh "$dir" "nvim ." &
+      ;;
+
+    Thunar)
+      thunar "$dir" &
+      ;;
+
+    *)
+      notify "Unknown mode: $mode"
+      exit 1
+      ;;
+  esac
 }
 
-open_path() {
-    local mode="$1"
-    local path="$2"
+# --------------------------------------------------
+# MAIN
+# --------------------------------------------------
 
-    if [[ ! -d "$path" ]]; then
-        show_message "Invalid path: $path"
-        exit 1
-    fi
+main() {
+  require_commands
 
-    # Apply transposition to the recent dir file
-    transpose_entry "$RECENT_DIR_FILE" "$path"
+  local mode
+  mode=$(choose_mode)
 
-    case "$mode" in
-        "Alacritty")
-            alacritty -e ~/.local/bin/ts-create "$path" &
-            ;;
-        "Neovim")
-            alacritty -e ~/.local/bin/ts-create "$path" "nvim ." &
-            ;;
-        "Thunar")
-            thunar "$path" &
-            ;;
-        *)
-            show_message "Unknown mode: $mode"
-            exit 1
-            ;;
-    esac
+  [[ -z "$mode" ]] && exit 0
+
+  local dir
+  dir=$(choose_directory)
+
+  [[ -z "$dir" ]] && exit 0
+
+  notify "Opening: $dir"
+
+  open_directory "$mode" "$dir"
 }
 
-# === Main Execution ===
-check_dependencies
-
-mode=$(choose_mode)
-[[ -z "$mode" ]] && exit 0
-
-dir=$(choose_path)
-[[ -z "$dir" ]] && exit 0
-
-open_path "$mode" "$dir"
+main

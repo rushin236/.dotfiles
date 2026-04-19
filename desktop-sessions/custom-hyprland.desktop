@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Hyprland (Custom Wrapper)
-Comment=Hyprland with environment cleanup
-Exec=/usr/local/bin/wm-launcher hyprland
-Type=Application

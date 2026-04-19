@@ -19,27 +19,27 @@ cursor = "#d3dbe3"
 
 [colors.selection]
 text = "#d3dbe3"
-background = "#2d333b"     # tmux copy/search bg
+background = "#2d333b" # tmux copy/search bg
 
 [colors.normal]
-black   = "#181b1e"
-red     = "#ff7a93"
-green   = "#9cee82"
-yellow  = "#ffc777"
-blue    = "#7da6ff"
+black = "#181b1e"
+red = "#ff7a93"
+green = "#9cee82"
+yellow = "#ffc777"
+blue = "#7da6ff"
 magenta = "#d7a1f9"
-cyan    = "#5de4c7"
-white   = "#d3dbe3"
+cyan = "#5de4c7"
+white = "#d3dbe3"
 
 [colors.bright]
-black   = "#373e47"        # pane borders / separators
-red     = "#ff7a93"
-green   = "#9cee82"
-yellow  = "#ffc777"
-blue    = "#7da6ff"
+black = "#373e47"   # pane borders / separators
+red = "#ff7a93"
+green = "#9cee82"
+yellow = "#ffc777"
+blue = "#7da6ff"
 magenta = "#d7a1f9"
-cyan    = "#5de4c7"
-white   = "#ffffff"
+cyan = "#5de4c7"
+white = "#ffffff"
 
 [[colors.indexed_colors]]
 index = 16
@@ -96,7 +96,7 @@ semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 [terminal.shell]
 # program = "/usr/bin/zsh"
 program = "/usr/bin/env"
-args = ["bash", "-i", "-c", "$HOME/.local/bin/ts-create \"$PWD\""]
+args = ["bash", "-i", "-c", "$HOME/.local/bin/ts-create.sh \"$PWD\""]
 
 [window]
 # dimensions = { columns = 2, lines = 0 }

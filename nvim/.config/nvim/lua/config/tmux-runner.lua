@@ -252,13 +252,54 @@ local function close_runner_pane()
   end)
 end
 
+-- Function 4: Open a terminal or focus an existing one
+local function open_terminal()
+  if not is_tmux_available() then
+    return
+  end
+
+  local format = "#{pane_id}|#{pane_active}"
+  local lines = vim.fn.systemlist("tmux list-panes -F '" .. format .. "'")
+
+  local other_panes = {}
+  for _, line in ipairs(lines) do
+    local id, active = line:match("([^|]+)|([^|]+)")
+    if active == "0" then
+      table.insert(other_panes, id)
+    end
+  end
+
+  -- If no terminal exists, create one with your specific split settings
+  if #other_panes == 0 then
+    -- -v (vertical), -p 30 (30% height), -d (don't focus), -P -F (return ID)
+    vim.fn.system("tmux split-window -v -p 30 -d")
+    vim.notify("Terminal opened at 30% height", vim.log.levels.INFO)
+  else
+    -- If one or more exist, just notify the user.
+    -- Your run commands will automatically detect and use these.
+    vim.notify("Terminal already exists. Run commands will target it.", vim.log.levels.INFO)
+  end
+end
+
+-- ==========================================
+-- === Keymaps ===
+-- ==========================================
+
 -- Bind the functions to your preferred keys
+vim.keymap.set(
+  "n",
+  "<leader>crt",
+  open_terminal,
+  { desc = "Open/Check Tmux Terminal", noremap = true, silent = true }
+)
+
 vim.keymap.set(
   "n",
   "<leader>crf",
   run_file_in_tmux,
   { desc = "Run File in Tmux (Interactive)", noremap = true, silent = true }
 )
+
 vim.keymap.set(
   "n",
   "<leader>crp",
