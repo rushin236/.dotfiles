@@ -6,9 +6,7 @@
 // # 1. ENVIRONMENT & VARIABLES
 // # -----------------------------------------------------
 // Core Environment & Portals
-spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "NIRI_SOCKET" "XDG_CURRENT_DESKTOP=niri" "XDG_SESSION_TYPE=wayland"
-spawn-at-startup "systemctl" "--user" "import-environment" "WAYLAND_DISPLAY" "NIRI_SOCKET" "XDG_CURRENT_DESKTOP"
-
+spawn-at-startup "start-portal.sh" "niri"
 
 // # -----------------------------------------------------
 // # 2. MONITORS & INPUT
@@ -180,7 +178,8 @@ binds {
     // # -----------------------------------------------------
     // # 6. KEYBINDINGS - CORE
     // # -----------------------------------------------------
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    // Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+D hotkey-overlay-title="Run an Application: Rofi" { spawn "rofi" "-show" "drun" "-theme" "~/.config/rofi/launcher.rasi"; }
     Mod+N hotkey-overlay-title="Open notification panel" { spawn "swaync-client" "-t" "-sw"; }
     Mod+Shift+E { quit; }
@@ -240,7 +239,7 @@ binds {
     Mod+Shift+L     { consume-or-expel-window-right; }
 
     // Monitor Focus & Movement
-    Mod+Ctrl+Left  hotkey-overlay-title="Focus Monitor (Arrows or hjkl)" { focus-monitor-left; }
+    Mod+Ctrl+Left  hotkey-overlay-title="Move Monitor (Arrows or hjkl)" { focus-monitor-left; }
     Mod+Ctrl+Down  { focus-monitor-down; }
     Mod+Ctrl+Up    { focus-monitor-up; }
     Mod+Ctrl+Right { focus-monitor-right; }
@@ -249,7 +248,7 @@ binds {
     Mod+Ctrl+K     { focus-monitor-up; }
     Mod+Ctrl+L     { focus-monitor-right; }
     
-    Mod+Alt+Left  hotkey-overlay-title="Move to Monitor (Arrows or hjkl)" { move-column-to-monitor-left; }
+    Mod+Alt+Left  hotkey-overlay-title="Focus to Monitor (Arrows or hjkl)" { move-column-to-monitor-left; }
     Mod+Alt+Down  { move-column-to-monitor-down; }
     Mod+Alt+Up    { move-column-to-monitor-up; }
     Mod+Alt+Right { move-column-to-monitor-right; }

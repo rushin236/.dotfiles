@@ -171,6 +171,11 @@ def get_focused_monitor_name(is_test: bool) -> str:
                 ),
                 "",
             )
+        elif "niri" in desktop:
+            res = subprocess.run(
+                ["niri", "msg", "-j", "focused-output"], capture_output=True, text=True
+            )
+            return json.loads(res.stdout).get("name")
 
         return ""
     except Exception:

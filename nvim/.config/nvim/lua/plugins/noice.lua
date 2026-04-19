@@ -1,6 +1,45 @@
 return {
   "folke/noice.nvim",
   config = function()
+    local function focus_floating_window()
+      local current_win = vim.api.nvim_get_current_win()
+      local all_wins = vim.api.nvim_tabpage_list_wins(0)
+      local floating_wins = {}
+      for _, win in ipairs(all_wins) do
+        local config = vim.api.nvim_win_get_config(win)
+        if config.relative ~= "" and config.focusable then
+          table.insert(floating_wins, win)
+        end
+      end
+      if #floating_wins == 0 then
+        return
+      end
+      local current_is_float = vim.api.nvim_win_get_config(current_win).relative ~= ""
+      if not current_is_float then
+        vim.api.nvim_set_current_win(floating_wins[1])
+      else
+        local next_win = nil
+        for i, win in ipairs(floating_wins) do
+          if win == current_win then
+            next_win = floating_wins[i + 1]
+            break
+          end
+        end
+        if next_win then
+          vim.api.nvim_set_current_win(next_win)
+        else
+          for _, win in ipairs(all_wins) do
+            if vim.api.nvim_win_get_config(win).relative == "" then
+              vim.api.nvim_set_current_win(win)
+              break
+            end
+          end
+        end
+      end
+    end
+
+    vim.keymap.set({ "n", "i", "v" }, "<M-w>", focus_floating_window, { desc = "Focus Floats" })
+
     require("noice").setup({
       cmdline = {
         enabled = true,

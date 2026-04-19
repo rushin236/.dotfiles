@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=SwayFX (Custom Wrapper)
-Comment=SwayFX with environment cleanup
-Exec=/usr/local/bin/wm-launcher swayfx
-Type=Application

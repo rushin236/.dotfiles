@@ -6,7 +6,8 @@
 # 1. ENVIRONMENT & VARIABLES
 # -----------------------------------------------------
 set $mod Mod4
-set $terminal alacritty
+# set $terminal alacritty
+set $terminal kitty
 set $menu rofi -show drun -theme ~/.config/rofi/launcher.rasi
 
 # -----------------------------------------------------
@@ -21,8 +22,7 @@ input "type:touchpad" {
 # 3. AUTOSTART (EXEC)
 # -----------------------------------------------------
 # Core Environment & Portals
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland SWAYSOCK I3SOCK
-exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK
+exec start-portal.sh sway
 
 # Daemons
 exec gnome-keyring-daemon --start --components=secrets
