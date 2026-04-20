@@ -2,27 +2,42 @@
 set -euo pipefail
 
 # --------------------------------------------------
-# ts-create.sh (optimized)
-# Same behavior as original:
-# - choose directory (arg or fzf from recent dirs)
-# - create unique tmux session
-# - optionally send command
-# - switch/attach
-# Added:
-# - --log enables logging
-# - --log-file PATH custom log file
+# ts-create.sh
+# Creates / switches tmux session for a directory
+#
+# Behavior:
+# - If DIR provided -> use it
+# - Else choose from ~/.recent_dirs via fzf
+# - Optional CMD runs inside new session
+# - If inside tmux -> switch-client
+# - Else -> attach
+#
+# Options:
+#   --log        enable logging
+#   -h, --help   help
 # --------------------------------------------------
 
 LOG_ENABLED=0
 LOG_FILE="/tmp/tmux-ts.log"
+
 FZF_PATH="${HOME}/.fzf/bin/fzf"
 RECENT_DIRS="${HOME}/.recent_dirs"
 
+dir=""
+cmd=""
+
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [--log] [DIR] [CMD]
-Logs: /tmp/tmux-ts.log
-View logs: cat /tmp/tmux-ts.log
+Usage:
+  $(basename "$0") [--log] [DIR] [CMD]
+
+Examples:
+  $(basename "$0")
+  $(basename "$0") ~/projects/app
+  $(basename "$0") ~/projects/app "nvim ."
+
+Logs:
+  $LOG_FILE
 EOF
 }
 
@@ -43,93 +58,121 @@ die() {
   exit 1
 }
 
-# ---------------- Parse args ----------------
-# Async note: this script is dominated by tmux/fzf/user input. Safe backgrounding of dependent steps offers little real gain and can add race conditions. We keep synchronous flow for correctness; only independent prep work is parallelized below.
-dir=""
-cmd=""
-while (($#)); do
-  case "$1" in
-    --log) LOG_ENABLED=1 ;;
-
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      if [[ -z "$dir" ]]; then
-        dir="$1"
-      elif [[ -z "$cmd" ]]; then
-        cmd="$1"
-      else
-        cmd+=" $1"
-      fi
-      ;;
-  esac
-  shift || true
-done
-
-# Lightweight async preflight
-recent_cache=""
-if [[ -f "$RECENT_DIRS" ]]; then
-  { recent_cache=$(tac "$RECENT_DIRS" 2>/dev/null | awk '!seen[$0]++'); } &
-  recent_pid=$!
-else
-  recent_pid=""
-fi
-
-log_init
-log "Starting"
+parse_args() {
+  while (($#)); do
+    case "$1" in
+      --log)
+        LOG_ENABLED=1
+        ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        break
+        ;;
+      *)
+        if [[ -z "$dir" ]]; then
+          dir="$1"
+        elif [[ -z "$cmd" ]]; then
+          cmd="$1"
+        else
+          cmd+=" $1"
+        fi
+        ;;
+    esac
+    shift
+  done
+}
 
 select_dir() {
   [[ -x "$FZF_PATH" ]] || die "fzf not found: $FZF_PATH"
+  [[ -f "$RECENT_DIRS" ]] || return 1
 
-  local recent=""
-  if [[ -n "${recent_pid:-}" ]]; then
-    wait "$recent_pid" 2>/dev/null || true
-    recent="$recent_cache"
-  elif [[ -f "$RECENT_DIRS" ]]; then
-    recent=$(tac "$RECENT_DIRS" | awk '!seen[$0]++')
-  fi
+  local recent
+  recent="$(
+    tac "$RECENT_DIRS" 2>/dev/null | awk '!seen[$0]++'
+  )"
 
-  [[ -n "$recent" ]] || exit 0
+  [[ -n "$recent" ]] || return 1
 
   printf '%s\n' "$recent" | "$FZF_PATH"
 }
 
-[[ -n "$dir" ]] || dir="$(select_dir || true)"
-[[ -n "$dir" ]] || exit 0
-[[ -d "$dir" ]] || die "Invalid directory: $dir"
+resolve_dir() {
+  if [[ -z "$dir" ]]; then
+    dir="$(select_dir || true)"
+  fi
 
-base_session="$(basename "$dir")"
-base_session="${base_session//./_}"
-session="$base_session"
+  [[ -n "$dir" ]] || exit 0
+  [[ -d "$dir" ]] || die "Invalid directory: $dir"
+}
 
-if tmux has-session -t="$session" 2>/dev/null; then
+build_session_name() {
+  local base session i
+
+  base="$(basename "$dir")"
+  base="${base//./_}"
+  session="$base"
+
+  if ! tmux has-session -t "$session" 2>/dev/null; then
+    printf '%s\n' "$session"
+    return
+  fi
+
   i=1
   while :; do
-    candidate=$(printf '%s %02d' "$base_session" "$i")
-    if ! tmux has-session -t="$candidate" 2>/dev/null; then
-      session="$candidate"
-      break
+    session=$(printf '%s %02d' "$base" "$i")
+    if ! tmux has-session -t "$session" 2>/dev/null; then
+      printf '%s\n' "$session"
+      return
     fi
     ((i++))
   done
-fi
+}
 
-log "Using session: $session"
+create_session() {
+  local session="$1"
 
-tmux new-session -ds "$session" -c "$dir" || die "Failed to create tmux session"
+  log "Creating session: $session"
+  log "Directory: $dir"
 
-if [[ -n "$cmd" ]]; then
-  tmux send-keys -t "$session" "$cmd" Enter || die "Failed to send command"
-fi
+  tmux new-session -ds "$session" -c "$dir"
 
-if [[ -n "${TMUX:-}" ]]; then
-  exec tmux switch-client -t "$session"
-else
-  exec tmux attach -t "$session"
-fi
+  if [[ -n "$cmd" ]]; then
+    log "Sending command: $cmd"
+    tmux send-keys -t "$session" "$cmd" Enter
+  fi
+}
+
+attach_session() {
+  local session="$1"
+
+  if [[ -n "${TMUX:-}" ]]; then
+    log "Switching client: $session"
+    exec tmux switch-client -t "$session"
+  else
+    log "Attaching: $session"
+    exec tmux attach -t "$session"
+  fi
+}
+
+main() {
+  parse_args "$@"
+  log_init
+
+  log "Starting"
+
+  resolve_dir
+
+  local session
+  session="$(build_session_name)"
+
+  log "Using session: $session"
+
+  create_session "$session"
+  attach_session "$session"
+}
+
+main "$@"
