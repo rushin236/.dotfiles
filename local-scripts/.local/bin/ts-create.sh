@@ -20,7 +20,7 @@ if [[ -f "$LOG_FILE" ]]; then
 fi
 
 # Start fresh log
-echo "[$(date)] >>> Starting ts-create script with args: $@" >"$LOG_FILE"
+echo "[$(date)] >>> Starting ts-create script with args: $*" >"$LOG_FILE"
 
 # Stream all output to log file
 exec >>"$LOG_FILE" 2>&1
@@ -147,21 +147,10 @@ fi
 # === Attach to Session ===
 if [[ -n "$TMUX" ]]; then
   log_info "Already in tmux, switching client to: $session"
-  if tmux switch-client -t "$session"; then
-    log_success "Switched to session: $session"
-  else
-    log_error "Failed to switch to session: $session"
-    exit 1
-  fi
+  exec tmux switch-client -t "$session"
 else
   log_info "Not in tmux, attaching to session: $session"
-  if tmux attach -t "$session"; then
-    log_success "Attached to session: $session"
-  else
-    log_error "Failed to attach to session: $session"
-    exit 1
-  fi
+  exec tmux attach -t "$session"
 fi
 
-# unset DISABLE_AUTO_TMUX
 log_success "Script completed successfully"

@@ -415,11 +415,14 @@ install_or_update_blesh() {
 }
 
 # Run the manager silently
-install_or_update_starship
-install_or_update_nvim
-install_or_update_fzf
-install_or_update_carapace
-install_or_update_blesh
+(
+  install_or_update_starship
+  install_or_update_nvim
+  install_or_update_fzf
+  install_or_update_carapace
+  install_or_update_blesh
+) >/dev/null 2>&1 &
+disown
 
 # ===================================================
 # ZONE 4: ALIASES & FINAL ATTACHMENTS
@@ -434,7 +437,7 @@ alias mkdir='mkdir -v'
 alias grep='grep --color=auto'
 
 # ===================================================
-# ZONE 5: SHELL UI INITIALIZATION
+# ZONE 5: SHELL UI INITIALIZATION (OPTIMIZED)
 # ===================================================
 
 # 1. Load basic system fallbacks FIRST (Crucial for ble.sh hooks)
@@ -450,30 +453,44 @@ if [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
   source "$HOME/.local/share/blesh/ble.sh" --noattach
 fi
 
-# 4. Load Carapace (must be AFTER ble.sh so it outputs the bash-ble bridge)
+# --- EVAL CACHE SETUP ---
+# Creates a directory to store the static output of our heavy init commands
+CACHE_DIR="$HOME/.cache/bash_init"
+mkdir -p "$CACHE_DIR"
+
+# 4. Load Carapace
 if command -v carapace &>/dev/null; then
-  # export CARAPACE_BRIDGES='zsh,fish,bash'
-  # export CARAPACE_BRIDGES='fish,zsh,bash'
-  source <(carapace _carapace)
+  # If cache is missing, or the carapace binary is newer than the cache file, regenerate it
+  if [[ ! -s "$CACHE_DIR/carapace.bash" ]] || [[ "$(command -v carapace)" -nt "$CACHE_DIR/carapace.bash" ]]; then
+    carapace _carapace >"$CACHE_DIR/carapace.bash"
+  fi
+  source "$CACHE_DIR/carapace.bash"
 fi
 
-# 5. STANDARD FZF
+# 5. Load FZF
 if [[ -d "$HOME/.fzf/bin" ]]; then
   export PATH="$PATH:$HOME/.fzf/bin"
-  eval "$(fzf --bash)"
+  if [[ ! -s "$CACHE_DIR/fzf.bash" ]] || [[ "$HOME/.fzf/bin/fzf" -nt "$CACHE_DIR/fzf.bash" ]]; then
+    fzf --bash >"$CACHE_DIR/fzf.bash"
+  fi
+  source "$CACHE_DIR/fzf.bash"
 fi
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline --color='header:italic'"
 
 PROMPT_COMMAND="log_recent_dir"
 
-# Initialize Starship prompt
+# 6. Load Starship
 if command -v starship &>/dev/null; then
   # Generate preset BEFORE initializing if it's missing
   if [ ! -f ~/.config/starship.toml ]; then
     mkdir -p ~/.config
     starship preset plain-text-symbols -o ~/.config/starship.toml
   fi
-  eval "$(starship init bash)"
+
+  if [[ ! -s "$CACHE_DIR/starship.bash" ]] || [[ "$(command -v starship)" -nt "$CACHE_DIR/starship.bash" ]]; then
+    starship init bash >"$CACHE_DIR/starship.bash"
+  fi
+  source "$CACHE_DIR/starship.bash"
 fi
 
 # --- ATTACH SYNTAX HIGHLIGHTING (THIS GOES AT THE VERY BOTTOM) ---
