@@ -1,54 +1,39 @@
 # ==========================================
-# LAZY LOAD CONDA
+# CONDA (EAGER LOAD)
 # ==========================================
-_lazy_load_conda() {
-    # 1. Unset the intercept functions so they only run once
-    unset -f conda python python3 pip _lazy_load_conda
+CONDA_DIR="/home/$USER/miniconda3"
+
+if [ -d "$CONDA_DIR" ]; then
+    __conda_setup="$("$CONDA_DIR/bin/conda" 'shell.bash' 'hook' 2>/dev/null)"
     
-    # 2. Initialize Conda
-    __conda_setup="$("/home/$USER/miniconda3/bin/conda" 'shell.bash' 'hook' 2> /dev/null)"
     if [ $? -eq 0 ]; then
         eval "$__conda_setup"
     else
-        if [ -f "/home/$USER/miniconda3/etc/profile.d/conda.sh" ]; then
-            . "/home/$USER/miniconda3/etc/profile.d/conda.sh"
+        if [ -f "$CONDA_DIR/etc/profile.d/conda.sh" ]; then
+            . "$CONDA_DIR/etc/profile.d/conda.sh"
         else
-            export PATH="/home/$USER/miniconda3/bin:$PATH"
+            export PATH="$CONDA_DIR/bin:$PATH"
         fi
     fi
     unset __conda_setup
 
-    # 3. Activate the 'user' environment automatically
-    # If activation fails, create it on the fly.
-    conda activate user 2>/dev/null || {
+    # Auto-activate "user" environment
+    if ! conda activate user 2>/dev/null; then
         echo "[conda] Environment 'user' not found. Creating..."
         conda create -n user python=3.11 pip -y && conda activate user
-    }
-}
-
-# The interceptors: typing any of these triggers the lazy load
-conda() { _lazy_load_conda; conda "$@"; }
-python() { _lazy_load_conda; python "$@"; }
-python3() { _lazy_load_conda; python3 "$@"; }
-pip() { _lazy_load_conda; pip "$@"; }
+    fi
+fi
 
 
 # ==========================================
-# LAZY LOAD NVM
+# NVM (EAGER LOAD)
 # ==========================================
 export NVM_DIR="$HOME/.nvm"
 
-_lazy_load_nvm() {
-    # 1. Unset intercept functions
-    unset -f nvm node npm npx _lazy_load_nvm
-    
-    # 2. Load NVM
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
+if [ -d "$NVM_DIR" ]; then
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-# The interceptors
-nvm() { _lazy_load_nvm; nvm "$@"; }
-node() { _lazy_load_nvm; node "$@"; }
-npm() { _lazy_load_nvm; npm "$@"; }
-npx() { _lazy_load_nvm; npx "$@"; }
+    # Optional: auto-use default node version
+    # nvm use default >/dev/null 2>&1
+fi

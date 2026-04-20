@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 LOG_ENABLED=0
@@ -119,12 +120,12 @@ open_directory() {
   case "$mode" in
     Kitty)
       need_cmd kitty
-      "$TS_CREATE" "$dir" >/dev/null 2>&1 &
+      kitty -e "$TS_CREATE" "$dir" >/dev/null 2>&1 &
       disown
       ;;
     Neovim)
       need_cmd kitty
-      "$TS_CREATE" "$dir" "nvim ." >/dev/null 2>&1 &
+      kitty -e "$TS_CREATE" "$dir" "nvim ." >/dev/null 2>&1 &
       disown
       ;;
     Thunar)
