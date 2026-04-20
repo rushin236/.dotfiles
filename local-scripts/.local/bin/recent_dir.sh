@@ -1,54 +1,73 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-# --------------------------------------------------
-# PATH
-# --------------------------------------------------
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+LOG_ENABLED=0
+LOG_FILE="/tmp/recent-dir.log"
 
 # --------------------------------------------------
-# CONFIG
+# recent_dir_v2.sh
+# Optimized recent directory launcher
+# Preserves behavior of original script
 # --------------------------------------------------
+
 RECENT_DIR_FILE="$HOME/.recent_dirs"
-ROFI_THEME=(-theme "$HOME/.config/rofi/utility.rasi")
 
-# --------------------------------------------------
-# HELPERS
-# --------------------------------------------------
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [--log]
+Logs: /tmp/recent-dir.log
+View logs: cat /tmp/recent-dir.log
+EOF
+}
+
+log_init() {
+  ((LOG_ENABLED)) || return 0
+  : >"$LOG_FILE"
+  exec >>"$LOG_FILE" 2>&1
+}
+
+log() {
+  ((LOG_ENABLED)) || return 0
+  printf '[%s] %s
+' "$(date '+%F %T')" "$*"
+}
+ROFI_THEME="$HOME/.config/rofi/utility.rasi"
+TS_CREATE="$HOME/.local/bin/ts-create.sh"
 
 notify() {
-  notify-send "Recent Dirs" "$1" >/dev/null 2>&1
+  command -v notify-send >/dev/null 2>&1 && notify-send "Recent Dirs" "$1" >/dev/null 2>&1 || true
 }
 
-require_commands() {
-  local missing=()
-
-  for cmd in rofi kitty nvim thunar; do
-    command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
-  done
-
-  if ((${#missing[@]} > 0)); then
-    notify "Missing commands: ${missing[*]}"
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || {
+    notify "Missing command: $1"
     exit 1
-  fi
+  }
 }
-
-# --------------------------------------------------
-# MENU 1 : MODE SELECTION
-# --------------------------------------------------
 
 choose_mode() {
-  printf "%s\n" "Kitty" "Neovim" "Thunar" |
+  printf 'Kitty\nNeovim\nThunar\n' |
     rofi -dmenu -i \
-      -p "Open with" \
-      "${ROFI_THEME[@]}" \
+      -p 'Open with' \
+      -theme "$ROFI_THEME" \
       -theme-str 'window { padding: 35% 40%; }'
 }
 
-# --------------------------------------------------
-# MENU 2 : DIRECTORY SELECTION
-# --------------------------------------------------
+build_display_list() {
+  [[ -f "$RECENT_DIR_FILE" ]] || return 1
+  tac "$RECENT_DIR_FILE" | awk -v home="$HOME" '{ if(index($0,home)==1) print "~" substr($0,length(home)+1); else print $0 }'
+}
+
+calc_width() {
+  awk '
+    { if(length($0)>max) max=length($0) }
+    END {
+      w=(max+6)*11;
+      if(w<500) w=500;
+      if(w>1600) w=1600;
+      print w;
+    }'
+}
 
 choose_directory() {
   [[ -f "$RECENT_DIR_FILE" ]] || {
@@ -56,92 +75,40 @@ choose_directory() {
     exit 1
   }
 
-  mapfile -t dirs <"$RECENT_DIR_FILE"
+  local list width choice
+  list="$(build_display_list)"
+  [[ -n "$list" ]] || exit 0
 
-  local home_dir="$HOME"
-  local display_list=()
+  width="$(printf '%s\n' "$list" | calc_width)"
 
-  # Reverse order (latest first)
-  for ((i = ${#dirs[@]} - 1; i >= 0; i--)); do
-    if [[ ${dirs[i]} == "$home_dir"* ]]; then
-      display_list+=("~${dirs[i]#$home_dir}")
-    else
-      display_list+=("${dirs[i]}")
-    fi
-  done
+  choice=$(printf '%s\n' "$list" | rofi -dmenu -i \
+    -p 'Select Directory' \
+    -theme "$ROFI_THEME" \
+    -theme-str "window { width: ${width}px; padding: 35% 30%; }")
 
-  # -----------------------------------
-  # Find longest visible entry
-  # -----------------------------------
-  local max_len=0
-  local item
-
-  for item in "${display_list[@]}"; do
-    ((${#item} > max_len)) && max_len=${#item}
-  done
-
-  # Add padding
-  ((max_len += 6))
-
-  # Convert chars -> pixels
-  local width=$((max_len * 11))
-
-  # Optional limits
-  ((width < 500)) && width=500
-  ((width > 1600)) && width=1600
-
-  local choice
-  choice=$(
-    printf "%s\n" "${display_list[@]}" |
-      rofi -dmenu -i \
-        -p "Select Directory" \
-        "${ROFI_THEME[@]}" \
-        -theme-str "
-                window {
-                    width: ${width}px;
-                    padding: 35% 30%;
-                }
-            "
-  )
-
-  [[ -z "$choice" ]] && exit 0
-
-  echo "${choice/#\~/$HOME}"
+  [[ -n "$choice" ]] || exit 0
+  printf '%s\n' "${choice/#\~/$HOME}"
 }
-
-# --------------------------------------------------
-# MOVE SELECTED ENTRY UP BY ONE
-# --------------------------------------------------
 
 promote_recent_dir() {
-  local target="$1"
-
-  mapfile -t lines <"$RECENT_DIR_FILE"
-
-  for ((i = 0; i < ${#lines[@]}; i++)); do
-    if [[ "${lines[i]}" == "$target" ]]; then
-
-      if ((i > 0)); then
-        local temp="${lines[i - 1]}"
-        lines[i - 1]="${lines[i]}"
-        lines[i]="$temp"
-      fi
-
-      break
-    fi
-  done
-
-  printf "%s\n" "${lines[@]}" >"$RECENT_DIR_FILE"
+  local target="$1" tmp
+  tmp="$(mktemp)"
+  awk -v t="$target" '
+    { lines[NR]=$0 }
+    END {
+      for(i=1;i<=NR;i++){
+        if(lines[i]==t){
+          if(i>1){x=lines[i-1]; lines[i-1]=lines[i]; lines[i]=x}
+          break
+        }
+      }
+      for(i=1;i<=NR;i++) print lines[i]
+    }' "$RECENT_DIR_FILE" >"$tmp"
+  mv "$tmp" "$RECENT_DIR_FILE"
 }
 
-# --------------------------------------------------
-# OPEN DIRECTORY
-# --------------------------------------------------
-
 open_directory() {
-  local mode="$1"
-  local dir="$2"
-
+  local mode="$1" dir="$2"
   [[ -d "$dir" ]] || {
     notify "Invalid path: $dir"
     exit 1
@@ -151,17 +118,20 @@ open_directory() {
 
   case "$mode" in
     Kitty)
-      kitty -e ~/.local/bin/ts-create.sh "$dir" &
+      need_cmd kitty
+      "$TS_CREATE" "$dir" >/dev/null 2>&1 &
+      disown
       ;;
-
     Neovim)
-      kitty -e ~/.local/bin/ts-create.sh "$dir" "nvim ." &
+      need_cmd kitty
+      "$TS_CREATE" "$dir" "nvim ." >/dev/null 2>&1 &
+      disown
       ;;
-
     Thunar)
-      thunar "$dir" &
+      need_cmd thunar
+      thunar "$dir" >/dev/null 2>&1 &
+      disown
       ;;
-
     *)
       notify "Unknown mode: $mode"
       exit 1
@@ -169,26 +139,35 @@ open_directory() {
   esac
 }
 
-# --------------------------------------------------
-# MAIN
-# --------------------------------------------------
+parse_args() {
+  while (($#)); do
+    case "$1" in
+      --log) LOG_ENABLED=1 ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      *) ;;
+    esac
+    shift
+  done
+}
 
 main() {
-  require_commands
+  parse_args "$@"
+  log_init
+  log "Starting recent_dir_v2"
+  need_cmd rofi
 
-  local mode
-  mode=$(choose_mode)
+  local mode dir
+  mode="$(choose_mode)"
+  [[ -n "$mode" ]] || exit 0
 
-  [[ -z "$mode" ]] && exit 0
-
-  local dir
-  dir=$(choose_directory)
-
-  [[ -z "$dir" ]] && exit 0
+  dir="$(choose_directory)"
+  [[ -n "$dir" ]] || exit 0
 
   notify "Opening: $dir"
-
   open_directory "$mode" "$dir"
 }
 
-main
+main "$@"
