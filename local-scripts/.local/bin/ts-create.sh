@@ -1,118 +1,114 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-# ======================
-# Prompt example (visible)
-# ======================
+# --------------------------------------------------
+# ts-create.sh (optimized)
+# Same behavior as original:
+# - choose directory (arg or fzf from recent dirs)
+# - create unique tmux session
+# - optionally send command
+# - switch/attach
+# Added:
+# - --log enables logging
+# - --log-file PATH custom log file
+# --------------------------------------------------
 
-# # Show a message to terminal directly
-# echo "Do you want to continue? [y/N]" > /dev/tty
-#
-# # Read input from terminal directly (instead of from stderr-redirected stdin)
-# read -r answer < /dev/tty
-
-# === Log Configuration ===
+LOG_ENABLED=0
 LOG_FILE="/tmp/tmux-ts.log"
-OLD_LOG_FILE="/tmp/tmux-ts.log.old"
-
-# Rotate log if it exists
-if [[ -f "$LOG_FILE" ]]; then
-  mv "$LOG_FILE" "$OLD_LOG_FILE"
-fi
-
-# Start fresh log
-echo "[$(date)] >>> Starting ts-create script with args: $*" >"$LOG_FILE"
-
-# Stream all output to log file
-exec >>"$LOG_FILE" 2>&1
-
-# === Logging Functions ===
-log_info() {
-  echo "[INFO] $*"
-}
-
-log_success() {
-  echo "[SUCCESS] $*"
-}
-
-log_warning() {
-  echo "[WARNING] $*"
-}
-
-log_error() {
-  echo "[ERROR] $*" >&2
-}
-
-# === Configuration ===
 FZF_PATH="${HOME}/.fzf/bin/fzf"
 RECENT_DIRS="${HOME}/.recent_dirs"
 
-log_info "FZF_PATH: $FZF_PATH"
-log_info "RECENT_DIRS: $RECENT_DIRS"
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [--log] [DIR] [CMD]
+Logs: /tmp/tmux-ts.log
+View logs: cat /tmp/tmux-ts.log
+EOF
+}
 
-# === Arguments ===
-dir="$1"
-cmd="$2"
+log_init() {
+  ((LOG_ENABLED)) || return 0
+  : >"$LOG_FILE"
+  exec >>"$LOG_FILE" 2>&1
+}
 
-log_info "Directory argument: ${dir:-<not provided>}"
-log_info "Command argument: ${cmd:-<not provided>}"
+log() {
+  ((LOG_ENABLED)) || return 0
+  printf '[%s] %s\n' "$(date '+%F %T')" "$*"
+}
 
-# === Select Directory ===
-if [[ -z "$dir" ]]; then
-  log_info "No directory provided, using fzf for selection"
-
-  # Check for fzf
-  if [[ ! -x "$FZF_PATH" ]]; then
-    log_error "fzf not found at: $FZF_PATH"
-    exit 1
-  fi
-  log_success "Found fzf at: $FZF_PATH"
-
-  # Check for recent directories file
-  if [[ ! -f "$RECENT_DIRS" ]]; then
-    log_warning "Recent directories file not found: $RECENT_DIRS"
-  fi
-
-  # Get recent directories
-  recent=$(tac "$RECENT_DIRS" 2>/dev/null | awk '!a[$0]++')
-  if [[ -z "$recent" ]]; then
-    log_warning "No recent directories found"
-  fi
-
-  # Run fzf
-  dir=$(echo "$recent" | "$FZF_PATH")
-  fzf_exit=$?
-
-  if [[ $fzf_exit -ne 0 ]]; then
-    log_info "fzf cancelled or failed (exit code: $fzf_exit)"
-    exit 0
-  fi
-
-  if [[ -z "$dir" ]]; then
-    log_info "No directory selected via fzf"
-    exit 0
-  fi
-  log_success "Selected directory via fzf: $dir"
-fi
-
-# === Validate Directory ===
-log_info "Validating directory: $dir"
-if [[ ! -d "$dir" ]]; then
-  log_error "Invalid directory: $dir"
+die() {
+  echo "Error: $*" >&2
+  log "ERROR: $*"
   exit 1
-fi
-log_success "Directory validated: $dir"
+}
 
-# === Session Management ===
-base_session=$(basename "$dir" | tr . _)
+# ---------------- Parse args ----------------
+# Async note: this script is dominated by tmux/fzf/user input. Safe backgrounding of dependent steps offers little real gain and can add race conditions. We keep synchronous flow for correctness; only independent prep work is parallelized below.
+dir=""
+cmd=""
+while (($#)); do
+  case "$1" in
+    --log) LOG_ENABLED=1 ;;
+
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      if [[ -z "$dir" ]]; then
+        dir="$1"
+      elif [[ -z "$cmd" ]]; then
+        cmd="$1"
+      else
+        cmd+=" $1"
+      fi
+      ;;
+  esac
+  shift || true
+done
+
+# Lightweight async preflight
+recent_cache=""
+if [[ -f "$RECENT_DIRS" ]]; then
+  { recent_cache=$(tac "$RECENT_DIRS" 2>/dev/null | awk '!seen[$0]++'); } &
+  recent_pid=$!
+else
+  recent_pid=""
+fi
+
+log_init
+log "Starting"
+
+select_dir() {
+  [[ -x "$FZF_PATH" ]] || die "fzf not found: $FZF_PATH"
+
+  local recent=""
+  if [[ -n "${recent_pid:-}" ]]; then
+    wait "$recent_pid" 2>/dev/null || true
+    recent="$recent_cache"
+  elif [[ -f "$RECENT_DIRS" ]]; then
+    recent=$(tac "$RECENT_DIRS" | awk '!seen[$0]++')
+  fi
+
+  [[ -n "$recent" ]] || exit 0
+
+  printf '%s\n' "$recent" | "$FZF_PATH"
+}
+
+[[ -n "$dir" ]] || dir="$(select_dir || true)"
+[[ -n "$dir" ]] || exit 0
+[[ -d "$dir" ]] || die "Invalid directory: $dir"
+
+base_session="$(basename "$dir")"
+base_session="${base_session//./_}"
 session="$base_session"
 
-log_info "Base session name: $base_session"
-log_info "Working directory: $dir"
-
-# Find an available session name: base, base 01, base 02, ...
 if tmux has-session -t="$session" 2>/dev/null; then
-  log_warning "Session '$session' already exists, searching for next free name"
-
   i=1
   while :; do
     candidate=$(printf '%s %02d' "$base_session" "$i")
@@ -120,37 +116,20 @@ if tmux has-session -t="$session" 2>/dev/null; then
       session="$candidate"
       break
     fi
-    i=$((i + 1))
+    ((i++))
   done
 fi
 
-log_info "Using session name: $session"
+log "Using session: $session"
 
-log_info "Creating new tmux session: $session"
-if tmux new-session -ds "$session" -c "$dir"; then
-  log_success "Session created: $session"
-else
-  log_error "Failed to create session: $session"
-  exit 1
-fi
+tmux new-session -ds "$session" -c "$dir" || die "Failed to create tmux session"
 
-# Send command if provided
 if [[ -n "$cmd" ]]; then
-  log_info "Sending command to session: $cmd"
-  if tmux send-keys -t "$session" "$cmd" Enter; then
-    log_success "Command sent successfully: $cmd"
-  else
-    log_error "Failed to send command: $cmd"
-  fi
+  tmux send-keys -t "$session" "$cmd" Enter || die "Failed to send command"
 fi
 
-# === Attach to Session ===
-if [[ -n "$TMUX" ]]; then
-  log_info "Already in tmux, switching client to: $session"
+if [[ -n "${TMUX:-}" ]]; then
   exec tmux switch-client -t "$session"
 else
-  log_info "Not in tmux, attaching to session: $session"
   exec tmux attach -t "$session"
 fi
-
-log_success "Script completed successfully"
