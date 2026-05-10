@@ -1,43 +1,210 @@
 return {
-  -- HACK: docs @ https://github.com/folke/snacks.nvim/blob/main/docs
   {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
 
     opts = {
-      -- Core UI improvements
-      notifier = { enabled = true },
-      input = { enabled = true },
-      quickfile = { enabled = true, exclude = { "latex" } },
+      ----------------------------------------------------------------
+      -- Core UI
+      ----------------------------------------------------------------
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+      },
 
-      -- Useful editing utilities
-      rename = { enabled = true },
-      scratch = { enabled = true },
-      scope = { enabled = true },
-      -- indent = { enabled = true },
-      toggle = { enabled = true },
+      input = {
+        enabled = true,
+      },
 
-      -- UI modes
-      zen = { enabled = true },
+      quickfile = {
+        enabled = true,
+        exclude = { "latex" },
+      },
 
-      -- Terminal integration
-      -- terminal = { enabled = true },
+      ----------------------------------------------------------------
+      -- Editing / Utilities
+      ----------------------------------------------------------------
+      rename = {
+        enabled = true,
+      },
 
-      -- Picker (your search engine)
+      scratch = {
+        enabled = true,
+      },
+
+      scope = {
+        enabled = true,
+      },
+
+      toggle = {
+        enabled = true,
+      },
+
+      words = {
+        enabled = true,
+
+        debounce = 100,
+
+        notify_jump = true,
+
+        modes = { "n", "i", "c" },
+      },
+
+      ----------------------------------------------------------------
+      -- Bigfile
+      ----------------------------------------------------------------
+      bigfile = {
+        enabled = true,
+
+        notify = true,
+
+        size = 1.5 * 1024 * 1024,
+
+        line_length = 1000,
+
+        setup = function(ctx)
+          vim.schedule(function()
+            vim.bo[ctx.buf].syntax = ctx.ft
+          end)
+
+          vim.treesitter.stop(ctx.buf)
+
+          vim.bo[ctx.buf].swapfile = false
+          vim.bo[ctx.buf].undofile = false
+          vim.bo[ctx.buf].foldmethod = "manual"
+
+          vim.diagnostic.enable(false, { bufnr = ctx.buf })
+        end,
+      },
+
+      ----------------------------------------------------------------
+      -- Statuscolumn
+      ----------------------------------------------------------------
+      statuscolumn = {
+        enabled = false,
+
+        -- left = {
+        --   "mark",
+        --   "sign",
+        -- },
+        --
+        -- right = {
+        --   "git",
+        --   "fold",
+        -- },
+        --
+        -- folds = {
+        --   open = true,
+        --   git_hl = true,
+        -- },
+        --
+        -- git = {
+        --   patterns = {
+        --     "GitSign",
+        --     "MiniDiffSign",
+        --     "Oil",
+        --     "Diagnostic",
+        --     "Dap",
+        --   },
+        -- },
+        --
+        -- refresh = 50,
+      },
+
+      ----------------------------------------------------------------
+      -- Image Support
+      ----------------------------------------------------------------
+      image = {
+        enabled = true,
+
+        doc = {
+          inline = true,
+          float = true,
+          max_width = 80,
+          max_height = 40,
+        },
+
+        img_dirs = {
+          "img",
+          "images",
+          "assets",
+          "static",
+          "public",
+        },
+
+        math = {
+          enabled = true,
+        },
+
+        convert = {
+          notify = false,
+        },
+
+        cache = vim.fn.stdpath("cache") .. "/snacks/image",
+
+        debug = {
+          request = false,
+          convert = false,
+        },
+      },
+
+      ----------------------------------------------------------------
+      -- Zen
+      ----------------------------------------------------------------
+      zen = {
+        enabled = true,
+
+        toggles = {
+          dim = true,
+          git_signs = false,
+          mini_diff_signs = false,
+          diagnostics = false,
+          inlay_hints = false,
+        },
+
+        show = {
+          statusline = false,
+          tabline = false,
+        },
+      },
+
+      ----------------------------------------------------------------
+      -- Picker
+      ----------------------------------------------------------------
       picker = {
         enabled = true,
 
+        ui_select = true,
+
+        matcher = {
+          fuzzy = true,
+          smartcase = true,
+          ignorecase = true,
+          sort_empty = false,
+          filename_bonus = true,
+        },
+
         matchers = {
           frecency = true,
-          cwd_bonus = false,
+          cwd_bonus = true,
         },
 
         formatters = {
           file = {
             filename_first = false,
-            filename_only = false,
+            truncate = 80,
             icon_width = 2,
+          },
+        },
+
+        win = {
+          input = {
+            keys = {
+              ["<Esc>"] = { "close", mode = { "n", "i" } },
+              ["<C-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
+              ["<C-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
+            },
           },
         },
 
@@ -49,6 +216,7 @@ return {
         layouts = {
           select = {
             preview = false,
+
             layout = {
               backdrop = false,
               width = 0.6,
@@ -59,8 +227,10 @@ return {
               border = "rounded",
               title = "{title}",
               title_pos = "center",
+
               { win = "input", height = 1, border = "bottom" },
               { win = "list", border = "none" },
+
               {
                 win = "preview",
                 title = "{preview}",
@@ -73,15 +243,24 @@ return {
 
           telescope = {
             reverse = true,
+
             layout = {
               box = "horizontal",
               backdrop = false,
-              width = 0.8,
-              height = 0.9,
+              width = 0.90,
+              height = 0.90,
               border = "none",
+
               {
                 box = "vertical",
-                { win = "list", title = " Results ", title_pos = "center", border = "rounded" },
+
+                {
+                  win = "list",
+                  title = " Results ",
+                  title_pos = "center",
+                  border = "rounded",
+                },
+
                 {
                   win = "input",
                   height = 1,
@@ -90,10 +269,11 @@ return {
                   title_pos = "center",
                 },
               },
+
               {
                 win = "preview",
                 title = "{preview:Preview}",
-                width = 0.50,
+                width = 0.55,
                 border = "rounded",
                 title_pos = "center",
               },
@@ -110,28 +290,77 @@ return {
               border = "top",
               title = " {title} {live} {flags}",
               title_pos = "left",
+
               { win = "input", height = 1, border = "bottom" },
+
               {
                 box = "horizontal",
                 { win = "list", border = "none" },
-                { win = "preview", title = "{preview}", width = 0.5, border = "left" },
+
+                {
+                  win = "preview",
+                  title = "{preview}",
+                  width = 0.5,
+                  border = "left",
+                },
               },
             },
           },
         },
       },
 
+      ----------------------------------------------------------------
+      -- Dashboard
+      ----------------------------------------------------------------
       dashboard = {
         enabled = true,
+
+        preset = {
+          header = [[
+███╗   ██╗██╗   ██╗██╗███╗   ███╗
+████╗  ██║██║   ██║██║████╗ ████║
+██╔██╗ ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝
+          ]],
+        },
+
         sections = {
           { section = "header" },
-          { section = "keys", gap = 1, padding = 1 },
-          { section = "startup" },
+
+          {
+            section = "keys",
+            gap = 1,
+            padding = 1,
+          },
+
+          {
+            icon = " ",
+            title = "Recent Files",
+            section = "recent_files",
+            indent = 2,
+            padding = 1,
+          },
+
+          {
+            icon = " ",
+            title = "Projects",
+            section = "projects",
+            indent = 2,
+            padding = 1,
+          },
+
+          {
+            section = "startup",
+          },
+
           {
             section = "terminal",
-            random = 15,
+            cmd = "colorscript random",
+            random = 10,
             pane = 2,
-            indent = 15,
+            indent = 4,
             height = 20,
           },
         },
@@ -139,7 +368,9 @@ return {
     },
 
     keys = {
+      ----------------------------------------------------------------
       -- Git
+      ----------------------------------------------------------------
       {
         "<leader>gg",
         function()
@@ -147,6 +378,7 @@ return {
         end,
         desc = "Lazygit",
       },
+
       {
         "<leader>gL",
         function()
@@ -155,7 +387,9 @@ return {
         desc = "Lazygit Logs",
       },
 
-      -- Rename file
+      ----------------------------------------------------------------
+      -- Rename
+      ----------------------------------------------------------------
       {
         "<leader>rN",
         function()
@@ -164,16 +398,9 @@ return {
         desc = "Rename Current File",
       },
 
-      -- Terminal
-      -- {
-      --   "<leader>tt",
-      --   function()
-      --     require("snacks").terminal.toggle()
-      --   end,
-      --   desc = "Toggle Terminal",
-      -- },
-
-      -- File search
+      ----------------------------------------------------------------
+      -- Picker
+      ----------------------------------------------------------------
       {
         "<leader>ff",
         function()
@@ -227,7 +454,9 @@ return {
       {
         "<leader>fk",
         function()
-          require("snacks").picker.keymaps({ layout = "ivy" })
+          require("snacks").picker.keymaps({
+            layout = "ivy",
+          })
         end,
         desc = "Search Keymaps",
       },
@@ -240,16 +469,19 @@ return {
         desc = "Help Pages",
       },
 
-      -- Git branches
       {
         "<leader>gbr",
         function()
-          require("snacks").picker.git_branches({ layout = "select" })
+          require("snacks").picker.git_branches({
+            layout = "select",
+          })
         end,
         desc = "Git Branches",
       },
 
-      -- Zen mode
+      ----------------------------------------------------------------
+      -- Zen
+      ----------------------------------------------------------------
       {
         "<leader>uz",
         function()
@@ -258,7 +490,9 @@ return {
         desc = "Zen Mode",
       },
 
-      -- Scratch buffer
+      ----------------------------------------------------------------
+      -- Scratch
+      ----------------------------------------------------------------
       {
         "<leader>us",
         function()
@@ -266,13 +500,28 @@ return {
         end,
         desc = "Scratch Buffer",
       },
+
+      ----------------------------------------------------------------
+      -- Image
+      ----------------------------------------------------------------
+      {
+        "<leader>ui",
+        function()
+          require("snacks.image").hover()
+        end,
+        desc = "Image Hover",
+      },
     },
   },
-  -- NOTE: todo comments w/ snacks
+
+  --------------------------------------------------------------------
+  -- Todo Comments Integration
+  --------------------------------------------------------------------
   {
     "folke/todo-comments.nvim",
     event = { "BufReadPre", "BufNewFile" },
     optional = true,
+
     keys = {
       {
         "<leader>ft",
@@ -281,10 +530,13 @@ return {
         end,
         desc = "Todo",
       },
+
       {
         "<leader>fT",
         function()
-          require("snacks").picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } })
+          require("snacks").picker.todo_comments({
+            keywords = { "TODO", "FIX", "FIXME" },
+          })
         end,
         desc = "Todo/Fix/Fixme",
       },

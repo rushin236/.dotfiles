@@ -209,7 +209,7 @@ binds {
     XF86AudioPrev allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --playerctl previous"; }
     XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
 
-    Caps_Lock allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --caps-lock"; }
+    // Caps_Lock allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --caps-lock"; }
 
     XF86MonBrightnessUp allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --brightness raise"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "swayosd-client --monitor $(niri msg focused-output | grep '^Output' | awk -F'[()]' '{print $(NF-1)}') --brightness lower"; }

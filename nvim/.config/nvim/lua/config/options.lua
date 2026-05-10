@@ -1,64 +1,26 @@
 ------------------------------------------------------------------
 -- Python runtime for Neovim / Molten / Jupyter
--- Put near top of options.lua
 ------------------------------------------------------------------
 do
-  local uv = vim.uv or vim.loop
+  -- local uv = vim.uv or vim.loop
+  local tools = require("utils.python_tools")
+
   local host_dir = vim.fn.expand("~/.local/share/nvim-python")
   local host_python = host_dir .. "/bin/python"
+
   local runtime_dir = vim.fn.expand("~/.local/share/jupyter/runtime")
+
   local kernel_dir = vim.fn.expand("~/.local/share/jupyter/kernels/nvim")
   local kernel_json = kernel_dir .. "/kernel.json"
 
   local function log(msg, hl)
-    vim.api.nvim_echo({ { "[python] " .. msg, hl or "None" } }, true, {})
-  end
-
-  local function exists(path)
-    return uv.fs_stat(path) ~= nil
-  end
-
-  local function run(cmd)
-    local out = vim.fn.system(cmd)
-    local ok = vim.v.shell_error == 0
-    if not ok then
-      log("Failed: " .. table.concat(cmd, " "), "ErrorMsg")
-    end
-    return ok, out
-  end
-
-  local function ensure_host_packages()
-    run({ host_python, "-m", "pip", "install", "-U", "pip" })
-    -- THIS is where all the heavy Molten/Jupyter tools go
-    run({
-      host_python,
-      "-m",
-      "pip",
-      "install",
-      "-U",
-      "pynvim",
-      "jupyter",
-      "ipykernel",
-      "jupyter_client",
-      "jupyter_core",
-      "nbformat",
-      "pyzmq",
-      "traitlets",
-      "tornado",
-      "debugpy",
-      "ruff",
-      "cairosvg",
-      "pnglatex",
-      "plotly",
-      "kaleido",
-      "pyperclip",
-      "pillow",
-    })
+    vim.api.nvim_echo({
+      { "[python] " .. msg, hl or "None" },
+    }, true, {})
   end
 
   local function recreate_kernel()
-    vim.fn.delete(kernel_dir, "rf")
-    run({
+    vim.system({
       host_python,
       "-m",
       "ipykernel",
@@ -68,31 +30,76 @@ do
       "nvim",
       "--display-name",
       "Python (nvim_host)",
-    })
+    }, { text = true }, function(obj)
+      vim.schedule(function()
+        if obj.code == 0 then
+          log("Jupyter kernel ready", "Question")
+        else
+          log("Failed to create Jupyter kernel", "ErrorMsg")
+        end
+      end)
+    end)
   end
 
   if vim.fn.executable("python3") == 0 then
     return
   end
+
   vim.fn.mkdir(runtime_dir, "p")
 
-  -- 1. THE SLOW PATH: Block startup ONLY if the global Neovim host is missing
-  if not exists(host_python) then
-    log("Creating Neovim Python host... (Blocking once)", "MoreMsg")
-    run({ "python3", "-m", "venv", host_dir })
-    ensure_host_packages()
-    recreate_kernel()
-    log("Neovim Python host created!", "Question")
-  elseif not exists(kernel_json) then
-    recreate_kernel()
+  ------------------------------------------------------------
+  -- Create host venv once
+  ------------------------------------------------------------
+  if not tools.exists(host_python) then
+    log("Creating Neovim Python host...", "MoreMsg")
+
+    vim.system({
+      "python3",
+      "-m",
+      "venv",
+      host_dir,
+    }, { text = true }, function(obj)
+      vim.schedule(function()
+        if obj.code ~= 0 then
+          log("Failed creating Python host", "ErrorMsg")
+          return
+        end
+
+        log("Installing host tooling...", "MoreMsg")
+
+        tools.ensure(host_python, function(msg)
+          log(msg, "None")
+        end, function()
+          recreate_kernel()
+        end)
+      end)
+    end)
+  else
+    ------------------------------------------------------------
+    -- Background tooling verification
+    ------------------------------------------------------------
+    tools.ensure(host_python, function(msg)
+      log(msg, "None")
+    end)
+
+    ------------------------------------------------------------
+    -- Recreate kernel if missing
+    ------------------------------------------------------------
+    if not tools.exists(kernel_json) then
+      recreate_kernel()
+    end
   end
 
-  -- 2. THE FAST PATH: Set the global provider for Molten and plugins
+  ------------------------------------------------------------
+  -- Neovim Python provider
+  ------------------------------------------------------------
   vim.g.python3_host_prog = host_python
 
-  -- We intentionally DO NOT set vim.env.VIRTUAL_ENV here globally anymore.
-  -- We leave that job exclusively to venv-selector so your terminal
-  -- defaults to your project, not Neovim's internal host.
+  local host_bin = host_dir .. "/bin"
+
+  if not vim.env.PATH:find(host_bin, 1, true) then
+    vim.env.PATH = host_bin .. ":" .. vim.env.PATH
+  end
 end
 
 -- Options are automatically loaded before lazy.nvim startup
@@ -130,6 +137,11 @@ vim.opt.background = "dark"
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.winborder = "rounded"
+
+vim.opt.updatetime = 200
+vim.opt.timeoutlen = 300
+vim.opt.completeopt = "menu,menuone,noselect"
+vim.opt.shortmess:append("c")
 
 -- folding (for nvim-ufo)
 vim.o.foldenable = true

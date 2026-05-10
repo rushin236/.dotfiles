@@ -1,45 +1,49 @@
 return {
   {
     "milanglacier/minuet-ai.nvim",
-    lazy = false,
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "saghen/blink.cmp",
+    },
 
     config = function()
       require("minuet").setup({
-
-        ----------------------------------------------------------------
-        -- OPTION A: FIM mode (best editing)
-        ----------------------------------------------------------------
         provider = "openai_fim_compatible",
+
+        n_completions = 1,
+
+        debounce = 80,
+
+        context_window = 4096,
+
+        notify = "warn",
+
         provider_options = {
           openai_fim_compatible = {
-            end_point = "http://localhost:11434/v1/completions",
-            -- model = "qwen2.5-coder:7b",
-            model = "qwen2.5-coder:3b",
-            name = "Ollama",
-            stream = true,
             api_key = "TERM",
+
+            name = "Ollama",
+
+            end_point = "http://127.0.0.1:11434/v1/completions",
+
+            model = "qwen2.5-coder:7b",
+
+            stream = true,
+
+            optional = {
+              max_tokens = 96,
+              top_p = 0.9,
+              temperature = 0.15,
+            },
           },
         },
-
-        ----------------------------------------------------------------
-        -- OPTION B: Prefix mode (uncomment if testing DeepSeek)
-        ----------------------------------------------------------------
-        -- provider = "ollama",
-        -- provider_options = {
-        --   ollama = {
-        --     end_point = "http://localhost:11434/api/generate",
-        --     model = "deepseek-coder:6.7b",
-        --     stream = true,
-        --   },
-        -- },
       })
     end,
   },
   {
     "saghen/blink.cmp",
     version = "*",
-    -- build = "cargo build --release",
+    build = "cargo build --release",
     dependencies = {
       "milanglacier/minuet-ai.nvim",
       {
@@ -60,7 +64,6 @@ return {
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
       },
       appearance = {
-        use_nvim_cmp_as_default = true,
         nerd_font_variant = "mono",
       },
       completion = {
@@ -77,7 +80,7 @@ return {
           minuet = {
             name = "minuet",
             module = "minuet.blink",
-            score_offset = 100,
+            score_offset = 30,
           },
         },
       },
