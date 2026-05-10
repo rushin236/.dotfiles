@@ -14,16 +14,16 @@ return {
         --------------------------------------------------------------
         -- Only generate TOC when marker exists
         --------------------------------------------------------------
-        ["markdown-toc"] = {
-          condition = function(_, ctx)
-            for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
-              if line:find("<!%-%- toc %-%->") then
-                return true
-              end
-            end
-            return false
-          end,
-        },
+        -- ["markdown-toc"] = {
+        --   condition = function(_, ctx)
+        --     for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
+        --       if line:find("<!%-%- toc %-%->") then
+        --         return true
+        --       end
+        --     end
+        --     return false
+        --   end,
+        -- },
 
         --------------------------------------------------------------
         -- Use system clang-format explicitly
@@ -63,7 +63,7 @@ return {
         --------------------------------------------------------------
         lua = { "stylua" },
 
-        python = { "ruff_fix", "ruff_format" },
+        python = { "ruff_organize_imports", "ruff_fix", "ruff_format" },
 
         sh = { "shfmt" },
         bash = { "shfmt" },
@@ -79,17 +79,29 @@ return {
         --------------------------------------------------------------
         -- Docs / notes
         --------------------------------------------------------------
-        markdown = { "markdownlint-cli2", "markdown-toc" },
+        markdown = function(bufnr)
+          local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+          for _, line in ipairs(lines) do
+            if line:find("<!%-%- toc %-%->") then
+              return { "markdownlint-cli2", "markdown-toc" }
+            end
+          end
+
+          return { "markdownlint-cli2" }
+        end,
 
         --------------------------------------------------------------
         -- Config / infra
         --------------------------------------------------------------
-        yaml = { "prettier" },
-        yml = { "prettier" },
+        yaml = { "prettierd" },
+        yml = { "prettierd" },
 
         toml = { "taplo" },
 
-        json = { "prettier" },
+        json = { "prettierd" },
+
+        mdx = { "prettierd" },
 
         --------------------------------------------------------------
         -- Python web templates

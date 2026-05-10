@@ -34,7 +34,8 @@ return {
       ensure_installed = {
         "lua_ls",
 
-        "pyright",
+        -- "pyright",
+        "basedpyright",
         "ruff",
 
         "bashls",
@@ -64,14 +65,16 @@ return {
         -- Formatters
         --------------------------------------------------------------
         "stylua",
-        "ruff",
+        -- "ruff",
         "shfmt",
         "clang-format",
         "gofumpt",
         "golines",
         "markdownlint-cli2",
         "markdown-toc",
-        "prettier",
+        "prettierd",
+        -- "rustfmt",
+        "yamlfmt",
 
         --------------------------------------------------------------
         -- Linters

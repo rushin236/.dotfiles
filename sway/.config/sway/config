@@ -138,7 +138,7 @@ bindsym XF86AudioMute        exec swayosd-client --monitor "$($get_mon)" --outpu
 bindsym XF86AudioMicMute     exec swayosd-client --monitor "$($get_mon)" --input-volume mute-toggle
 bindsym XF86MonBrightnessUp   exec swayosd-client --monitor "$($get_mon)" --brightness +10
 bindsym XF86MonBrightnessDown exec swayosd-client --monitor "$($get_mon)" --brightness -10
-bindsym --release Caps_Lock exec swayosd-client --monitor "$($get_mon)" --caps-lock
+# bindsym --release Caps_Lock exec swayosd-client --monitor "$($get_mon)" --caps-lock
 bindsym XF86AudioPlay exec swayosd-client --monitor "$($get_mon)" --playerctl play-pause
 bindsym XF86AudioNext exec swayosd-client --monitor "$($get_mon)" --playerctl next
 

@@ -105,6 +105,7 @@ return {
       "html",
       "javascript",
       "json",
+      "latex",
       "lua",
       "markdown",
       "markdown_inline",
@@ -118,6 +119,16 @@ return {
       "vim",
       "vimdoc",
       "yaml",
+      "dockerfile",
+      "gitignore",
+      "jinja",
+      "scss",
+      "sql",
+      "xml",
+      "vue",
+      "svelte",
+      "typst",
+      "gotmpl",
     }
 
     ts.install(parsers, { summary = false })
