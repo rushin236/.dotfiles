@@ -245,9 +245,26 @@ return {
     -- Python: BasedPyright
     ------------------------------------------------------------------
     vim.lsp.config("basedpyright", {
+      -- 1. Just call the binary name. Because venv-selector prepends your .venv/bin
+      -- to the $PATH, Neovim will automatically grab the local one!
+      cmd = {
+        "basedpyright-langserver",
+        "--stdio",
+      },
+
       capabilities = vim.tbl_deep_extend("force", capabilities, {
         offsetEncoding = { "utf-8" },
       }),
+
+      -- 2. Hook: Dynamically set the python path right before the server initializes,
+      -- guaranteeing it catches the VIRTUAL_ENV set by venv-selector.
+      before_init = function(_, config)
+        if vim.env.VIRTUAL_ENV then
+          config.settings.python.pythonPath = vim.env.VIRTUAL_ENV .. "/bin/python"
+        else
+          config.settings.python.pythonPath = vim.fn.exepath("python3")
+        end
+      end,
 
       settings = {
         basedpyright = {
@@ -258,6 +275,8 @@ return {
         },
 
         python = {
+          -- Removed the static pythonPath from here; it is now handled by before_init
+
           analysis = {
             typeCheckingMode = "standard",
             diagnosticMode = "workspace",

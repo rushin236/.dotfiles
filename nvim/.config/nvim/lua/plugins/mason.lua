@@ -35,7 +35,7 @@ return {
         "lua_ls",
 
         -- "pyright",
-        "basedpyright",
+        -- "basedpyright",
         "ruff",
 
         "bashls",

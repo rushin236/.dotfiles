@@ -405,8 +405,11 @@ return {
         "<leader>ff",
         function()
           require("snacks").picker.files({
-            cwd = vim.fn.getcwd(),
-            hidden = true,
+            cwd = vim.fn.getcwd(), -- Locks the search strictly to your PWD
+            hidden = true, -- Shows hidden files (e.g., .env, .bashrc)
+            ignored = true, -- Shows files ignored by .gitignore
+            follow = true, -- Follows symlinks
+            exclude = { ".git/" }, -- Optional: keeps the search clean by hiding raw git history files
           })
         end,
         desc = "Find Files",

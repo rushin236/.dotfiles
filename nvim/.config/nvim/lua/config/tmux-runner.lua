@@ -107,6 +107,18 @@ local function ask_args(prompt_text, callback)
   end)
 end
 
+local function get_activate_cmd()
+  -- Check if Neovim knows about a venv, otherwise look for a .venv folder in the current directory
+  local venv_path = vim.env.VIRTUAL_ENV or vim.fn.finddir(".venv", vim.fn.getcwd() .. ";")
+
+  if venv_path ~= "" and vim.fn.filereadable(venv_path .. "/bin/activate") == 1 then
+    -- Returns a shell string that only activates if not already activated
+    return string.format('[ -z "$VIRTUAL_ENV" ] && source %s/bin/activate; ', venv_path)
+  end
+
+  return "" -- Return empty string if no venv is found
+end
+
 -- Function 1: Run the current file interactively
 local function run_file_in_tmux()
   vim.cmd("silent! update")
@@ -155,7 +167,9 @@ local function run_file_in_tmux()
   -- 2. INTERPRETED LANGUAGES
   elseif file_ext == "py" then
     ask_args("Python execution args: ", function(run_args)
-      send_to_tmux(string.format("python3 %s %s", file, run_args))
+      local activate_cmd = get_activate_cmd()
+      local final_cmd = string.format("%spython3 %s %s", activate_cmd, file, run_args)
+      send_to_tmux(final_cmd)
     end)
   elseif file_ext == "js" then
     ask_args("Node execution args: ", function(run_args)

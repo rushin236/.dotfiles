@@ -57,6 +57,7 @@ do
       "python3",
       "-m",
       "venv",
+      "--upgrade-deps",
       host_dir,
     }, { text = true }, function(obj)
       vim.schedule(function()
@@ -67,7 +68,7 @@ do
 
         log("Installing host tooling...", "MoreMsg")
 
-        tools.ensure(host_python, function(msg)
+        tools.ensure(host_python, tools.host_tooling, function(msg)
           log(msg, "None")
         end, function()
           recreate_kernel()
@@ -78,7 +79,7 @@ do
     ------------------------------------------------------------
     -- Background tooling verification
     ------------------------------------------------------------
-    tools.ensure(host_python, function(msg)
+    tools.ensure(host_python, tools.host_tooling, function(msg)
       log(msg, "None")
     end)
 
