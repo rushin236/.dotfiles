@@ -8,28 +8,34 @@ return {
 
     config = function()
       require("minuet").setup({
+        -- Keeping FIM because virtual text handles suffixes perfectly
         provider = "openai_fim_compatible",
 
         n_completions = 1,
-
         debounce = 80,
-
         context_window = 4096,
-
         notify = "warn",
+
+        -- Added the virtual text configuration
+        virtualtext = {
+          auto_trigger_ft = { "*" },
+          keymap = {
+            accept = "<A-y>", -- Alt+y to accept the ghost text
+            accept_line = "<A-a>", -- Alt+a to accept only the first line
+            prev = "<A-[>",
+            next = "<A-]>",
+            dismiss = "<A-e>",
+          },
+        },
 
         provider_options = {
           openai_fim_compatible = {
             api_key = "TERM",
-
             name = "Ollama",
-
+            -- Using the completions endpoint again for FIM
             end_point = "http://127.0.0.1:11434/v1/completions",
-
             model = "qwen2.5-coder:7b",
-
             stream = true,
-
             optional = {
               max_tokens = 96,
               top_p = 0.9,
@@ -75,14 +81,8 @@ return {
         ghost_text = { enabled = true },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "minuet" },
-        providers = {
-          minuet = {
-            name = "minuet",
-            module = "minuet.blink",
-            score_offset = 30,
-          },
-        },
+        -- Removed 'minuet' from here so it doesn't show in the blink popup menu
+        default = { "lsp", "path", "snippets", "buffer" },
       },
       snippets = { preset = "luasnip" },
     },

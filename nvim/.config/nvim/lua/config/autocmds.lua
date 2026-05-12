@@ -74,3 +74,32 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.hl.on_yank({ higroup = "YankHighlight", timeout = 250 })
   end,
 })
+
+-- ipynb create auto_create_command
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  pattern = "*.ipynb",
+  desc = "Prevent Jupytext crash by populating 0-byte oil.nvim files",
+  callback = function(opts)
+    local filepath = vim.fn.expand(opts.match)
+
+    local blank_notebook = {
+      "{",
+      '  "cells": [],',
+      '  "metadata": {},',
+      '  "nbformat": 4,',
+      '  "nbformat_minor": 5',
+      "}",
+    }
+
+    if opts.event == "BufReadPre" then
+      -- If the file exists on disk but is exactly 0 bytes (created by oil.nvim)
+      if vim.fn.filereadable(filepath) == 1 and vim.fn.getfsize(filepath) == 0 then
+        -- Write the JSON directly to the hard drive BEFORE Jupytext reads it
+        vim.fn.writefile(blank_notebook, filepath)
+      end
+    elseif opts.event == "BufNewFile" then
+      -- If creating a file purely in memory via :e new_file.ipynb
+      vim.api.nvim_buf_set_lines(opts.buf, 0, -1, false, blank_notebook)
+    end
+  end,
+})

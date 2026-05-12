@@ -47,19 +47,25 @@ return {
 
     local function kernel_name(path)
       local leaf = vim.fn.fnamemodify(path, ":t")
+      local name = leaf
 
       if leaf == ".venv" or leaf == "venv" or leaf == "env" then
-        return vim.fn.fnamemodify(path, ":h:t")
+        name = vim.fn.fnamemodify(path, ":h:t")
       end
 
-      return leaf
+      -- Make Jupyter safe (lowercase, only alphanumeric/hyphens/underscores)
+      name = string.lower(name)
+      name = string.gsub(name, "[^a-z0-9%-_]", "_")
+
+      return name
     end
 
     ------------------------------------------------------------
     -- Async kernel setup
     ------------------------------------------------------------
     local function ensure_kernel_async(py, name)
-      tools.ensure(py, log, function(ok)
+      -- Pass tools.local_tooling here!
+      tools.ensure(py, tools.local_tooling, log, function(ok)
         if not ok then
           return
         end
@@ -78,6 +84,11 @@ return {
           vim.schedule(function()
             if obj.code == 0 then
               log("Kernel ready: " .. name)
+              -- Notify user they can now use Molten
+              vim.notify(
+                "Jupyter Kernel '" .. name .. "' created! You can now run :MoltenInit",
+                vim.log.levels.INFO
+              )
             else
               log("Failed creating kernel: " .. name, vim.log.levels.ERROR)
             end
@@ -92,10 +103,6 @@ return {
     local function activate(path)
       local py = python_from_venv(path)
 
-      if not exists(py) then
-        return
-      end
-
       ----------------------------------------------------------
       -- Environment
       ----------------------------------------------------------
@@ -106,7 +113,7 @@ return {
       -- Restart tooling
       ----------------------------------------------------------
       pcall(function()
-        vim.cmd("LspRestart pyright")
+        vim.cmd("LspRestart basedpyright")
       end)
 
       pcall(function()
@@ -129,10 +136,10 @@ return {
 
         if not exists(kernel_json) then
           log("Building Jupyter kernel in background...", vim.log.levels.WARN)
-
           ensure_kernel_async(py, name)
         else
-          tools.ensure(py, log)
+          -- UPDATED: Now safely uses tools.local_tooling with properly defined variables
+          tools.ensure(py, tools.local_tooling, log)
         end
       end
     end

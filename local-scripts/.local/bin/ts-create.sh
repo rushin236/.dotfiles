@@ -30,14 +30,6 @@ usage() {
   cat <<EOF
 Usage:
   $(basename "$0") [--log] [DIR] [CMD]
-
-Examples:
-  $(basename "$0")
-  $(basename "$0") ~/projects/app
-  $(basename "$0") ~/projects/app "nvim ."
-
-Logs:
-  $LOG_FILE
 EOF
 }
 
@@ -61,9 +53,7 @@ die() {
 parse_args() {
   while (($#)); do
     case "$1" in
-      --log)
-        LOG_ENABLED=1
-        ;;
+      --log) LOG_ENABLED=1 ;;
       -h | --help)
         usage
         exit 0
@@ -91,30 +81,21 @@ select_dir() {
   [[ -f "$RECENT_DIRS" ]] || return 1
 
   local recent
-  recent="$(
-    tac "$RECENT_DIRS" 2>/dev/null | awk '!seen[$0]++'
-  )"
-
+  recent="$(tac "$RECENT_DIRS" 2>/dev/null | awk '!seen[$0]++')"
   [[ -n "$recent" ]] || return 1
 
   printf '%s\n' "$recent" | "$FZF_PATH"
 }
 
-resolve_dir() {
-  if [[ -z "$dir" ]]; then
-    dir="$(select_dir || true)"
-  fi
-
-  [[ -n "$dir" ]] || exit 0
-  [[ -d "$dir" ]] || die "Invalid directory: $dir"
-}
-
 build_session_name() {
   local base session i
 
-  base="$(basename "$dir")"
+  # OPTIMIZATION: Use native bash string manipulation instead of 'basename'
+  base="${dir##*/}"
   base="${base//./_}"
-  session="$base"
+
+  # Fallback if directory was root or empty
+  session="${base:-main}"
 
   if ! tmux has-session -t "$session" 2>/dev/null; then
     printf '%s\n' "$session"
@@ -132,47 +113,46 @@ build_session_name() {
   done
 }
 
-create_session() {
-  local session="$1"
-
-  log "Creating session: $session"
-  log "Directory: $dir"
-
-  tmux new-session -ds "$session" -c "$dir"
-
-  if [[ -n "$cmd" ]]; then
-    log "Sending command: $cmd"
-    tmux send-keys -t "$session" "$cmd" Enter
-  fi
-}
-
-attach_session() {
-  local session="$1"
-
-  if [[ -n "${TMUX:-}" ]]; then
-    log "Switching client: $session"
-    exec tmux switch-client -t "$session"
-  else
-    log "Attaching: $session"
-    exec tmux attach -t "$session"
-  fi
-}
-
 main() {
   parse_args "$@"
   log_init
 
-  log "Starting"
+  # 1. Resolve Directory
+  if [[ -z "$dir" ]]; then
+    dir="$(select_dir || true)"
+  fi
 
-  resolve_dir
+  [[ -n "$dir" ]] || exit 0
+  [[ -d "$dir" ]] || die "Invalid directory: $dir"
 
+  # 2. Get Session Name
   local session
   session="$(build_session_name)"
+  log "Using session: $session at $dir"
 
-  log "Using session: $session"
+  # 3. Create & Attach (The Fast Path)
+  # If there is a specific command to run inside the new pane
+  if [[ -n "$cmd" ]]; then
+    tmux new-session -ds "$session" -c "$dir"
+    tmux send-keys -t "$session" "$cmd" Enter
 
-  create_session "$session"
-  attach_session "$session"
+    if [[ -n "${TMUX:-}" ]]; then
+      exec tmux switch-client -t "$session"
+    else
+      exec tmux attach -t "$session"
+    fi
+
+  # If NO command (Standard Kitty/Thunar startup)
+  else
+    if [[ -n "${TMUX:-}" ]]; then
+      # Already in Tmux: Ensure it exists, then switch
+      tmux new-session -ds "$session" -c "$dir" 2>/dev/null || true
+      exec tmux switch-client -t "$session"
+    else
+      # Outside Tmux: Atomic creation + attach via exec for maximum speed
+      exec tmux new-session -A -s "$session" -c "$dir"
+    fi
+  fi
 }
 
 main "$@"
