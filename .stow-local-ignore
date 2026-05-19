@@ -1,4 +1,34 @@
-\.git
-\.gitignore
-\.stow-local-ignore
-^test
+# Git
+^\.git$
+^\.gitignore$
+^\.gitattributes$
+^\.gitmodules$
+
+# Stow
+^\.stow-local-ignore$
+
+# Documentation / metadata
+^README(\..*)?$
+^LICENSE(\..*)?$
+^CHANGELOG(\..*)?$
+^CONTRIBUTING(\..*)?$
+
+# Editor / OS junk
+^\.DS_Store$
+^Thumbs\.db$
+
+# Development / testing
+^tests?/
+^docs/
+
+# Temporary files
+.*~$
+^#.*#$
+^\.#.*
+
+# Vim swap files
+.*\.swp$
+.*\.swo$
+
+# Backup files
+.*\.bak$

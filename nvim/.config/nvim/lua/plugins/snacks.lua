@@ -391,7 +391,7 @@ return {
       -- Rename
       ----------------------------------------------------------------
       {
-        "<leader>rN",
+        "<leader>Rf",
         function()
           require("snacks").rename.rename_file()
         end,
