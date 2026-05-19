@@ -23,6 +23,8 @@ return {
         { "<leader>m", group = "molten" },
         { "<leader>o", group = "oil" },
         { "<leader>q", group = "quit" },
+        { "<leader>r", group = "grug-far" },
+        { "<leader>R", group = "rename" },
         { "<leader>s", group = "save" },
         { "<leader>u", group = "ui" },
         { "<leader>v", group = "venv" },

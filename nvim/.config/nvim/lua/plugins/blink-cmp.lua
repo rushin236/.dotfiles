@@ -83,6 +83,13 @@ return {
       sources = {
         -- Removed 'minuet' from here so it doesn't show in the blink popup menu
         default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+          path = {
+            opts = {
+              show_hidden_files_by_default = true,
+            },
+          },
+        },
       },
       snippets = { preset = "luasnip" },
     },

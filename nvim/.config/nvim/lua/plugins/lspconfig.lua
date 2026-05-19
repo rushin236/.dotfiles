@@ -149,7 +149,7 @@ return {
         ----------------------------------------------------------------
         -- Actions
         ----------------------------------------------------------------
-        map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        map("n", "<leader>Rs", vim.lsp.buf.rename, "Rename symbol")
 
         map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
 
