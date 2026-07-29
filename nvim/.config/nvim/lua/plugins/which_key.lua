@@ -21,6 +21,7 @@ return {
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
         { "<leader>m", group = "molten" },
+        { "<leader>M", group = "markdown" },
         { "<leader>o", group = "oil" },
         { "<leader>q", group = "quit" },
         { "<leader>r", group = "grug-far" },
