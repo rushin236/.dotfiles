@@ -12,8 +12,8 @@ return {
         provider = "openai_fim_compatible",
 
         n_completions = 1,
-        debounce = 80,
-        context_window = 4096,
+        debounce = 200,
+        context_window = 8192,
         notify = "warn",
 
         -- Added the virtual text configuration
