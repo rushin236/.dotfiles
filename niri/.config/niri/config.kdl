@@ -55,7 +55,7 @@ spawn-at-startup "sh" "-c" "pkill waybar; waybar"
 spawn-at-startup "dex" "--autostart" "--environment" "niri"
 spawn-at-startup "fdm" "--hidden"
 spawn-at-startup "coolercontrol" "--disable-gpu"
-spawn-at-startup "easyeffects" "--service-mode" "-w"
+spawn-at-startup "/usr/bin/easyeffects" "--service-mode" "--hide-window"
 
 // Scripts 
 spawn-at-startup "set-wallpaper.sh"
