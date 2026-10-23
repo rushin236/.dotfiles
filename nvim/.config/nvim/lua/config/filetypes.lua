@@ -1,6 +1,7 @@
 vim.filetype.add({
   extension = {
     mdx = "mdx",
+    scad = "openscad",
   },
 
   pattern = {
