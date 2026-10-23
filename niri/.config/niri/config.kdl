@@ -69,6 +69,14 @@ layout {
     center-focused-column "never"
 
     preset-column-widths {
+        proportion 0.33
+        proportion 0.5
+        proportion 0.75
+        proportion 1.0
+    }
+
+    preset-window-heights {
+        proportion 0.33
         proportion 0.5
         proportion 0.75
         proportion 1.0
@@ -147,9 +155,10 @@ window-rule {
 
 // --- 2. File Pickers & Save Dialogs ---
 window-rule {
-    match title=r#".*(Open|Save|Select|File).*"#
+    // Only float windows where the title is EXACTLY these common dialog names
+    match title=r#"^(Open( File)?|Save( As)?|Select( File)?|Choose( File)?)$"#
     match app-id="org.gtk.FileChooserDialog"
-    
+
     open-floating true
     default-column-width { proportion 0.0; }
     max-width 800
@@ -162,6 +171,8 @@ window-rule {
     clip-to-geometry true
     open-maximized false
     open-maximized-to-edges false
+    
+    // This forces all standard apps to exactly 50% width, ignoring the app's own requests
     default-column-width { proportion 0.5; }
 }
 
@@ -315,21 +326,26 @@ binds {
     Mod+Shift+V hotkey-overlay-title="Switch Focus Tiling/Floating" { switch-focus-between-floating-and-tiling; }
     Mod+W       hotkey-overlay-title="Toggle Tabbed Display" { toggle-column-tabbed-display; }
 
-    // Sizing & Formatting
-    Mod+R hotkey-overlay-title="Cycle Preset Width (Shift+R for Height)" { switch-preset-column-width; }
-    Mod+Shift+R { switch-preset-window-height; }
-    Mod+Ctrl+R hotkey-overlay-title="Reset Window Height" { reset-window-height; }
+    // Sizing & Formatting (Cycling Presets)
+    Mod+F hotkey-overlay-title="Cycle Preset Width" { switch-preset-column-width; }
+    Mod+Shift+F hotkey-overlay-title="Cycle Preset Height" { switch-preset-window-height; }
     
-    Mod+F hotkey-overlay-title="Maximize Column (Shift+F Fullscreen)" { maximize-column; }
-    Mod+Shift+F { fullscreen-window; }
+    // Resetting Height & Width
+    Mod+R hotkey-overlay-title="Reset Column Width" { set-column-width "50%"; }
+    Mod+Shift+R hotkey-overlay-title="Reset Window Height" { reset-window-height; }
+    
+    // Maximize & Fullscreen
+    Mod+M hotkey-overlay-title="Maximize Column" { maximize-column; }
+    Mod+Shift+M hotkey-overlay-title="Fullscreen Window" { fullscreen-window; }
     Mod+Ctrl+F hotkey-overlay-title="Expand Column Width" { expand-column-to-available-width; }
-    Mod+M hotkey-overlay-title="Maximize Window to Edges" { maximize-window-to-edges; }
+    Mod+Ctrl+M hotkey-overlay-title="Maximize Window to Edges" { maximize-window-to-edges; }
     
     Mod+C hotkey-overlay-title="Center Column (Ctrl+C Center All)" { center-column; }
     Mod+Ctrl+C { center-visible-columns; }
 
-    Mod+Minus hotkey-overlay-title="Adjust Width Size (-/=)" { set-column-width "-10%"; }
-    Mod+Equal { set-column-width "+10%"; }
-    Mod+Shift+Minus hotkey-overlay-title="Adjust Height Size Shift (-/=)" { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
+    // Fine-tune Sizing
+    Mod+Minus hotkey-overlay-title="Decrease Width Size (-/=)" { set-column-width "-10%"; }
+    Mod+Equal hotkey-overlay-title="Increase Width Size (-/=)" { set-column-width "+10%"; }
+    Mod+Shift+Minus hotkey-overlay-title="Decrease Height Size Shift (-/=)" { set-window-height "-10%"; }
+    Mod+Shift+Equal hotkey-overlay-title="Increase Height Size Shift (-/=)" { set-window-height "+10%"; }
 }
