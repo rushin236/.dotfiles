@@ -53,6 +53,8 @@ return {
 
         "html",
         "tailwindcss",
+
+        "openscad_lsp",
       },
     })
 
