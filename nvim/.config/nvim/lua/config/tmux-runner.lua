@@ -107,18 +107,6 @@ local function ask_args(prompt_text, callback)
   end)
 end
 
-local function get_activate_cmd()
-  -- Check if Neovim knows about a venv, otherwise look for a .venv folder in the current directory
-  local venv_path = vim.env.VIRTUAL_ENV or vim.fn.finddir(".venv", vim.fn.getcwd() .. ";")
-
-  if venv_path ~= "" and vim.fn.filereadable(venv_path .. "/bin/activate") == 1 then
-    -- Returns a shell string that only activates if not already activated
-    return string.format('[ -z "$VIRTUAL_ENV" ] && source %s/bin/activate; ', venv_path)
-  end
-
-  return "" -- Return empty string if no venv is found
-end
-
 -- Function 1: Run the current file interactively
 local function run_file_in_tmux()
   vim.cmd("silent! update")
@@ -167,8 +155,11 @@ local function run_file_in_tmux()
   -- 2. INTERPRETED LANGUAGES
   elseif file_ext == "py" then
     ask_args("Python execution args: ", function(run_args)
-      local activate_cmd = get_activate_cmd()
-      local final_cmd = string.format("%spython3 %s %s", activate_cmd, file, run_args)
+      local python_exe = vim.fn.exepath("python")
+      if python_exe == "" then
+        python_exe = "python3"
+      end
+      local final_cmd = string.format("%s %s %s", python_exe, file, run_args)
       send_to_tmux(final_cmd)
     end)
   elseif file_ext == "js" then
@@ -283,14 +274,35 @@ local function open_terminal()
     end
   end
 
-  -- If no terminal exists, create one with your specific split settings
   if #other_panes == 0 then
-    -- -v (vertical), -p 30 (30% height), -d (don't focus), -P -F (return ID)
-    vim.fn.system("tmux split-window -v -p 30 -d")
-    vim.notify("Terminal opened at 30% height", vim.log.levels.INFO)
+    -- 1. Compute the clean PATH silently in Neovim memory
+    local nvim_py_bin = vim.fn.expand("~/.local/share/nvim-python/bin") .. ":"
+    local pattern = nvim_py_bin:gsub("%-", "%%-") -- Escape hyphens for Lua pattern
+    local clean_path = vim.env.PATH:gsub(pattern, "")
+
+    -- 2. Launch the Tmux pane with the clean PATH injected silently via -e
+    local split_cmd =
+      string.format("tmux split-window -v -p 30 -d -P -F '#{pane_id}' -e 'PATH=%s'", clean_path)
+
+    local raw_id = vim.fn.system(split_cmd)
+    local new_pane = raw_id:gsub("%s+", "")
+    vim.cmd("sleep 150m")
+
+    -- 3. Silently activate the environment if one exists
+    if vim.env.VIRTUAL_ENV and vim.env.VIRTUAL_ENV ~= "" then
+      -- Prepending a space prevents the command from entering shell history
+      local act_cmd = string.format(" source %s/bin/activate", vim.env.VIRTUAL_ENV)
+      vim.fn.system(string.format("tmux send-keys -t %s '%s' Enter", new_pane, act_cmd))
+
+      vim.cmd("sleep 50m") -- Give the shell a split second to print the output
+
+      -- Send Ctrl+L to clear screen, then obliterate the Tmux scrollback history
+      vim.fn.system(string.format("tmux send-keys -t %s 'C-l'", new_pane))
+      vim.fn.system(string.format("tmux clear-history -t %s", new_pane))
+    end
+
+    vim.notify("Terminal opened and synced invisibly", vim.log.levels.INFO)
   else
-    -- If one or more exist, just notify the user.
-    -- Your run commands will automatically detect and use these.
     vim.notify("Terminal already exists. Run commands will target it.", vim.log.levels.INFO)
   end
 end

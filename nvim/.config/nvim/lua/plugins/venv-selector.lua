@@ -98,47 +98,53 @@ return {
     end
 
     ------------------------------------------------------------
-    -- Activate venv
+    -- Helper to read kernel.json and verify the python path
+    ------------------------------------------------------------
+    local function verify_kernel_path(kernel_json_path, current_py_path)
+      local f = io.open(kernel_json_path, "r")
+      if not f then
+        return false
+      end
+      local content = f:read("*a")
+      f:close()
+      -- Returns true if the exact current python path is inside the json
+      return content:find(current_py_path, 1, true) ~= nil
+    end
+
+    ------------------------------------------------------------
+    -- Activate venv (Updated Logic)
     ------------------------------------------------------------
     local function activate(path)
       local py = python_from_venv(path)
-
-      ----------------------------------------------------------
-      -- Environment
-      ----------------------------------------------------------
       vim.env.VIRTUAL_ENV = path
       vim.env.PATH = path .. "/bin:" .. vim.env.PATH
 
-      ----------------------------------------------------------
-      -- Restart tooling
-      ----------------------------------------------------------
       pcall(function()
         vim.cmd("LspRestart basedpyright")
       end)
-
       pcall(function()
         vim.cmd("LspRestart ruff")
       end)
-
       log("Activated: " .. path)
 
-      ----------------------------------------------------------
-      -- Background tooling verification
-      ----------------------------------------------------------
       if not session_cache[path] then
         session_cache[path] = true
-
         local name = kernel_name(path)
-
         local kernel_json = vim.fn.expand("~/.local/share/jupyter/kernels/")
           .. name
           .. "/kernel.json"
 
-        if not exists(kernel_json) then
-          log("Building Jupyter kernel in background...", vim.log.levels.WARN)
+        local requires_kernel_build = true
+        if exists(kernel_json) then
+          if verify_kernel_path(kernel_json, py) then
+            requires_kernel_build = false
+          end
+        end
+
+        if requires_kernel_build then
+          log("Building/Updating Jupyter kernel...", vim.log.levels.WARN)
           ensure_kernel_async(py, name)
         else
-          -- UPDATED: Now safely uses tools.local_tooling with properly defined variables
           tools.ensure(py, tools.local_tooling, log)
         end
       end

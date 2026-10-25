@@ -52,6 +52,18 @@ return {
             "false",
           },
         },
+
+        --------------------------------------------------------------
+        -- Ruff
+        --------------------------------------------------------------
+        ruff_format = {
+          -- Added "format" as the first argument
+          args = { "format", "--force-exclude", "--stdin-filename", "$FILENAME.py", "-" },
+        },
+        ruff_fix = {
+          -- Added "check" as the first argument
+          args = { "check", "--fix", "--force-exclude", "--stdin-filename", "$FILENAME.py", "-" },
+        },
       },
 
       ----------------------------------------------------------------
