@@ -178,3 +178,10 @@ vim.opt.pumblend = 10
 
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
+
+-- Force Jupytext to ALWAYS treat .ipynb files as Python percent format buffers
+vim.g.jupytext_fmt = "py"
+vim.g.jupytext_filetype_map = { ipynb = "python" }
+vim.g.jupytext_custom_formats = {
+  { extension = "ipynb", format_name = "percent", format_version = "1.3" },
+}

@@ -129,6 +129,7 @@ return {
       "svelte",
       "typst",
       "gotmpl",
+      "openscad",
     }
 
     ts.install(parsers, { summary = false })
