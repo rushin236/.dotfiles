@@ -11,8 +11,9 @@ return {
         -- Keeping FIM because virtual text handles suffixes perfectly
         provider = "openai_fim_compatible",
 
+        request_timeout = 15,
         n_completions = 1,
-        debounce = 200,
+        debounce = 350,
         context_window = 8192,
         notify = "warn",
 
